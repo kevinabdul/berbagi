@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func registerRootMiddlewares(){
+func rootMiddlewares(){
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
