@@ -44,3 +44,22 @@ func DeleteProficiency(proficiencyId int) (interface{}, int, error) {
 	}
 	return nil, 0, nil
 }
+
+func UpdateProficiency(proficiencyId int, newProficiency *models.Proficiency) (interface{}, int, error) {
+	proficiency := models.Proficiency{}
+
+	tx := config.Db.Find(&proficiency, proficiencyId)
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
+
+	if tx.RowsAffected > 0 {
+		update := config.Db.Model(&proficiency).Updates(newProficiency)
+		if update.Error != nil {
+			return nil, 0, update.Error
+		}
+		return proficiency, 1, nil
+	}
+
+	return nil, 0, nil
+}

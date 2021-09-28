@@ -83,3 +83,35 @@ func DeleteProficiencyController(c echo.Context) error {
 		Data    interface{}
 	}{Status: "Success", Message: "Success to delete proficiency", Data: deletedMessage})
 }
+
+func UpdatedProficiencyController(c echo.Context) error {
+	proficiencyId, errorId := strconv.Atoi(c.Param("id"))
+	if errorId != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to update proficiency"})
+	}
+
+	newProficiency := models.Proficiency{}
+	c.Bind(&newProficiency)
+
+	updatedProficiency, rowAffected, err := libdb.UpdateProficiency(proficiencyId, &newProficiency)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to update proficiency"})
+	}
+	if rowAffected == 0 {
+		return c.JSON(http.StatusOK, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to update proficiency"})
+	}
+	return c.JSON(http.StatusOK, struct {
+		Status  string
+		Message string
+		Data    interface{}
+	}{Status: "Success", Message: "Success to update proficiency", Data: updatedProficiency})
+}
