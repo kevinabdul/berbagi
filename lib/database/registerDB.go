@@ -3,46 +3,64 @@ package libdb
 import (
 	"berbagi/config"
 	"berbagi/models"
+	"berbagi/utils/password"
+	"berbagi/utils/registration"
+	//"errors"
+	"gorm.io/gorm"
 )
 
-const (
-	personalRecipientTable = "personalRecipients"
-	agencyRecipientTable   = "agencyRecipients"
-	donatorTable           = "donators"
-	volunteerTable         = "volunteers"
-)
+func RegisterDonor(incomingData models.RegistrationAPI) (models.DonorAPI, error) {
+	dataCheckErr := datavalidation.CheckIncomingData(&incomingData)
 
-func IsEmailAvailable(model *interface{}) bool {
-	if rowsAffected := config.Db.Where("email = ?", model.email).Find(&model).RowsAffected; rowsAffected > 0 {
-		return false
+	if dataCheckErr != nil {
+		return models.DonorAPI{}, dataCheckErr
 	}
-	return true
-}
+	
+	hashedPassword, err := password.Hash(incomingData.Password)
 
-func RegisterPersonalRecipient(personalRecipient *models.PersonalRecipients) error {
-	if err := config.Db.Table(personalRecipientTable).Create(&personalRecipient).Error; err != nil {
-		return err
+	if err != nil {
+		return models.DonorAPI{}, err
 	}
-	return nil
-}
 
-func RegisterAgencyRecipient(agencyRecipient *models.AgencyRecipients) error {
-	if err := config.Db.Table(agencyRecipientTable).Create(&agencyRecipient).Error; err != nil {
-		return err
-	}
-	return nil
-}
+	newDonor := models.Donor{}
 
-func RegisterDonator(donator *models.Donators) error {
-	if err := config.Db.Table(donatorTable).Create(&donator).Error; err != nil {
-		return err
-	}
-	return nil
-}
+	transactionErr := config.Db.Transaction(func(tx *gorm.DB) error {
 
-func RegisterVolunteer(volunteer *models.Volunteers) error {
-	if err := config.Db.Table(volunteerTable).Create(&volunteer).Error; err != nil {
-		return err
+		newAddress := models.Address{}
+		newAddress.Name = incomingData.AddressName
+		newAddress.Latitude = incomingData.Latitude
+		newAddress.Longitude = incomingData.Longitude
+		newAddress.CityID = incomingData.CityID
+		newAddress.ProvinceID = incomingData.ProvinceID
+
+		if err := tx.Model(models.Address{}).Create(&newAddress).Error; err != nil {
+			return err
+		}
+
+		newDonor.Name = incomingData.Name
+		newDonor.Email = incomingData.Email
+		newDonor.Password = hashedPassword
+		newDonor.NIK = incomingData.NIK
+		newDonor.TanggalLahir = incomingData.TanggalLahir
+		newDonor.AddressID = newAddress.ID
+
+		res := tx.Table("donors").Create(&newDonor)
+
+		if res.Error != nil {
+			return res.Error
+		}
+
+		return nil
+	})
+
+	if transactionErr != nil {
+		return models.DonorAPI{}, transactionErr
 	}
-	return nil
+	
+	DonorAPI := models.DonorAPI{}
+	DonorAPI.ID = newDonor.ID
+	DonorAPI.Name = newDonor.Name
+	DonorAPI.Email = newDonor.Email
+	
+	return DonorAPI, nil
 }
