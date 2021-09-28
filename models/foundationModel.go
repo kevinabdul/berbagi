@@ -8,7 +8,7 @@ import (
 
 type Foundation struct {
 	UserID     uint           `gorm:"unique;primaryKey"`
-	LincenseID uint           `json:"license_id"`
+	LicenseID uint            `gorm:"unique" json:"license_id"`
 	AddressID  uint           `json:"address_id"`
 	Address    Address        `gorm:"foreignKey:AddressID"`
 	User       User           `gorm:"foreignKey:UserID"`

@@ -8,7 +8,6 @@ import (
 
 type Volunteer struct {
 	UserID        uint           `gorm:"unique;primaryKey"`
-	NIK           string         `gorm:"unique type:varchar(16)" json:"nik"`
 	BirthDate     string         `json:"birth_date"`
 	ProficiencyID uint           `json:"proficiency_id"`
 	AddressID     uint           `json:"address_id"`

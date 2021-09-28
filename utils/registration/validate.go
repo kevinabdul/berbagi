@@ -27,12 +27,12 @@ func CheckIncomingData(incomingData *models.RegistrationAPI) error {
 		return errors.New("CityID and ProvinceID must be specifed")
 	}
 
-	if incomingData.Role == "volunteer" && incomingData.SkillID == 0 {
+	if incomingData.Role == "volunteer" && incomingData.ProficiencyID == 0 {
 		return errors.New("SkillID must be specifed")
 	}
 
-	if incomingData.Role == "yayasan" && incomingData.YayasanID == 0 {
-		return errors.New("YayasanID must be specifed")
+	if incomingData.Role == "foundation" && incomingData.LicenseID == 0 {
+		return errors.New("LicenseID must be specifed")
 	}
 	return nil
 }
