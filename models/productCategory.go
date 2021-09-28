@@ -6,9 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type Province struct {
-	ID        uint           `gorm:"primaryKey" json:"id"`
-	Name      string         `gorm:"type:varchar(50)" json:"name"`
+type Category struct {
+	ID        uint           `gorm:"primaryKey"`
+	Name      string         `gorm:"not null" json:"name" form:"name"`
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `gorm:"index"`
