@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Province struct {
+type Proficiency struct {
 	ID        uint           `gorm:"primaryKey" json:"id"`
 	Name      string         `gorm:"type:varchar(50)" json:"name"`
 	CreatedAt time.Time      `json:"-"`
