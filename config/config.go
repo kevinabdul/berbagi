@@ -1,7 +1,7 @@
 package config
 
 import (
-	"berbagi/models"
+	//"berbagi/models"
 	"fmt"
 	"log"
 	"os"
@@ -35,31 +35,8 @@ func InitDb() {
 		panic(err2)
 	}
 
-	Db.Migrator().DropTable("provinces")
-	Db.Migrator().DropTable("cities")
-	Db.Migrator().DropTable("addresses")
-	Db.Migrator().DropTable("donors")
-	Db.AutoMigrate(&models.Province{})
-	Db.AutoMigrate(&models.City{})
-	Db.AutoMigrate(&models.Address{})
-	Db.AutoMigrate(&models.Donor{})
-
-	insertProvince()
-
-	insertCity()
-
+	// Db.AutoMigrate(&models.Donator{})
 	// Db.AutoMigrate(&models.Volunteer{})
 	// Db.AutoMigrate(&models.Yayasan{})
 	// Db.AutoMigrate(&models.PersonalRecipient{})
-}
-
-
-func insertProvince() {
-	provinces := []models.Province{{Name: "DKI Jakarta"}, {Name: "Denpasar"}}
-	Db.Create(&provinces)
-}
-
-func insertCity() {
-	cities := []models.City{{Name: "Jakarta Pusat", ProvinceID: 1}, {Name: "Bali", ProvinceID: 2}}
-	Db.Create(&cities)
 }

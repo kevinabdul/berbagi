@@ -9,11 +9,7 @@ var e *echo.Echo
 func New() *echo.Echo {
 	e = echo.New()
 
-	rootMiddlewares()
-
-	registerRoutes()
-
-	loginRoutes()
+	registerRootMiddlewares()
 	
 	return e
 }

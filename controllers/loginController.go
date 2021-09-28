@@ -3,25 +3,28 @@ package controllers
 import (
 	"net/http"
 
-	libdb "berbagi/lib/database"
-	models "berbagi/models"
+	libdb "altastore/lib/database"
+	models "altastore/models"
 
 	"github.com/labstack/echo/v4"
 )
 
 func LoginUserController(c echo.Context) error {
-	loggingUser := &models.LoginUserAPI{}
+	loggingUser := &models.UserAPI{}
 	c.Bind(loggingUser)
-
-	loggingUser.Role = c.Param("role")
 
 	token, err := libdb.LoginUser(loggingUser)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
+			Status string
 			Message string
-		}{Message: err.Error()})
+		}{Status: "failed", Message: err.Error()})
 	}
 	
-	return c.JSON(http.StatusOK, models.LoginResponseAPI{Message: "You are logged in!", Token: token})
+	return c.JSON(http.StatusOK, struct {
+		Status string
+		Message string
+		Token string
+	}{Status: "success", Message: "You are logged in!", Token: token})
 }
