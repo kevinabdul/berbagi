@@ -16,3 +16,17 @@ func CreateNewProficiency(newProficiency *models.Proficiency) (interface{}, int,
 	}
 	return nil, 0, nil
 }
+
+func GetAllProficiencies() (interface{}, int, error) {
+	proficiency := []models.Proficiency{}
+
+	tx := config.Db.Find(&proficiency)
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
+
+	if tx.RowsAffected > 0 {
+		return proficiency, 1, nil
+	}
+	return nil, 0, nil
+}
