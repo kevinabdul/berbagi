@@ -4,6 +4,7 @@ import (
 	libdb "berbagi/lib/database"
 	"berbagi/models"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -52,4 +53,33 @@ func GetAllProficienciesController(c echo.Context) error {
 		Message string
 		Data    interface{}
 	}{Status: "Success", Message: "Success to get all list proficiencies", Data: foundProficiency})
+}
+
+func DeleteProficiencyController(c echo.Context) error {
+	proficiencyId, errorId := strconv.Atoi(c.Param("id"))
+	if errorId != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to delete proficiency"})
+	}
+
+	deletedMessage, rowAffected, err := libdb.DeleteProficiency(proficiencyId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to delete proficiency"})
+	}
+	if rowAffected == 0 {
+		return c.JSON(http.StatusOK, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to delete proficiency"})
+	}
+	return c.JSON(http.StatusOK, struct {
+		Status  string
+		Message string
+		Data    interface{}
+	}{Status: "Success", Message: "Success to delete proficiency", Data: deletedMessage})
 }

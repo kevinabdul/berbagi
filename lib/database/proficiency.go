@@ -30,3 +30,17 @@ func GetAllProficiencies() (interface{}, int, error) {
 	}
 	return nil, 0, nil
 }
+
+func DeleteProficiency(proficiencyId int) (interface{}, int, error) {
+	proficiency := models.Proficiency{}
+
+	tx := config.Db.Delete(&proficiency, proficiencyId)
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
+
+	if tx.RowsAffected > 0 {
+		return "deleted", 1, nil
+	}
+	return nil, 0, nil
+}
