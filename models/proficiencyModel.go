@@ -7,7 +7,7 @@ import (
 )
 
 type Proficiency struct {
-	ID        uint           `gorm:"primaryKey" json:"id"`
+	ID        uint           `gorm:"primaryKey;autoIncrement:false" json:"id"`
 	Name      string         `gorm:"type:varchar(50)" json:"name"`
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`

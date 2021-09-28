@@ -38,19 +38,26 @@ func InitDb() {
 	Db.Migrator().DropTable("provinces")
 	Db.Migrator().DropTable("cities")
 	Db.Migrator().DropTable("addresses")
+	Db.Migrator().DropTable("proficiencies")
 	Db.Migrator().DropTable("donors")
+	Db.Migrator().DropTable("volunteers")
+	Db.Migrator().DropTable("childrens")
+	Db.Migrator().DropTable("foundations")
+	Db.Migrator().DropTable("users")
 	Db.AutoMigrate(&models.Province{})
 	Db.AutoMigrate(&models.City{})
 	Db.AutoMigrate(&models.Address{})
+	Db.AutoMigrate(&models.Proficiency{})
+	Db.AutoMigrate(&models.User{})
 	Db.AutoMigrate(&models.Donor{})
+	Db.AutoMigrate(&models.Volunteer{})
+	Db.AutoMigrate(&models.Children{})
+	Db.AutoMigrate(&models.Foundation{})
+	
 
 	insertProvince()
 
 	insertCity()
-
-	// Db.AutoMigrate(&models.Volunteer{})
-	// Db.AutoMigrate(&models.Yayasan{})
-	// Db.AutoMigrate(&models.PersonalRecipient{})
 }
 
 

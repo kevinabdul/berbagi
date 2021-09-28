@@ -6,20 +6,14 @@ import (
 	"berbagi/utils/jwt"
 	"berbagi/utils/password"
 	"errors"
-	"strings"
-	"fmt"
+	// "strings"
+	// "fmt"
 )
 
 func LoginUser(user *models.LoginUserAPI) (string ,error) {
 	loginSearch := models.LoginSearchAPI{}
 
-	user.Role = strings.ToLower(fmt.Sprintf("%vs", user.Role))
-
-	if user.Role == "personalrecipients" {
-		user.Role = "personal_recipients"
-	}
-
-	res := config.Db.Table(user.Role).Where("email = ?", user.Email).First(&loginSearch)
+	res := config.Db.Table("users").Where("email = ?", user.Email).First(&loginSearch)
 
 	if res.RowsAffected == 0 {
 		return "", errors.New("No donors with corresponding email")
