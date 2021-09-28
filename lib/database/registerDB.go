@@ -44,6 +44,16 @@ func RegisterDonor(incomingData models.RegistrationAPI) (models.DonorAPI, error)
 		newDonor.TanggalLahir = incomingData.TanggalLahir
 		newDonor.AddressID = newAddress.ID
 
+		// table user
+		// insert user dengan email dan password, lat, longitude
+		// dapat userId
+		// inser addres table
+		// dapat address id
+
+		// insert donor table
+		// email: kevinabdul@gmail.com password: 1234
+		// users: ID, email, password
+		// donors: userId, NIK, tanggallahir, addressID
 		res := tx.Table("donors").Create(&newDonor)
 
 		if res.Error != nil {
