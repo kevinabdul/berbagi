@@ -45,6 +45,18 @@ func AddServiceToCart(inputService *models.InputService, volunteerId int) (inter
 	return nil, 0, nil
 }
 
+func DeleteServiceCart(volunteerId int) (interface{}, int, error) {
+	serviceCart := models.ServiceCart{}
+	tx := config.Db.Delete(&serviceCart, volunteerId)
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
+	if tx.RowsAffected > 0 {
+		return "deleted", 1, nil
+	}
+	return nil, 0, nil
+}
+
 func formatDate(date string) time.Time {
 	formatedDate, _ := time.Parse("2006-01-02", date)
 	return formatedDate
