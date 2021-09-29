@@ -11,6 +11,12 @@ import (
 )
 
 func LoginUser(user *models.LoginUserAPI) (string ,error) {
+	role := c.Request().Param("role")
+
+	if role != "admin" | role != "donor" || role != "volunteer" || role != "children" || role != "foundation" {
+		return "", errors.New("Invalid user role")
+	}
+
 	loginSearch := models.LoginSearchAPI{}
 
 	res := config.Db.Table("users").Where("email = ?", user.Email).First(&loginSearch)
@@ -30,7 +36,7 @@ func LoginUser(user *models.LoginUserAPI) (string ,error) {
 		return "", err
 	}
 
-	token, err := implementjwt.CreateToken(int(loginSearch.ID), "donor")
+	token, err := implementjwt.CreateToken(int(loginSearch.ID), role)
 
 	if err != nil {
 		return "", err
