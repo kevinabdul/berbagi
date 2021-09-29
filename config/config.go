@@ -44,6 +44,7 @@ func InitDb() {
 	Db.Migrator().DropTable("childrens")
 	Db.Migrator().DropTable("foundations")
 	Db.Migrator().DropTable("users")
+	Db.Migrator().DropTable("admins")
 	Db.AutoMigrate(&models.Province{})
 	Db.AutoMigrate(&models.City{})
 	Db.AutoMigrate(&models.Address{})
@@ -53,6 +54,7 @@ func InitDb() {
 	Db.AutoMigrate(&models.Volunteer{})
 	Db.AutoMigrate(&models.Children{})
 	Db.AutoMigrate(&models.Foundation{})
+	Db.AutoMigrate(&models.Admin{})
 	
 
 	insertProvince()

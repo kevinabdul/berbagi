@@ -59,6 +59,17 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			if res.Error != nil {
 				return res.Error
 			}
+		} else if incomingData.Role == "admin" {
+			newUserRole := models.Admin{}
+			newUserRole.UserID = newUser.ID
+			newUserRole.BirthDate = incomingData.BirthDate
+			newUserRole.AddressID = newAddress.ID
+
+			res := tx.Table("admins").Create(&newUserRole)
+
+			if res.Error != nil {
+				return res.Error
+			}
 		} else if incomingData.Role == "children" {
 			newUserRole := models.Children{}
 			newUserRole.UserID = newUser.ID

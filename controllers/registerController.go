@@ -30,7 +30,7 @@ func RegisterUserController(c echo.Context) error {
 		Status string
 		Message string
 		User models.RegistrationResponseAPI
-	}{Status: "success", Message: "Donor has been created!", User: res})
+	}{Status: "success", Message: "User has been created!", User: res})
 
 }
 
