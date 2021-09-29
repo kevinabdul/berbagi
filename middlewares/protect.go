@@ -40,10 +40,12 @@ func AuthenticateUser(next echo.HandlerFunc) echo.HandlerFunc {
 			}{Status: "Failed", Message: "Invalid JWT Format!"})
 		}
 
-		valid, id, _ := checkToken(tokenArr[1])
+		valid, id, role, _ := checkToken(tokenArr[1])
 		// id can be either float64 or int. In any case, its numeric type so its save to 
 		// ignore if the assertion is failed and just convert it to int when we set it to header
 		userId, _ := id.(float64)
+
+		userRole,_ := role.(string)
 
 		if !valid {
 			return c.JSON(http.StatusBadRequest, struct {
@@ -53,12 +55,13 @@ func AuthenticateUser(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Request().Header.Set("userId", strconv.Itoa(int(userId)))
+		c.Request().Header.Set("role", userRole)
 
 		return next(c)
 		}
 }
 
-func checkToken(tokenString string) (bool, interface{}, error) {
+func checkToken(tokenString string) (bool, interface{}, interface{}, error) {
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -68,8 +71,9 @@ func checkToken(tokenString string) (bool, interface{}, error) {
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return true, claims["userId"], nil
+		fmt.Println(claims)
+		return true, claims["userId"], claims["role"], nil
 	}
 
-	return false, -1, err
+	return false, -1, "", err
 }

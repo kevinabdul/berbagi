@@ -14,6 +14,8 @@ func New() *echo.Echo {
 	registerRoutes()
 
 	loginRoutes()
+
+	ProficiencyRoute()
 	
 	return e
 }
