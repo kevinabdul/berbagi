@@ -7,11 +7,11 @@ import (
 )
 
 type Volunteer struct {
-	UserID        uint           `gorm:"unique;primaryKey"`
-	NIK           string         `gorm:"unique type:varchar(16)" json:"nik"`
-	BirthDate     string         `json:"birth_date"`
-	ProficiencyID uint           `json:"proficiency_id"`
-	AddressID     uint           `json:"address_id"`
+	ID            uint           `gorm:"primaryKey"`
+	UserID        uint           `gorm:"not null" json:"user_id" form:"user_id"`
+	BirthDate     string         `json:"birth_date" form:"birth_date"`
+	ProficiencyID uint           `gorm:"not null" json:"proficiency_id" form:"proficiency_id"`
+	AddressID     uint           `gorm:"not null" json:"address_id" form:"address_id"`
 	Address       Address        `gorm:"foreignKey:AddressID"`
 	User          User           `gorm:"foreignKey:UserID"`
 	Proficiency   Proficiency    `gorm:"foreignKey:ProficiencyID"`
