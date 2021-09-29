@@ -57,6 +57,38 @@ func DeleteServiceCart(volunteerId int) (interface{}, int, error) {
 	return nil, 0, nil
 }
 
+func UpdatedServiceOnCart(updatedInput *models.InputService, volunteerId int) (interface{}, int, error) {
+	service := models.ServiceCart{}
+	findService := config.Db.Where("service_carts.volunteer_id = ?", volunteerId).Find(&service)
+	if findService.Error != nil {
+		return nil, 0, findService.Error
+	}
+
+	if findService.RowsAffected > 0 {
+		fondation := models.Foundation{}
+		findUserId := config.Db.Where("foundations.user_id = ?", updatedInput.UserID).Find(&fondation)
+		if findUserId.Error != nil {
+			return nil, 0, findUserId.Error
+		}
+
+		updatedCart := models.ServiceCart{}
+		if !ValidatedDate(updatedInput.StartDate, updatedInput.FinishDate) {
+			return "find another date !", 0, nil
+		}
+
+		updatedCart.UserID = updatedInput.UserID
+		updatedCart.StartDate = formatDate(updatedInput.StartDate)
+		updatedCart.FinishDate = formatDate(updatedInput.FinishDate)
+
+		tx := config.Db.Where("service_carts.volunteer_id = ?", volunteerId).Model(&service).Updates(updatedCart)
+		if tx.Error != nil {
+			return nil, 0, tx.Error
+		}
+		return service, 1, nil
+	}
+	return nil, 0, nil
+}
+
 func formatDate(date string) time.Time {
 	formatedDate, _ := time.Parse("2006-01-02", date)
 	return formatedDate

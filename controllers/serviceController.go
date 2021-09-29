@@ -76,3 +76,42 @@ func DeleteServiceCartController(c echo.Context) error {
 		Message string
 	}{Status: "Success", Message: "Success to delete service on cart"})
 }
+
+func UpdatedServiceOncartController(c echo.Context) error {
+	volunteerId, errorId := strconv.Atoi(c.Param("id"))
+	if errorId != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Invalid volunteer id"})
+	}
+
+	updatedInput := models.InputService{}
+	c.Bind(&updatedInput)
+	updatedService, rowAffected, err := libdb.UpdatedServiceOnCart(&updatedInput, volunteerId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to update service cart"})
+	}
+
+	if updatedService == "find another date !" {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Find another date!"})
+	}
+
+	if rowAffected == 0 {
+		return c.JSON(http.StatusOK, struct {
+			Status  string
+			Message string
+		}{Status: "Success", Message: "volunteer id not found"})
+	}
+	return c.JSON(http.StatusOK, struct {
+		Status  string
+		Message string
+		Data    interface{}
+	}{Status: "Success", Message: "success to update service on carts", Data: updatedService})
+}
