@@ -20,18 +20,15 @@ type Volunteer struct {
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
-type RegisterVolunteerAPI struct {
-	Name          string `json:"name"`
-	Email         string `json:"email"`
-	Password      string `json:"password"`
-	NIK           string `json:"nik"`
-	BirthDate     string `json:"birth_date"`
-	AddressName   string `json:"address_name"`
-	Latitude      string `json:"lat"`
-	Longitude     string `json:"long"`
-	CityID        uint   `json:"city_id"`
-	ProvinceID    uint   `json:"province_id"`
-	ProficiencyID uint   `json:"proficiency_id"`
+type ProfileVolunteerAPI struct {
+	Name            string `json:"name"`
+	Email           string `json:"email"`
+	NIK             string `json:"nik"`
+	BirthDate       string `json:"birth_date"`
+	AddressName     string `json:"address_name"`
+	CityName        string `json:"city_name"`
+	ProvinceName    string `json:"province_name"`
+	ProficiencyName string `json:"proficiency_name"`
 }
 
 type VolunteerAPI struct {
