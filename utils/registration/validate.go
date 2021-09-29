@@ -8,7 +8,7 @@ import (
 
 func CheckIncomingData(incomingData *models.RegistrationAPI) error {
 	role := incomingData.Role
-	if !isRoleValid(role) {
+	if !IsRoleValid(role) {
 		return errors.New("Invalid role. You must choose between admin, donor, volunteer, children, or foundation")
 	}
 
@@ -42,7 +42,7 @@ func CheckIncomingData(incomingData *models.RegistrationAPI) error {
 	return nil
 }
 
-func isRoleValid(role string) bool {
+func IsRoleValid(role string) bool {
 	roles := []string{"admin", "donor", "volunteer", "children", "foundation"}
 
 	for _, v := range roles {

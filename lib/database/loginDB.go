@@ -5,15 +5,13 @@ import (
 	"berbagi/models"
 	"berbagi/utils/jwt"
 	"berbagi/utils/password"
+	"berbagi/utils/registration"
 	"errors"
 	// "strings"
-	// "fmt"
 )
 
-func LoginUser(user *models.LoginUserAPI) (string ,error) {
-	role := c.Request().Param("role")
-
-	if role != "admin" | role != "donor" || role != "volunteer" || role != "children" || role != "foundation" {
+func LoginUser(user models.LoginUserAPI) (string ,error) {
+	if valid := datavalidation.IsRoleValid(user.Role); !valid {
 		return "", errors.New("Invalid user role")
 	}
 
@@ -36,7 +34,7 @@ func LoginUser(user *models.LoginUserAPI) (string ,error) {
 		return "", err
 	}
 
-	token, err := implementjwt.CreateToken(int(loginSearch.ID), role)
+	token, err := implementjwt.CreateToken(int(loginSearch.ID), user.Role)
 
 	if err != nil {
 		return "", err
