@@ -14,8 +14,14 @@ type ServiceCart struct {
 	FinishDate  time.Time      `gorm:"not null" json:"finish_date" form:"finish_date"`
 	CreatedAt   time.Time      `json:"-"`
 	UpdatedAt   time.Time      `json:"-"`
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
-	Volunteer   Volunteer      `gorm:"foreignKey:VolunteerID"`
-	Address     Address        `gorm:"foreignKey:AddressID"`
-	User        User           `gorm:"foreignKey:UserID"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
+	Volunteer   Volunteer      `gorm:"foreignKey:VolunteerID" json:"-"`
+	Address     Address        `gorm:"foreignKey:AddressID" json:"-"`
+	User        User           `gorm:"foreignKey:UserID" json:"-"`
+}
+
+type InputService struct {
+	UserID     uint   `gorm:"not null" json:"recipient_id" form:"recipient_id"`
+	StartDate  string `gorm:"not null" json:"start_date" form:"start_date"`
+	FinishDate string `gorm:"not null" json:"finish_date" form:"finish_date"`
 }
