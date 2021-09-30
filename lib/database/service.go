@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-func GetListService() (interface{}, int, error) {
+func GetServiceByVolunteerId(volunteerId int) (interface{}, int, error) {
 	services := models.ServiceCart{}
-	tx := config.Db.Find(&services)
+	tx := config.Db.Where("volunteer_id = ?", volunteerId).Find(&services)
 	if tx.Error != nil {
 		return nil, 0, tx.Error
 	}

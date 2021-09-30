@@ -9,36 +9,32 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetListServiceController(c echo.Context) error {
-	services, rowAffected, err := libdb.GetListService()
+func GetServiceOnCartController(c echo.Context) error {
+	volunteerId, _ := strconv.Atoi(c.Request().Header.Get("userId"))
+
+	services, rowAffected, err := libdb.GetServiceByVolunteerId(volunteerId)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to get list service"})
+		}{Status: "Failed", Message: "Failed to get service cart"})
 	}
 
 	if rowAffected == 0 {
 		return c.JSON(http.StatusOK, struct {
 			Status  string
 			Message string
-		}{Status: "Success", Message: "list services not found !"})
+		}{Status: "Success", Message: "service cart not found !"})
 	}
 	return c.JSON(http.StatusOK, struct {
 		Status  string
 		Message string
 		Data    interface{}
-	}{Status: "Success", Message: "Success to get list services", Data: services})
+	}{Status: "Success", Message: "Success to get service cart", Data: services})
 }
 
 func AddServiceToCartController(c echo.Context) error {
-	volunteerId, errorId := strconv.Atoi(c.Param("id"))
-	if errorId != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Invalid volunteer id"})
-	}
+	volunteerId, _ := strconv.Atoi(c.Request().Header.Get("userId"))
 
 	service := models.InputService{}
 	c.Bind(&service)
@@ -72,13 +68,7 @@ func AddServiceToCartController(c echo.Context) error {
 }
 
 func DeleteServiceCartController(c echo.Context) error {
-	volunteerId, errorId := strconv.Atoi(c.Param("id"))
-	if errorId != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Invalid volunteer id"})
-	}
+	volunteerId, _ := strconv.Atoi(c.Request().Header.Get("userId"))
 
 	_, rowAffected, err := libdb.DeleteServiceCart(volunteerId)
 	if err != nil {
@@ -100,13 +90,7 @@ func DeleteServiceCartController(c echo.Context) error {
 }
 
 func UpdatedServiceOncartController(c echo.Context) error {
-	volunteerId, errorId := strconv.Atoi(c.Param("id"))
-	if errorId != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Invalid volunteer id"})
-	}
+	volunteerId, _ := strconv.Atoi(c.Request().Header.Get("userId"))
 
 	updatedInput := models.InputService{}
 	c.Bind(&updatedInput)

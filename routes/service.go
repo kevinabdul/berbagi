@@ -2,11 +2,12 @@ package routes
 
 import (
 	handler "berbagi/controllers"
+	"berbagi/middlewares"
 )
 
 func ServiceRoute() {
-	e.POST("/service/:id", handler.AddServiceToCartController)
-	e.DELETE("/service/:id", handler.DeleteServiceCartController)
-	e.PUT("/service/:id", handler.UpdatedServiceOncartController)
-	e.GET("/service", handler.GetListServiceController)
+	e.POST("/services", handler.AddServiceToCartController, middlewares.AuthenticateUser)
+	e.DELETE("/services", handler.DeleteServiceCartController, middlewares.AuthenticateUser)
+	e.PUT("/services", handler.UpdatedServiceOncartController, middlewares.AuthenticateUser)
+	e.GET("/services", handler.GetServiceOnCartController, middlewares.AuthenticateUser)
 }
