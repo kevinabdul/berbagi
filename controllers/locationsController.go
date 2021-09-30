@@ -10,7 +10,7 @@ import (
 )
 
 func GetAllNearestRecipientsController(c echo.Context) error {
-	userId, _ := strconv.Atoi(c.Request().Header.Get("userId"))
+	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
 	role := c.Request().Header.Get("role")
 	_range, _ := strconv.ParseFloat(c.QueryParams().Get("range"), 64)
 
@@ -27,33 +27,16 @@ func GetAllNearestRecipientsController(c echo.Context) error {
 		}{Status: "Failed", Message: "Range value invalid"})
 	}
 
-	var addressId uint
-	var err error
-	if role == "donor" {
-		addressId, err = libdb.GetAddressIdByUserIdDonor(userId)
-
-	} else if role == "volunteer" {
-		addressId, err = libdb.GetAddressIdByUserIdVolunteer(userId)
-	}
+	address, err := libdb.GetAddressLatLonByUserId(uint(userId), role)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Failed to get addressID"})
-	}
-
-	// var address models.Address
-	address, err := libdb.GetAddressById(addressId)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
+		return  c.JSON(http.StatusBadRequest, struct {
 			Status  string
 			Message string
 		}{Status: "Failed", Message: "Failed to get user's address"})
 	}
-	addr := address.(models.Address)
 
-	lat, _ := strconv.ParseFloat(addr.Latitude, 64)
-	lon, _ := strconv.ParseFloat(addr.Longitude, 64)
+	lat := address.Latitude
+	lon := address.Longitude
 	nearesRecipientsId, rowAffected, err := libdb.GetAllNearestAddressId(lat, lon, _range)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
