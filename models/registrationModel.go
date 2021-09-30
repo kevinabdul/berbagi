@@ -15,6 +15,7 @@ type RegistrationAPI struct {
 	ProficiencyID	uint   `json:"proficiency_id"`
 	LicenseID    	uint   `json:"license_id"`
 	Role         	string `json:"role"`
+	AdminKey 		string `json:"admin_key"`
 }
 
 type RegistrationResponseAPI struct {
