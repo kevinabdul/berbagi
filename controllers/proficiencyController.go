@@ -10,6 +10,14 @@ import (
 )
 
 func CreateNewProficiencyController(c echo.Context) error {
+	checkRole := c.Request().Header.Get("role")
+	if checkRole != "admin" {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Unauthorized access"})
+	}
+
 	proficiency := models.Proficiency{}
 	c.Bind(&proficiency)
 
@@ -24,7 +32,7 @@ func CreateNewProficiencyController(c echo.Context) error {
 		return c.JSON(http.StatusOK, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to create new proficiency"})
+		}{Status: "Success", Message: "Failed to create new proficiency"})
 	}
 	return c.JSON(http.StatusOK, struct {
 		Status  string
@@ -34,6 +42,13 @@ func CreateNewProficiencyController(c echo.Context) error {
 }
 
 func GetAllProficienciesController(c echo.Context) error {
+	checkRole := c.Request().Header.Get("role")
+	if checkRole != "admin" && checkRole != "volunteer" && checkRole != "foundation" {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Unauthorized access"})
+	}
 
 	foundProficiency, rowAffected, err := libdb.GetAllProficiencies()
 	if err != nil {
@@ -46,7 +61,7 @@ func GetAllProficienciesController(c echo.Context) error {
 		return c.JSON(http.StatusOK, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to get all list proficiencies"})
+		}{Status: "Success", Message: "List proficiencies not found"})
 	}
 	return c.JSON(http.StatusOK, struct {
 		Status  string
@@ -56,12 +71,20 @@ func GetAllProficienciesController(c echo.Context) error {
 }
 
 func DeleteProficiencyController(c echo.Context) error {
+	checkRole := c.Request().Header.Get("role")
+	if checkRole != "admin" {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Unauthorized access"})
+	}
+
 	proficiencyId, errorId := strconv.Atoi(c.Param("id"))
 	if errorId != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to delete proficiency"})
+		}{Status: "Failed", Message: "Invalid proficiency id"})
 	}
 
 	deletedMessage, rowAffected, err := libdb.DeleteProficiency(proficiencyId)
@@ -75,7 +98,7 @@ func DeleteProficiencyController(c echo.Context) error {
 		return c.JSON(http.StatusOK, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to delete proficiency"})
+		}{Status: "Success", Message: "Proficiency not found"})
 	}
 	return c.JSON(http.StatusOK, struct {
 		Status  string
@@ -85,12 +108,20 @@ func DeleteProficiencyController(c echo.Context) error {
 }
 
 func UpdatedProficiencyController(c echo.Context) error {
+	checkRole := c.Request().Header.Get("role")
+	if checkRole != "admin" {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Unauthorized access"})
+	}
+
 	proficiencyId, errorId := strconv.Atoi(c.Param("id"))
 	if errorId != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to update proficiency"})
+		}{Status: "Failed", Message: "Invalid proficiency id"})
 	}
 
 	newProficiency := models.Proficiency{}
@@ -107,7 +138,7 @@ func UpdatedProficiencyController(c echo.Context) error {
 		return c.JSON(http.StatusOK, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to update proficiency"})
+		}{Status: "Success", Message: "Proficiency not found"})
 	}
 	return c.JSON(http.StatusOK, struct {
 		Status  string

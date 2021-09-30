@@ -2,11 +2,12 @@ package routes
 
 import (
 	handler "berbagi/controllers"
+	"berbagi/middlewares"
 )
 
 func ProficiencyRoute() {
-	e.POST("/proficiency", handler.CreateNewProficiencyController)
-	e.GET("/proficiency", handler.GetAllProficienciesController)
-	e.DELETE("/proficiency/:id", handler.DeleteProficiencyController)
-	e.PUT("/proficiency/:id", handler.UpdatedProficiencyController)
+	e.POST("/proficiencies", handler.CreateNewProficiencyController, middlewares.AuthenticateUser)
+	e.GET("/proficiencies", handler.GetAllProficienciesController, middlewares.AuthenticateUser)
+	e.DELETE("/proficiencies/:id", handler.DeleteProficiencyController, middlewares.AuthenticateUser)
+	e.PUT("/proficiencies/:id", handler.UpdatedProficiencyController, middlewares.AuthenticateUser)
 }
