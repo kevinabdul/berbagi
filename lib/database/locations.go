@@ -6,39 +6,27 @@ import (
 	"database/sql"
 )
 
-func GetAddressIdByUserIdDonor(userId int) (uint, error) {
-	model := models.Donor{}
+func GetAddressLatLonByUserId(id uint, role string) (models.LocationPointResponseAPI, error) {
+	var point models.LocationPointResponseAPI
 
-	tx := config.Db.First(&model, userId)
-	if tx.Error != nil {
-		return 0, tx.Error
+	var table string
+	if role == "donor" {
+		table = "donors"
+	} else if role == "volunteer" {
+		table = "volunteers"
 	}
 
-	addressId := model.AddressID
-	return addressId, nil
-}
+	tx := config.Db.Table(table).Select(
+		"addresses.latitude, addresses.longitude").Joins(
+		"JOIN addresses ON addresses.id = ?.address_id", table).Joins(
+		"JOIN users ON users.id = ?.user_id", table).Where(
+		"users.id = ?", id).First(&point)
 
-func GetAddressIdByUserIdVolunteer(userId int) (uint, error) {
-	model := models.Volunteer{}
-
-	tx := config.Db.First(&model, userId)
 	if tx.Error != nil {
-		return 0, tx.Error
+		return models.LocationPointResponseAPI{}, tx.Error
 	}
 
-	addressId := model.AddressID
-	return addressId, nil
-}
-
-func GetAddressById(id uint) (interface{}, error) {
-	var address models.Address
-
-	tx := config.Db.First(&address, id)
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-
-	return address, nil	
+	return point, nil
 }
 
 func GetAllNearestAddressId(lat, lon, _range float64) ([]models.NearestAddressIdResponseAPI, int, error) {
@@ -56,24 +44,24 @@ func GetAllNearestAddressId(lat, lon, _range float64) ([]models.NearestAddressId
 			  Where distance < @range 
 			  ORDER BY distance`
 
-	// BACKUP QUERY	
+	// BACKUP QUERY
 	// query := `SELECT id, (
-	// 	6371 * acos( cos( radians( @lat ) ) 
-	// 	* cos( radians( latitude ) ) 
-	// 	* cos( radians( longitude ) - radians( @lon ) ) 
-	// 	+ sin( radians( @lat ) ) 
-	// 	* sin( radians( latitude ) ) )) AS distance 
-	// FROM addresses 
-	// WHERE latitude<>'' 
-	// 	AND longitude<>'' 
+	// 	6371 * acos( cos( radians( @lat ) )
+	// 	* cos( radians( latitude ) )
+	// 	* cos( radians( longitude ) - radians( @lon ) )
+	// 	+ sin( radians( @lat ) )
+	// 	* sin( radians( latitude ) ) )) AS distance
+	// FROM addresses
+	// WHERE latitude<>''
+	// 	AND longitude<>''
 	// HAVING distance < @range
 	// ORDER BY distance asc`
 
-	tx := config.Db.Raw(query, 
-			sql.Named("lat", lat), 
-			sql.Named("lon", lon), 
-			sql.Named("range", _range)).Scan(&address) // All saved or per row?
-			
+	tx := config.Db.Raw(query,
+		sql.Named("lat", lat),
+		sql.Named("lon", lon),
+		sql.Named("range", _range)).Scan(&address) // All saved or per row?
+
 	// tx := config.Db.Where(`
 	// 				(latitude BETWEEN ? AND ?)
 	// 				AND
