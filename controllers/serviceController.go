@@ -9,6 +9,28 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func GetListServiceController(c echo.Context) error {
+	services, rowAffected, err := libdb.GetListService()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Failed to get list service"})
+	}
+
+	if rowAffected == 0 {
+		return c.JSON(http.StatusOK, struct {
+			Status  string
+			Message string
+		}{Status: "Success", Message: "list services not found !"})
+	}
+	return c.JSON(http.StatusOK, struct {
+		Status  string
+		Message string
+		Data    interface{}
+	}{Status: "Success", Message: "Success to get list services", Data: services})
+}
+
 func AddServiceToCartController(c echo.Context) error {
 	volunteerId, errorId := strconv.Atoi(c.Param("id"))
 	if errorId != nil {

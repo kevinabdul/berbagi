@@ -6,6 +6,19 @@ import (
 	"time"
 )
 
+func GetListService() (interface{}, int, error) {
+	services := models.ServiceCart{}
+	tx := config.Db.Find(&services)
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
+
+	if tx.RowsAffected > 0 {
+		return services, 1, nil
+	}
+	return nil, 0, nil
+}
+
 func AddServiceToCart(inputService *models.InputService, volunteerId int) (interface{}, int, error) {
 	volunteer := models.Volunteer{}
 	tx := config.Db.Find(&volunteer, volunteerId)
