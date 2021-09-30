@@ -8,12 +8,6 @@ import(
 )
 
 func registerRoutes() {
-	e.POST("/register/:role", handler.RegisterUserController)
-
-	// e.POST("/register/volunteers", handler.RegisterVolunteerController)
-
-	// e.POST("/register/foundations", handler.RegisterFoundationController)
-
-	// e.POST("/register/childrens", handler.RegisterChildrenController)
+	e.POST("/register", handler.RegisterUserController)
 }
 

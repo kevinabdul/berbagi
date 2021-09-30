@@ -16,6 +16,8 @@ func New() *echo.Echo {
 	loginRoutes()
 
 	ProficiencyRoute()
+
+	productCartRoutes()
 	
 	return e
 }

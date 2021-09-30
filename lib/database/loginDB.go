@@ -5,22 +5,17 @@ import (
 	"berbagi/models"
 	"berbagi/utils/jwt"
 	"berbagi/utils/password"
-	"berbagi/utils/registration"
 	"errors"
 	// "strings"
 )
 
 func LoginUser(user models.LoginUserAPI) (string ,error) {
-	if valid := datavalidation.IsRoleValid(user.Role); !valid {
-		return "", errors.New("Invalid user role")
-	}
-
 	loginSearch := models.LoginSearchAPI{}
 
 	res := config.Db.Table("users").Where("email = ?", user.Email).First(&loginSearch)
 
 	if res.RowsAffected == 0 {
-		return "", errors.New("No donors with corresponding email")
+		return "", errors.New("No user with corresponding email")
 	}
 	
 	if res.Error != nil {
@@ -34,7 +29,7 @@ func LoginUser(user models.LoginUserAPI) (string ,error) {
 		return "", err
 	}
 
-	token, err := implementjwt.CreateToken(int(loginSearch.ID), user.Role)
+	token, err := implementjwt.CreateToken(int(loginSearch.ID), loginSearch.Role)
 
 	if err != nil {
 		return "", err

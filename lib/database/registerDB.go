@@ -5,7 +5,8 @@ import (
 	"berbagi/models"
 	"berbagi/utils/password"
 	"berbagi/utils/registration"
-	//"errors"
+	"errors"
+	"os"
 	"gorm.io/gorm"
 )
 
@@ -41,6 +42,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 		newUser.NIK = incomingData.NIK
 		newUser.Email = incomingData.Email
 		newUser.Password = hashedPassword
+		newUser.Role = incomingData.Role
 
 		if err := tx.Model(models.User{}).Create(&newUser).Error; err != nil {
 			return err
@@ -60,6 +62,17 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 				return res.Error
 			}
 		} else if incomingData.Role == "admin" {
+			// If we want to add credential check when someone register themselves as admin,
+			// we could do that here, before adding the new user to admin table
+			// e.g: we can define some sort of admin key that must be included in request body
+			// the key can be stored in db, cache, or even env file. Then we check for that key
+			// every time someone try to register themselves as an admin. 
+			adminKey := os.Getenv("ADMIN_KEY")
+
+			if adminKey != incomingData.AdminKey {
+				return errors.New("Invalid admin key")
+			}
+
 			newUserRole := models.Admin{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.BirthDate = incomingData.BirthDate
