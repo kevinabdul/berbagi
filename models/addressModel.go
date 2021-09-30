@@ -19,3 +19,13 @@ type Address struct {
 	UpdatedAt  time.Time      `json:"-"`
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
 }
+
+type NearestAddressIdResponseAPI struct {
+	ID       uint
+	Distance float64
+}
+
+type LocationPointResponseAPI struct {
+	Latitude  float64
+	Longitude float64
+}

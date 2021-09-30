@@ -7,7 +7,6 @@ import (
 )
 
 type Volunteer struct {
-	ID            uint           `gorm:"primaryKey"`
 	UserID        uint           `gorm:"not null" json:"user_id" form:"user_id"`
 	BirthDate     string         `json:"birth_date" form:"birth_date"`
 	ProficiencyID uint           `gorm:"not null" json:"proficiency_id" form:"proficiency_id"`
@@ -17,7 +16,7 @@ type Volunteer struct {
 	Proficiency   Proficiency    `gorm:"foreignKey:ProficiencyID"`
 	CreatedAt     time.Time      `json:"-"`
 	UpdatedAt     time.Time      `json:"-"`
-	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 type ProfileVolunteerAPI struct {

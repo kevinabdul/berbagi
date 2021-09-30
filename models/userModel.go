@@ -11,6 +11,8 @@ import (
 type User struct {
 	ID        uint           `gorm:"primaryKey"`
 	Name      string         `gorm:"type:varchar(75)" json:"name"`
+	Role 	  string		 `gorm:"type:varchar(50)" json:"role"`
+	NIK       string         `gorm:"unique; type:varchar(16)" json:"nik"`
 	Email     string         `gorm:"unique; type:varchar(50)" json:"email"`
 	Password  string         `json:"password"`
 	CreatedAt time.Time      `json:"-"`
@@ -30,6 +32,7 @@ type LoginSearchAPI struct {
 	Name     string
 	Email    string
 	Password string
+	Role 	 string
 }
 
 type LoginResponseAPI struct {

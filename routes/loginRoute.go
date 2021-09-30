@@ -5,6 +5,6 @@ import(
 )
 
 func loginRoutes() {
-	e.POST("/login/:role", handler.LoginUserController)
+	e.POST("/login", handler.LoginUserController)
 }
 

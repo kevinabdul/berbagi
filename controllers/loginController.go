@@ -10,10 +10,13 @@ import (
 )
 
 func LoginUserController(c echo.Context) error {
-	loggingUser := &models.LoginUserAPI{}
-	c.Bind(loggingUser)
+	role := c.QueryParam("role")
 
-	loggingUser.Role = c.Param("role")
+	loggingUser := models.LoginUserAPI{}
+	
+	c.Bind(&loggingUser)
+
+	loggingUser.Role = role
 
 	token, err := libdb.LoginUser(loggingUser)
 
