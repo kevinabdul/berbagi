@@ -5,7 +5,7 @@ import (
 	"berbagi/models"
 )
 
-func GetCompletionDetail(verificationId, volunteerId int) (interface{}, int, error) {
+func GetCompletionDetail(role string, verificationId, volunteerId int) (interface{}, int, error) {
 	completion := models.Completion{}
 	findCompletion := config.Db.Find(&completion, verificationId)
 	if findCompletion.Error != nil {
@@ -18,8 +18,10 @@ func GetCompletionDetail(verificationId, volunteerId int) (interface{}, int, err
 			return nil, 0, tx.Error
 		}
 
-		if confirmedData.VolunteerID != uint(volunteerId) {
-			return nil, -1, tx.Error
+		if role == "volunteer" {
+			if confirmedData.VolunteerID != uint(volunteerId) {
+				return nil, -1, tx.Error
+			}
 		}
 
 		response := formattingVerification(confirmedData)
@@ -51,6 +53,17 @@ func UpdateCompletionStatus(status string, verificationId int) (interface{}, int
 		saveStatus := config.Db.Save(&completion)
 		if saveStatus.Error != nil {
 			return nil, 0, saveStatus.Error
+		}
+
+		if completion.CompletionStatus == "completed" {
+			certificate := models.Certificate{
+				CompletionID: completion.ConfirmServicesAPIID,
+			}
+
+			saveCertificate := config.Db.Create(&certificate)
+			if saveCertificate.Error != nil {
+				return "certificate can't create", 0, saveCertificate.Error
+			}
 		}
 
 		confirmedData := models.ConfirmServicesAPI{}

@@ -68,6 +68,7 @@ func InitDb() {
 	Db.AutoMigrate(&models.ServiceCart{})
 	Db.AutoMigrate(&models.ConfirmServicesAPI{})
 	Db.AutoMigrate(&models.Completion{})
+	Db.AutoMigrate(&models.Certificate{})
 	insertProvince()
 
 	insertCity()

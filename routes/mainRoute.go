@@ -30,5 +30,7 @@ func New() *echo.Echo {
 	LocationsRoute()
 
 	CompletionRoutes()
+
+	CertificateRoutes()
 	return e
 }

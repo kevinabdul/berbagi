@@ -27,7 +27,7 @@ func GetCompletionDetailController(c echo.Context) error {
 		}{Status: "Failed", Message: "Invalid verification id"})
 	}
 
-	completion, rowAffected, err := libdb.GetCompletionDetail(verificationId, volunteerId)
+	completion, rowAffected, err := libdb.GetCompletionDetail(checkRole, verificationId, volunteerId)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
