@@ -15,7 +15,6 @@ type ServiceCart struct {
 	CreatedAt   time.Time      `json:"-"`
 	UpdatedAt   time.Time      `json:"-"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
-	Volunteer   Volunteer      `gorm:"foreignKey:VolunteerID" json:"-"`
 	Address     Address        `gorm:"foreignKey:AddressID" json:"-"`
 	User        User           `gorm:"foreignKey:UserID" json:"-"`
 }
