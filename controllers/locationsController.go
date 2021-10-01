@@ -2,7 +2,7 @@ package controllers
 
 import (
 	libdb "berbagi/lib/database"
-	"berbagi/models"
+	//"berbagi/models"
 	"net/http"
 	"strconv"
 

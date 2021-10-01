@@ -71,7 +71,6 @@ func checkToken(tokenString string) (bool, interface{}, interface{}, error) {
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Println(claims)
 		return true, claims["userId"], claims["role"], nil
 	}
 
