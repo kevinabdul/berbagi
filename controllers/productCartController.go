@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	//"fmt"
 
 	libdb "berbagi/lib/database"
 	models "berbagi/models"
@@ -13,7 +14,7 @@ import (
 func GetProductCartByUserIdController(c echo.Context) error {
 	userId , _ := strconv.Atoi(c.Request().Header.Get("userId"))
 	cartTarget, err := libdb.GetProductCartByUserId(userId)
-
+	
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status 	string
@@ -24,7 +25,7 @@ func GetProductCartByUserIdController(c echo.Context) error {
 	return c.JSON(http.StatusOK, struct {
 		Status 	string
 		Message string
-		Carts 	[]models.ProductCartGetAPI
+		Carts 	models.ProductCartGetResponse
 	}{Status: "success", Message: "Cart is retrieved succesfully" , Carts: cartTarget})
 }
 
