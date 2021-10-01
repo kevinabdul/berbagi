@@ -18,6 +18,14 @@ func New() *echo.Echo {
 	ProficiencyRoute()
 
 	productCartRoutes()
-	
+
+	VolunteerRoutes()
+
+	ServiceRoute()
+
+	ConfirmServiceRoutes()
+
+	LocationsRoute()
+
 	return e
 }

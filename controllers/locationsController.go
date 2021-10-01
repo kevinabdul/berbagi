@@ -2,7 +2,6 @@ package controllers
 
 import (
 	libdb "berbagi/lib/database"
-	"berbagi/models"
 	"net/http"
 	"strconv"
 
@@ -29,7 +28,7 @@ func GetAllNearestRecipientsController(c echo.Context) error {
 
 	address, err := libdb.GetAddressLatLonByUserId(uint(userId), role)
 	if err != nil {
-		return  c.JSON(http.StatusBadRequest, struct {
+		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
 			Message string
 		}{Status: "Failed", Message: "Failed to get user's address"})
