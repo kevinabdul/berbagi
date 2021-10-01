@@ -101,8 +101,8 @@ func insertProduct() {
 	{Name:"Beras 5Kg", Price:65000, CategoryID:2}, {Name:"Telur Ayam (10)", Price:13000, CategoryID:2}, 
 	{Name:"Daging Ayam 1Kg", Price: 35000, CategoryID:2}, {Name:"Minyak Sayur 2L", Price: 24000, CategoryID:2},
 	{Name:"Susu Kotak 1L", Price: 15000, CategoryID:2}, {Name:"Gula 1Kg", Price: 10000, CategoryID:2},
-	{Name:"Kuota Data 20GB Telkomsel", Price: 100000, CategoryID:3}, {Name:"Kuota data 50GB Indosat", Price: 100000, CategoryID:3},
-	{Name:"Pulsa 100000 Telkomsel", Price: 100000, CategoryID:3}, {Name:"Pulsa 100000 Indosat", Price: 100000, CategoryID:3}}
+	{Name:"Kuota Data 20GB Telkomsel", Price: 100000, CategoryID:4}, {Name:"Kuota data 50GB Indosat", Price: 100000, CategoryID:4},
+	{Name:"Pulsa 100000 Telkomsel", Price: 100000, CategoryID:4}, {Name:"Pulsa 100000 Indosat", Price: 100000, CategoryID:4}}
 	Db.Create(&products)
 }
 

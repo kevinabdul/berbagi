@@ -17,6 +17,14 @@ type Product struct {
 	Category    Category       `gorm:"foreignKey:CategoryID"`
 }
 
+type ProductAPI struct {
+	ID          uint           `gorm:"primaryKey" json:"id"`
+	Name        string         `gorm:"not null" json:"name" form:"name"`
+	Price       int            `gorm:"not null" json:"price" form:"price"`
+	CategoryID  uint           `gorm:"not null" json:"category_id" form:"category_id"`
+}
+
+
 type ProductPackage struct {
 	ID          uint           `gorm:"primaryKey"`
 	Name        string         `gorm:"not null" json:"name" form:"name"`
