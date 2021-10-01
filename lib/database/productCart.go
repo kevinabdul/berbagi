@@ -10,20 +10,51 @@ import (
 	"berbagi/models"
 )
 
-func GetProductCartByUserId(donorId int) ([]models.ProductCartGetAPI, error) {
+func GetProductCartByUserId(donorId int) (models.ProductCartGetResponse, error) {
 	var productCart []models.ProductCartGetAPI
 
-	res := config.Db.Table("product_carts").Select("product_carts.recipient_id, product_package_details.product_package_id, products.name, products.price, product_carts.quantity").Joins("left join product_package_details on product_carts.product_package_id = product_package_details.product_package_id").Joins("left join products on products.id = product_package_details.product_id").Where(`product_carts.donor_id = ?`, donorId).Find(&productCart)
+	res := config.Db.Table("product_carts").Select("product_carts.recipient_id, product_carts.product_package_id, product_carts.quantity").Where(`product_carts.donor_id = ?`, donorId).Find(&productCart)
 
 	if res.Error != nil {
-		return []models.ProductCartGetAPI{}, res.Error
+		return models.ProductCartGetResponse{}, res.Error
 	}
 
 	if res.RowsAffected == 0 {
-		return []models.ProductCartGetAPI{}, errors.New("No product found in the product cart")
+		return models.ProductCartGetResponse{}, errors.New("No product found in the product cart")
 	}
 
-	return productCart, nil
+	dictPackage := map[int]bool{}
+
+	for _, v := range productCart {
+		dictPackage[int(v.ProductPackageID)] = true
+	}
+
+	wantedPackage := []int{}
+
+	for k,_ := range dictPackage {
+		wantedPackage = append(wantedPackage, k)
+	}
+
+	packageDetails := []models.PackageDetailAPI{}
+
+	joinCondition := ""
+	for i := 0; i < len(wantedPackage); i++ {
+		joinCondition += fmt.Sprintf("product_package_details.product_package_id = %v", wantedPackage[i])
+		if i < len(wantedPackage) - 1 {
+			joinCondition += " or "
+		}
+	}
+
+	productSearch := config.Db.Table("product_package_details").Select("product_package_details.product_package_id, product_package_details.quantity, products.id as product_id, products.price").Joins("left join products on products.id = product_package_details.product_id").Where(joinCondition).Find(&packageDetails)
+
+	if productSearch.Error != nil {
+		return models.ProductCartGetResponse{}, productSearch.Error
+	}
+	response := models.ProductCartGetResponse{}
+	response.ItemsBought = productCart
+	response.PackageDetail = packageDetails
+
+	return response, nil
 }
 
 // This function assumes the userId is still exist. That check should be handled by another auth functionality, not by this function.

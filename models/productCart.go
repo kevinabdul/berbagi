@@ -31,6 +31,25 @@ type ProductCartGetAPI struct {
 	RecipientID			uint           	`json:"recipient_id" form:"recipient_id"`
 	ProductPackageID 	uint           	`json:"product_package_id" form:"product_package_id"`
 	Quantity  			int            	`json:"quantity" form:"quantity"`
-	Name 				string 			`json:"product_name"`
-	Price  				int  			`json:"price"`
 }
+
+type ProductCartGetResponse struct {
+	ItemsBought 		[]ProductCartGetAPI `json:"items_bought"`
+	PackageDetail 		[]PackageDetailAPI `json:"package_detail"`
+}
+
+
+
+// type DetailProductCartGetResponse struct {
+// 	ProductPackageID 	uint           		`json:"product_package_id" form:"product_package_id"`
+// 	Quantity  			int            		`json:"quantity" form:"quantity"`
+// 	Detail  			[]ProductDetailAPI	`json:"detail"`
+// }
+
+// type ProductCartGetResponse struct {
+// 	RecipientID			uint           		`json:"recipient_id" form:"recipient_id"`
+// 	Detail 				DetailProductCartGetResponse `json:""detail`
+// }
+
+
+
