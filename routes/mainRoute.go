@@ -29,5 +29,6 @@ func New() *echo.Echo {
 
 	LocationsRoute()
 
+	CompletionRoutes()
 	return e
 }

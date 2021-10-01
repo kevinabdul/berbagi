@@ -42,6 +42,14 @@ func AddConfirmService(volunteerId int) (interface{}, int, error) {
 	}
 
 	if saveConfirmData.RowsAffected > 0 {
+		completion := models.Completion{
+			ConfirmServicesAPIID: confirmData.ID,
+		}
+		saveCompletion := config.Db.Create(&completion)
+		if saveCompletion.Error != nil {
+			return "completion can't create", 0, saveCompletion.Error
+		}
+
 		confirmation := formattingVerification(confirmData)
 		deletedCart := config.Db.Where("volunteer_id = ?", volunteerId).Delete(&serviceCart)
 		if deletedCart.Error != nil {
