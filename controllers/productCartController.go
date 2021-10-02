@@ -7,6 +7,7 @@ import (
 
 	libdb "berbagi/lib/database"
 	models "berbagi/models"
+	"berbagi/utils/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,17 +17,10 @@ func GetProductCartByUserIdController(c echo.Context) error {
 	cartTarget, err := libdb.GetProductCartByUserId(userId)
 	
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status 	string
-			Message string
-		}{Status: "failed", Message: err.Error()})
+		return c.JSON(http.StatusBadRequest, response.Create("failed", err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, struct {
-		Status 	string
-		Message string
-		Carts 	models.ProductCartGetResponse
-	}{Status: "success", Message: "Cart is retrieved succesfully" , Carts: cartTarget})
+	return c.JSON(http.StatusOK, response.Create("success", "cart is retrieved succesfully!", cartTarget))
 }
 
 
@@ -42,16 +36,10 @@ func UpdateProductCartByUserIdController(c echo.Context) error {
 	err := libdb.UpdateProductCartByUserId(userCart, donorId)	
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status 	string
-			Message string
-		}{Status: "failed", Message: err.Error()})
+		return c.JSON(http.StatusBadRequest, response.Create("failed", err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, struct {
-		Status 	string
-		Message	string
-	}{Status: "success", Message: "ProductCart is updated!"})
+	return c.JSON(http.StatusOK, response.Create("success", "product cart is updated!", nil))
 }
 
 func DeleteProductCartByUserIdController(c echo.Context) error {
@@ -63,14 +51,8 @@ func DeleteProductCartByUserIdController(c echo.Context) error {
 	err := libdb.DeleteProductCartByUserId(userCart, userId)	
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status 	string
-			Message string
-		}{Status: "failed", Message: err.Error()})
+		return c.JSON(http.StatusBadRequest, response.Create("failed", err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, struct {
-		Status 	string
-		Message	string
-	}{Status: "success", Message: "Cart is updated!"})
+	return c.JSON(http.StatusOK, response.Create("success", "product cart is updated!", userCart))
 }

@@ -70,7 +70,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			// every time someone try to register themselves as an admin.
 			adminKey := os.Getenv("ADMIN_KEY")
 
-			if adminKey != incomingData.AdminKey {
+			if adminKey != incomingData.AdminKey || incomingData.AdminKey == "" {
 				return errors.New("Invalid admin key")
 			}
 
@@ -99,7 +99,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			newUserRole := models.Volunteer{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.BirthDate = incomingData.BirthDate
-			newUserRole.ProficiencyID = incomingData.ProficiencyID
+			//newUserRole.ProficiencyID = incomingData.ProficiencyID
 			newUserRole.AddressID = newAddress.ID
 
 			// addProficiency := tx.Table("proficiencies").Create(&models.Proficiency{ID : incomingData.ProficiencyID})
