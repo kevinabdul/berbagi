@@ -41,9 +41,14 @@ type ProductPackageDetail struct {
 	Product 			Product
 }
 
+type PackageListAPI struct {
+	ProductPackageID 	uint 				`json:"package_id"`
+	Details 			[]PackageDetailAPI	`json:"details"`
+}
+
 type PackageDetailAPI struct {
-	ProductPackageID 	uint 			`json:"package_id"`
-	ProductId 			uint 			`json:"product_id"`
+	ProductPackageID 	uint 			`json:"-"`
+	ProductID 			uint 			`json:"product_id"`
 	Quantity 			int 			`json:"quantity"`
 	Price  				int  			`json:"price"`
 }

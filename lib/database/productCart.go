@@ -3,7 +3,7 @@ package libdb
 import (
 	"errors"
 	"fmt"
-	//"strings"
+	"strings"
 	"gorm.io/gorm"
 
 	"berbagi/config"
@@ -11,22 +11,25 @@ import (
 )
 
 func GetProductCartByUserId(donorId int) (models.ProductCartGetResponse, error) {
-	var productCart []models.ProductCartGetAPI
-
-	res := config.Db.Table("product_carts").Select("product_carts.recipient_id, product_carts.product_package_id, product_carts.quantity").Where(`product_carts.donor_id = ?`, donorId).Find(&productCart)
+	var productCart []models.GiftAPI
+	res := config.Db.Table("product_carts").
+	Select("product_carts.recipient_id, product_carts.product_package_id, product_carts.quantity").
+	Where(`product_carts.donor_id = ?`, donorId).Find(&productCart)
 
 	if res.Error != nil {
 		return models.ProductCartGetResponse{}, res.Error
 	}
 
 	if res.RowsAffected == 0 {
-		return models.ProductCartGetResponse{}, errors.New("No product found in the product cart")
+		return models.ProductCartGetResponse{}, errors.New("no product_package_id found in user's product_carts")
 	}
 
 	dictPackage := map[int]bool{}
+	dictGift := map[int][]models.GiftAPI{}
 
 	for _, v := range productCart {
 		dictPackage[int(v.ProductPackageID)] = true
+		dictGift[int(v.RecipientID)] = append(dictGift[int(v.RecipientID)], v)
 	}
 
 	wantedPackage := []int{}
@@ -45,14 +48,39 @@ func GetProductCartByUserId(donorId int) (models.ProductCartGetResponse, error) 
 		}
 	}
 
-	productSearch := config.Db.Table("product_package_details").Select("product_package_details.product_package_id, product_package_details.quantity, products.id as product_id, products.price").Joins("left join products on products.id = product_package_details.product_id").Where(joinCondition).Find(&packageDetails)
+	productSearch := config.Db.Table("product_package_details").
+	Select("product_package_details.product_package_id, product_package_details.quantity, products.id as product_id, products.price").
+	Joins("left join products on products.id = product_package_details.product_id").Where(joinCondition).Find(&packageDetails)
 
 	if productSearch.Error != nil {
 		return models.ProductCartGetResponse{}, productSearch.Error
 	}
+
+	dictPackageDetail := map[int][]models.PackageDetailAPI{}
+
+	for _, v := range packageDetails {
+		dictPackageDetail[int(v.ProductPackageID)] = append(dictPackageDetail[int(v.ProductPackageID)], 
+		models.PackageDetailAPI{ProductID: uint(v.ProductID), Quantity: int(v.Quantity), Price: v.Price})
+	}
+
+	packageLists := []models.PackageListAPI{}
+
+	for k, v := range dictPackageDetail {
+		packageList := models.PackageListAPI{}
+		packageList.ProductPackageID = uint(k)
+		packageList.Details = v
+		packageLists = append(packageLists, packageList)
+	}
+
 	response := models.ProductCartGetResponse{}
-	response.ItemsBought = productCart
-	response.PackageDetail = packageDetails
+	recipientGifts := []models.RecipientGift{}
+
+	for k, v := range dictGift {
+		recipientGifts = append(recipientGifts, models.RecipientGift{RecipientID: uint(k), Gifts: v})
+	}
+
+	response.Recipients = recipientGifts
+	response.PackageList = packageLists
 
 	return response, nil
 }
@@ -68,19 +96,27 @@ func UpdateProductCartByUserId(userCart []models.ProductCart, donorId int)  erro
 			}
 
 			if cartItem.DonorID == cartItem.RecipientID {
-				return errors.New("You cant donate to yourself. Please specify different donorID and RecipientID")
+				return errors.New("you cant donate to yourself. please specify different donor_id and recipient_id")
 			}
 
 			targetCart := models.ProductCart{}
 
 			//Just found about this awesome and convenient method the night before presentation 
-			res := tx.Where(models.ProductCart{DonorID: uint(donorId), RecipientID: uint(cartItem.RecipientID), ProductPackageID: cartItem.ProductPackageID}).Assign(models.ProductCart{Quantity: cartItem.Quantity}).FirstOrCreate(&targetCart)
+			res := tx.Where(models.ProductCart{DonorID: uint(donorId), RecipientID: uint(cartItem.RecipientID), ProductPackageID: cartItem.ProductPackageID}).
+			Assign(models.ProductCart{Quantity: cartItem.Quantity}).FirstOrCreate(&targetCart)
 
 			if res.Error != nil {
-				// // Error 1452 means we try to change a child table with invalid parent's table primary key
-				// if strings.HasPrefix(res.Error.Error(), "Error 1452") {
-				// 	return errors.New(fmt.Sprintf("No product package id %v found in the product package table", cartItem.ProductPackageID))
-				// }
+				// Error 1452 means we try to change a child table with invalid parent's table primary key
+				invalidForeignKey := strings.HasPrefix(res.Error.Error(), "Error 1452")
+
+				if invalidForeignKey {
+					if strings.Contains(res.Error.Error(), "product_package_id") {
+						return errors.New(fmt.Sprintf("no product_package_id with id: %v found in the product_package table", cartItem.ProductPackageID))	
+					}
+					if strings.Contains(res.Error.Error(), "recipient_id") {
+						return errors.New(fmt.Sprintf("No recipient_id with id: %v found in the children table", cartItem.RecipientID))	
+					}
+				}
 
 				return res.Error
 			}
@@ -110,7 +146,7 @@ func DeleteProductCartByUserId(items []models.ProductCartDelAPI, userId int) (er
 			}
 
 			if deleteRes.RowsAffected == 0 {
-				return errors.New(fmt.Sprintf("No product package with id %v is found in user's product cart.", item.ProductPackageID))
+				return errors.New(fmt.Sprintf("no product_package_id with id: %v associated with recipient_id %v  found in user's product_carts", item.ProductPackageID, item.RecipientID))
 			}
 		}
 		return nil
