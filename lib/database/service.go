@@ -14,7 +14,8 @@ func GetServiceByVolunteerId(volunteerId int) (interface{}, int, error) {
 	}
 
 	if tx.RowsAffected > 0 {
-		return services, 1, nil
+		response := responseService(services)
+		return response, 1, nil
 	}
 	return nil, 0, nil
 }
@@ -128,4 +129,38 @@ func ValidatedDate(date1, date2 string) bool {
 	}
 
 	return true
+}
+
+func responseService(serviceCart models.ServiceCart) models.ResponseService {
+	volunteer := models.User{}
+	findVolunteer := config.Db.Find(&volunteer, serviceCart.VolunteerID)
+	if findVolunteer.Error != nil {
+		return models.ResponseService{}
+	}
+
+	recipient := models.User{}
+	findRecipient := config.Db.Find(&recipient, serviceCart.UserID)
+	if findRecipient.Error != nil {
+		return models.ResponseService{}
+	}
+	foundation := models.Foundation{}
+	findFoundation := config.Db.Find(&foundation, recipient.ID)
+	if findFoundation.Error != nil {
+		return models.ResponseService{}
+	}
+
+	addressName := models.Address{}
+	findAddress := config.Db.Find(&addressName, foundation.AddressID)
+	if findAddress.Error != nil {
+		return models.ResponseService{}
+	}
+
+	response := models.ResponseService{
+		VolunteerName: volunteer.Name,
+		UserName:      recipient.Name,
+		AddressName:   addressName.Name,
+		StartDate:     serviceCart.StartDate,
+		FinishDate:    serviceCart.FinishDate,
+	}
+	return response
 }

@@ -7,24 +7,22 @@ import (
 )
 
 type Completion struct {
-	VolunteerID uint           `gorm:"primaryKey"`
-	InvoiceID   uint           `json:"invoice_id" form:"invoice_id"`
-	Status      string         `json:"status" form:"status"`
-	CreatedAt   time.Time      `json:"-"`
-	UpdatedAt   time.Time      `json:"-"`
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
-	Volunteer   Volunteer      `gorm:"foreignKey:VolunteerID"`
+	ConfirmServicesAPIID uint               `gorm:"primaryKey"`
+	CompletionStatus     string             `json:"completion_status" sql:"type:ENUM('not verified', 'verified', 'on-going', 'completed')" gorm:"default:not verified"`
+	CreatedAt            time.Time          `json:"-"`
+	UpdatedAt            time.Time          `json:"-"`
+	DeletedAt            gorm.DeletedAt     `gorm:"index" json:"-"`
+	ConfirmServicesAPI   ConfirmServicesAPI `gorm:"foreignKey:ConfirmServicesAPIID"`
 }
 
-type CompletionDetail struct {
-	InvoiceID  uint           `json:"invoice_id" form:"invoice_id"`
-	UserID     uint           `json:"recipient_id" form:"recipient_id"`
-	AddressID  uint           `gorm:"not null" json:"recipient_address_id" form:"recipient_address_id"`
-	StartDate  time.Time      `gorm:"not null" json:"start_date" form:"start_date"`
-	FinishDate time.Time      `gorm:"not null" json:"finish_date" form:"finish_date"`
-	CreatedAt  time.Time      `json:"-"`
-	UpdatedAt  time.Time      `json:"-"`
-	DeletedAt  gorm.DeletedAt `gorm:"index"`
-	Address    Address        `gorm:"foreignKey:AddressID"`
-	User       User           `gorm:"foreignKey:UserID"`
+type CompletionResponse struct {
+	Invoice          string    `json:"invoice"`
+	VolunteerName    string    `json:"volunteer_name"`
+	AddressVolunteer string    `json:"volunteer_address"`
+	ProficiencyName  string    `json:"proficiency_name"`
+	UserName         string    `json:"recipient_name"`
+	AddressUser      string    `json:"recipient_address" `
+	StartDate        time.Time `json:"start_date" `
+	FinishDate       time.Time `json:"finish_date"`
+	CompletionStatus string    `json:"completion_status"`
 }

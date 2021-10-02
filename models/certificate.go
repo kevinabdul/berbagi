@@ -7,10 +7,17 @@ import (
 )
 
 type Certificate struct {
-	ID          uint           `gorm:"primaryKey"`
-	InvoiceID   uint           `gorm:"not null" json:"invoice_id" form:"invoice_id"`
-	Description string         `json:"description" form:"description"`
-	CreatedAt   time.Time      `json:"-"`
-	UpdatedAt   time.Time      `json:"-"`
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	CompletionID uint           `gorm:"primaryKey" json:"completion_id"`
+	CreatedAt    time.Time      `json:"-"`
+	UpdatedAt    time.Time      `json:"-"`
+	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
+type CertificateResponse struct {
+	Invoice         string    `json:"certificate_number"`
+	VolunteerName   string    `json:"volunteer_name"`
+	ProficiencyName string    `json:"proficiency_name"`
+	UserName        string    `json:"recipient_name"`
+	StartDate       time.Time `json:"start_date"`
+	FinishDate      time.Time `json:"finish_date"`
 }

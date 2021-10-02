@@ -5,20 +5,15 @@ import (
 	"berbagi/models"
 )
 
-func ListVolunteers() (interface{}, int, error) {
-	volunteerRes := []models.VolunteerAPI{}
-
-	query := `SELECT volunteers.id, users.name, users.email 
-				FROM volunteers
-				INNER JOIN users ON volunteers.user_id = users.id;`
-
-	tx := config.Db.Raw(query).Scan(&volunteerRes)
+func ListVolunteers(volunteer *[]models.User) (interface{}, int, error) {
+	res := []models.VolunteerAPI{}
+	tx := config.Db.Where("users.role = ?", "volunteer").Model(volunteer).Find(&res)
 	if tx.Error != nil {
 		return nil, 0, tx.Error
 	}
 
 	if tx.RowsAffected > 0 {
-		return volunteerRes, 1, nil
+		return res, 1, nil
 	}
 	return nil, 0, nil
 }
@@ -35,7 +30,7 @@ func GetVolunteerProfile(volunteerId int) (interface{}, int, error) {
 		query := `SELECT users.name, users.email, users.nik, volunteers.birth_date
 				FROM volunteers
 				INNER JOIN users ON volunteers.user_id = users.id
-				WHERE volunteers.id = ?`
+				WHERE volunteers.user_id = ?`
 
 		findUser := config.Db.Raw(query, volunteerId).Scan(&resVolunteer)
 		if findUser.Error != nil {

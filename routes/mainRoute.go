@@ -31,5 +31,9 @@ func New() *echo.Echo {
 
 	checkoutRoutes()
 
+	CompletionRoutes()
+
+	CertificateRoutes()
+
 	return e
 }

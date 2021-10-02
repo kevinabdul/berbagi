@@ -34,7 +34,7 @@ func InitDb() {
 	if err2 != nil {
 		panic(err2)
 	}
-  
+
 	Db.Migrator().DropTable("provinces")
 	Db.Migrator().DropTable("cities")
 	Db.Migrator().DropTable("addresses")
@@ -76,7 +76,9 @@ func InitDb() {
 	Db.AutoMigrate(&models.ConfirmService{})
 	Db.AutoMigrate(&models.Transaction{})
 	Db.AutoMigrate(&models.TransactionDetail{})
-  
+	Db.AutoMigrate(&models.Completion{})
+	Db.AutoMigrate(&models.Certificate{})
+
 	insertProvince()
 
 	insertCity()
