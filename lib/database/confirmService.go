@@ -62,6 +62,24 @@ func AddConfirmService(volunteerId int) (interface{}, int, error) {
 	return nil, 0, nil
 }
 
+func GetConfirmService(verificationId, volunteerId int) (interface{}, int, error) {
+	verifiedService := models.ConfirmServicesAPI{}
+	tx := config.Db.Find(&verifiedService, verificationId)
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
+
+	if verifiedService.VolunteerID != uint(volunteerId) {
+		return nil, -1, tx.Error
+	}
+
+	if tx.RowsAffected > 0 {
+		response := formattingVerification(verifiedService)
+		return response, 1, nil
+	}
+	return nil, 0, nil
+}
+
 func formattingVerification(confirmData models.ConfirmServicesAPI) models.ResponseConfirmServices {
 	response := models.ResponseConfirmServices{
 		Invoice:    confirmData.Invoice,

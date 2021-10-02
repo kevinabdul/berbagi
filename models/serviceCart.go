@@ -24,3 +24,11 @@ type InputService struct {
 	StartDate  string `gorm:"not null" json:"start_date" form:"start_date"`
 	FinishDate string `gorm:"not null" json:"finish_date" form:"finish_date"`
 }
+
+type ResponseService struct {
+	VolunteerName string    `json:"volunteer_name"`
+	UserName      string    `json:"recipient_name" `
+	AddressName   string    `json:"recipient_address" `
+	StartDate     time.Time `json:"start_date" `
+	FinishDate    time.Time `json:"finish_date" `
+}
