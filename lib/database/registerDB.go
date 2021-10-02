@@ -4,9 +4,10 @@ import (
 	"berbagi/config"
 	"berbagi/models"
 	"berbagi/utils/password"
-	"berbagi/utils/registration"
+	datavalidation "berbagi/utils/registration"
 	"errors"
 	"os"
+
 	"gorm.io/gorm"
 )
 
@@ -16,7 +17,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 	if dataCheckErr != nil {
 		return models.RegistrationResponseAPI{}, dataCheckErr
 	}
-	
+
 	hashedPassword, err := password.Hash(incomingData.Password)
 
 	if err != nil {
@@ -46,9 +47,9 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 
 		if err := tx.Model(models.User{}).Create(&newUser).Error; err != nil {
 			return err
-		}		
+		}
 
-		// Yes, there is a lot of unnecessary duplication of code but i prefer clarity over brevity 
+		// Yes, there is a lot of unnecessary duplication of code but i prefer clarity over brevity
 		// when doing a non trivial project
 		if incomingData.Role == "donor" {
 			newUserRole := models.Donor{}
@@ -66,7 +67,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			// we could do that here, before adding the new user to admin table
 			// e.g: we can define some sort of admin key that must be included in request body
 			// the key can be stored in db, cache, or even env file. Then we check for that key
-			// every time someone try to register themselves as an admin. 
+			// every time someone try to register themselves as an admin.
 			adminKey := os.Getenv("ADMIN_KEY")
 
 			if adminKey != incomingData.AdminKey || incomingData.AdminKey == "" {
@@ -123,7 +124,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			if res.Error != nil {
 				return res.Error
 			}
-		} 
+		}
 
 		return nil
 	})
@@ -131,11 +132,11 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 	if transactionErr != nil {
 		return models.RegistrationResponseAPI{}, transactionErr
 	}
-	
+
 	responseAPI := models.RegistrationResponseAPI{}
 	responseAPI.UserID = newUser.ID
 	responseAPI.Name = newUser.Name
 	responseAPI.Email = newUser.Email
-	
+
 	return responseAPI, nil
 }
