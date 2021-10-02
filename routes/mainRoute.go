@@ -29,5 +29,7 @@ func New() *echo.Echo {
 
 	LocationsRoute()
 
+	checkoutRoutes()
+
 	return e
 }
