@@ -11,7 +11,7 @@ import (
 )
 
 func GetProductsController(c echo.Context) error {
-	categoryId,_ := strconv.Atoi(c.QueryParam("category"))
+	categoryId,_ := strconv.Atoi(c.QueryParam("categoryId"))
 
 	productsTarget, err := libdb.GetProducts(categoryId)
 

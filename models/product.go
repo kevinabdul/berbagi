@@ -52,3 +52,8 @@ type PackageDetailAPI struct {
 	Quantity 			int 			`json:"quantity"`
 	Price  				int  			`json:"price"`
 }
+
+type PackagePrice struct {
+	ProductPackageID uint  	`json:"product_package_id"`
+	Price  			int 	`json:""price`
+}

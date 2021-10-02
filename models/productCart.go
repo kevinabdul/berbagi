@@ -8,7 +8,7 @@ import (
 
 type ProductCart struct {
 	// Donor here means someone who is doing the act of giving, not as in donor roles
-	// we limit donor to user with donor role and volunteer role
+	// we limit donor to user with donor role
 	// we limit recipient to children
 	DonorID   			uint           	`gorm:"primaryKey" json:"donor_id"`
 	RecipientID			uint           	`gorm:"primaryKey" json:"recipient_id" form:"recipient_id"`

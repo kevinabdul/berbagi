@@ -29,8 +29,11 @@ func New() *echo.Echo {
 
 	LocationsRoute()
 
+	checkoutRoutes()
+
 	CompletionRoutes()
 
 	CertificateRoutes()
+
 	return e
 }
