@@ -2,14 +2,24 @@ package controllers
 
 import (
 	libdb "berbagi/lib/database"
+	"berbagi/models"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetListVolunteers(c echo.Context) error {
-	volunteers, rowAffected, err := libdb.ListVolunteers()
+func GetListVolunteersController(c echo.Context) error {
+	checkRole := c.Request().Header.Get("role")
+	if checkRole != "admin" {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Unauthorized access"})
+	}
+
+	volunteer := []models.User{}
+	volunteers, rowAffected, err := libdb.ListVolunteers(&volunteer)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
@@ -32,7 +42,7 @@ func GetListVolunteers(c echo.Context) error {
 }
 
 func GetVolunteerProfileController(c echo.Context) error {
-	volunteerId, errorId := strconv.Atoi(c.Param("id"))
+	volunteerId, errorId := strconv.Atoi(c.Request().Header.Get("userId"))
 	if errorId != nil {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
