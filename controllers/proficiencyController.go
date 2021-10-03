@@ -32,7 +32,7 @@ func CreateNewProficiencyController(c echo.Context) error {
 		return c.JSON(http.StatusOK, struct {
 			Status  string
 			Message string
-		}{Status: "Success", Message: "Failed to create new proficiency"})
+		}{Status: "Success", Message: "New proficiency not found"})
 	}
 	return c.JSON(http.StatusOK, struct {
 		Status  string
@@ -67,7 +67,7 @@ func GetAllProficienciesController(c echo.Context) error {
 		Status  string
 		Message string
 		Data    interface{}
-	}{Status: "Success", Message: "Success to get all list proficiencies", Data: foundProficiency})
+	}{Status: "Success", Message: "Success to get list proficiencies", Data: foundProficiency})
 }
 
 func DeleteProficiencyController(c echo.Context) error {

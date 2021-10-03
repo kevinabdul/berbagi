@@ -56,6 +56,14 @@ func GetConfirmServiceController(c echo.Context) error {
 			Message string
 		}{Status: "Success", Message: "verification id not found"})
 	}
+
+	if rowAffected == -1 {
+		return c.JSON(http.StatusBadRequest, struct {
+			Status  string
+			Message string
+		}{Status: "Failed", Message: "Unauthorize access"})
+	}
+
 	return c.JSON(http.StatusOK, struct {
 		Status  string
 		Message string

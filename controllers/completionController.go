@@ -53,7 +53,7 @@ func GetCompletionDetailController(c echo.Context) error {
 		Status  string
 		Message string
 		Data    interface{}
-	}{Status: "Success", Message: "success to get completion data", Data: completion})
+	}{Status: "Success", Message: "Success to get completion data", Data: completion})
 
 }
 
@@ -87,7 +87,7 @@ func UpdateStatusCompletionController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, struct {
 			Status  string
 			Message string
-		}{Status: "Failed", Message: "Failed to update status completion"})
+		}{Status: "Failed", Message: "Failed to update completion status"})
 	}
 
 	if rowAffected == 0 {
@@ -108,6 +108,6 @@ func UpdateStatusCompletionController(c echo.Context) error {
 		Status  string
 		Message string
 		Data    interface{}
-	}{Status: "Success", Message: "success to update status completion", Data: completion})
+	}{Status: "Success", Message: "success to update completion status", Data: completion})
 
 }
