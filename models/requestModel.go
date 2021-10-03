@@ -11,6 +11,7 @@ type Request struct {
 	RecipientID uint           `json:"user_id"`
 	AddressID   uint           `json:"address_id"`
 	Type        string         `json:"type"`
+	Resolved    bool           `json:"resolved"`
 	User        User           `gorm:"foreignKey:RecipientID"`
 	Address     Address        `gorm:"foreignKey:AddressID"`
 	CreatedAt   time.Time      `json:"-"`
