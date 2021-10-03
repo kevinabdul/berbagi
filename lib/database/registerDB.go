@@ -99,7 +99,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			newUserRole := models.Volunteer{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.BirthDate = incomingData.BirthDate
-			//newUserRole.ProficiencyID = incomingData.ProficiencyID
+			newUserRole.ProficiencyID = incomingData.ProficiencyID
 			newUserRole.AddressID = newAddress.ID
 
 			// addProficiency := tx.Table("proficiencies").Create(&models.Proficiency{ID : incomingData.ProficiencyID})
