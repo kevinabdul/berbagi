@@ -39,3 +39,12 @@ type LoginResponseAPI struct {
 	Message string
 	Token   string
 }
+
+type UserProfile struct {
+	UserID uint
+	Name string
+	Role string
+	Address string
+	City string
+	Province string
+}

@@ -6,5 +6,5 @@ import (
 )
 
 func LocationsRoute() {
-	e.GET("/nearbyrecipient", handler.GetAllNearestRecipientsController, middlewares.AuthenticateUser)
+	e.GET("/nearby/:resource", handler.GetAllNearestRecipientsController, middlewares.AuthenticateUser)
 }

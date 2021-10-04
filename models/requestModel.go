@@ -54,6 +54,8 @@ type RequestProfile struct {
 	RecipientId uint
 	Role        string
 	AddressID   uint
+	Type 		string
+	Distance	float64
 	// PackageID   uint
 	// Quantity    int
 }
