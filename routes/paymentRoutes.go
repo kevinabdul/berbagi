@@ -6,7 +6,7 @@ import (
 )
 
 func paymentRoutes() {
-	e.GET("/payments", handler.GetPendingPaymentsController, middlewares.AuthenticateUser)
+	e.GET("/payments", handler.GetPendingPaymentsController, middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 
-	e.POST("/payments", handler.AddPendingPaymentController, middlewares.AuthenticateUser)
+	e.POST("/payments", handler.AddPendingPaymentController, middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 }

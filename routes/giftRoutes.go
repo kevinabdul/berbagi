@@ -6,5 +6,5 @@ import (
 )
 
 func giftRoutes() {
-	e.GET("/gifts", handler.GetGiftsController, middlewares.AuthenticateUser)
+	e.GET("/gifts", handler.GetGiftsController, middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 }

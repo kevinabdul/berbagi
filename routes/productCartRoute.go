@@ -6,10 +6,10 @@ import(
 )
 
 func productCartRoutes() {
-	e.GET("/product-cart", handler.GetProductCartByUserIdController, middleware.AuthenticateUser)
+	e.GET("/product-carts", handler.GetProductCartByUserIdController, middleware.AuthenticateUser, middleware.AuthorizeUser)
 
-	e.PUT("/product-cart", handler.UpdateProductCartByUserIdController, middleware.AuthenticateUser)
+	e.PUT("/product-carts", handler.UpdateProductCartByUserIdController, middleware.AuthenticateUser, middleware.AuthorizeUser)
 
-	e.DELETE("/product-cart", handler.DeleteProductCartByUserIdController, middleware.AuthenticateUser)
+	e.DELETE("/product-carts", handler.DeleteProductCartByUserIdController, middleware.AuthenticateUser, middleware.AuthorizeUser)
 }
 

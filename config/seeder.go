@@ -62,3 +62,52 @@ func insertPaymentMethod() {
 
 	Db.Create(&paymentMethod)
 }
+
+func insertAction() {
+	actions := []models.Action{{Name:"GET"}, {Name:"POST"}, {Name:"PUT"}, {Name:"DELETE"}}
+	Db.Create(&actions)
+}
+
+func insertResource() {
+	resources := []models.Resource{{Path:"/product-carts"}, {Path:"/checkout"}, {Path:"/payments"}, {Path:"/gifts"},
+	{Path:"/location"}, {Path:"/request/donations"}, {Path:"/request/gifts"}, {Path:"/request/services"},
+	{Path:"/proficiencies"}, {Path:"/volunteer"}, {Path:"/services"}, {Path:"/services/verification"}}
+	Db.Create(&resources)
+}
+
+func insertPermission() {
+	permissions := []models.Permission{
+		{ActionID:1, ResourceID:1},  // 1.  GET 	product-carts
+		{ActionID:3, ResourceID:1},  // 2.  PUT 	product-carts
+		{ActionID:1, ResourceID:2},	 // 3.  GET 	checkout
+		{ActionID:2, ResourceID:2},  // 4.  POST 	checkout
+		{ActionID:1, ResourceID:3},  // 5.  GET 	payments
+		{ActionID:2, ResourceID:3},  // 6.  POST 	payments
+		{ActionID:1, ResourceID:4},  // 7.  GET  	gifts
+		{ActionID:1, ResourceID:5},  // 8.  GET  	location
+		{ActionID:2, ResourceID:6},  // 9.  POST 	request/donations
+		{ActionID:2, ResourceID:7},  // 10. POST 	request/gifts
+		{ActionID:2, ResourceID:8},  // 11. POST 	request/services
+		{ActionID:1, ResourceID:9},  // 12. GET  	proficiencies
+		{ActionID:1, ResourceID:10}, // 13. GET  	volunteer (profile)
+		{ActionID:1, ResourceID:11}, // 14. GET  	services
+		{ActionID:3, ResourceID:11}, // 15. PUT  	services
+		{ActionID:4, ResourceID:11}, // 16. DELETE  services
+		{ActionID:1, ResourceID:12}} // 17. GET  	services/verification
+	Db.Create(&permissions)
+}
+
+func insertRole() {
+	roles := []models.Role{{Name:"admin"}, {Name:"donor"}, {Name:"volunteer"}, {Name:"children"}, {Name:"foundation"}}
+	Db.Create(&roles)
+}
+
+func insertRolePermission() {
+	rolePermissions := []models.RolePermission{{RoleID:2, PermissionID:1}, {RoleID:2, PermissionID:2}, {RoleID:2, PermissionID:3},
+	{RoleID:2, PermissionID:4}, {RoleID:2, PermissionID:5}, {RoleID:2, PermissionID:6}, {RoleID:4, PermissionID:7},
+	{RoleID:2, PermissionID:8}, {RoleID:3, PermissionID:8}, {RoleID:5, PermissionID:9}, {RoleID:4, PermissionID:10},
+	{RoleID:5, PermissionID:11}, {RoleID:3, PermissionID:12}, {RoleID:5, PermissionID:12}, {RoleID:3, PermissionID:13},
+	{RoleID:3, PermissionID:14}, {RoleID:3, PermissionID:15}, {RoleID:3, PermissionID:16}, {RoleID:3, PermissionID:17}}
+	Db.Create(&rolePermissions)
+}
+
