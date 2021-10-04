@@ -10,7 +10,7 @@ type Transaction struct {
 	DonorID         uint        	`gorm:"primaryKey" json:"donor_id"`	
 	InvoiceID		string			`gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
 	PaymentMethodID uint           	`json:"payment_id" form:"payment_id"`
-	PaymentStatus	string			`gorm:"type:enum('pending', 'unresolved', 'resolved');default:'pending'" json:"payment_status"`
+	PaymentStatus	string			`gorm:"type:enum('pending', 'expired', 'cancelled', 'paid');default:'pending'" json:"payment_status"`
 	Total 			int 			`gorm:"type:int" json:"total"`
 	CreatedAt 		time.Time		`json:"-"`
 	UpdatedAt		time.Time		`json:"-"`
@@ -45,12 +45,17 @@ type TransactionAPI struct {
 // AddPaymentByUserId will try to find corresponding transaction in a database based on UserId and information provided in UserPaymentAPI struct.
 // This struct will be used as a placeholder of above query result. 
 type TransactionDetailAPI struct {
-	UserID				string 				`json:"user_id"`
-	InvoiceID			string				`json:"invoice_id"`
-	Status   			string  			`json:"status"`
-	ProductName 		string				`json:"product_name"`
-	ProductPrice		uint 				`json:"product_price"`
-	Quantity  			uint  				`json:"quantity"`
-	PaymentMethodID 	uint  				`json:"payment_method_id"`
-	Description   		string 				`json:"description"` 
+	DonorID				string 		`json:"-"`
+	InvoiceID			string		`json:"-"`
+	RecipientID  		uint  		`json:"recipient_id"`
+	PaymentStatus 		string		`json:"payment_status"`
+	ProductPackageID	uint		`json:"product_package_id"`
+	PackagePrice  		int         `json:"package_price"`
+	Quantity  			uint  		`json:"quantity"`
+	Total  				int 		`json:"total"`
+	PaymentMethodID 	uint  		`json:"-"`
+	PaymentMethodName 	string  	`json:"-"`
+	Description   		string 		`json:"-"` 
+	CreatedAt 			time.Time	`json:"-"`
+	UpdatedAt			time.Time	`json:"-"`
 }

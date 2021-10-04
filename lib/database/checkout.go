@@ -83,18 +83,18 @@ func GetCheckoutByUserId(userId int) (models.CheckoutGetResponse, error){
 	response.Recipients = recipientGifts
 	response.PackageList = packageLists
 
-	paymentOptions := []models.PaymentOption{}
+	paymentMethods := []models.PaymentMethod{}
 
-	if err := config.Db.Table("payment_methods").Find(&paymentOptions).Error; err != nil {
+	if err := config.Db.Table("payment_methods").Find(&paymentMethods).Error; err != nil {
 		return models.CheckoutGetResponse{}, err
 	}
 
-	response.PaymentOptions = paymentOptions
+	response.PaymentMethods = paymentMethods
 
 	return response, nil
 }
 
-func AddCheckoutByUserId(payment *models.PaymentOption, donorId int) (models.TransactionAPI, error) {
+func AddCheckoutByUserId(payment models.PaymentMethod, donorId int) (models.TransactionAPI, error) {
 	var productCart []models.GiftAPI
 	findCartRes := config.Db.Table("product_carts").
 	Select("product_carts.recipient_id, product_carts.product_package_id, product_carts.quantity").
@@ -171,7 +171,7 @@ func AddCheckoutByUserId(payment *models.PaymentOption, donorId int) (models.Tra
 			packagePriceMap[v.ProductPackageID] = v.Price
 		}
 
-		invoiceId := fmt.Sprintf("BERBAGI.DONOR.%v.%v", donorId, time.Now().String()[0:19])
+		invoiceId := fmt.Sprintf("BERBAGI.DONOR.%03v.%v", donorId, time.Now().String()[0:19])
 
 		transaction := models.Transaction{}
 		transaction.DonorID = uint(donorId)
