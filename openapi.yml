@@ -16,13 +16,14 @@ servers:
           - "prod"
           - "dev"
 paths:
-
 ### proficiencies
   /proficiencies:
     get:
       tags:
         - "Proficiency"
       summary: "Get list of profiencies data"
+      security:
+        - JWTAuth: []
       description: "Get all available proficiencies"
       responses:
         '200':
@@ -101,6 +102,8 @@ paths:
       tags:
         - "Proficiency"
       summary: "Create new proficiency data"
+      security:
+        - JWTAuth: []
       description: "Create new proficiency to database"
       requestBody:
         required: true
@@ -169,6 +172,8 @@ paths:
       tags:
         - "Proficiency"
       summary: "Update proficiency data"
+      security:
+        - JWTAuth: []
       description: "Update proficiency data in database"
       parameters:
         - $ref: '#/components/parameters/proficiencyId' 
@@ -243,6 +248,8 @@ paths:
       tags:
         - "Proficiency"
       summary: "Delete proficiency data"
+      security:
+        - JWTAuth: []
       description: "Delete proficiency data in database"
       parameters:
         - $ref: '#/components/parameters/proficiencyId' 
@@ -300,6 +307,8 @@ paths:
       tags:
         - "Certificate"
       summary: "Get certificate of volunteer completion."
+      security:
+        - JWTAuth: []
       description: "Get certificate of completion from volunteer activity"
       parameters: 
         - $ref: '#/components/parameters/completionId'
@@ -364,6 +373,8 @@ paths:
       tags:
         - "Volunteer"
       summary: "Get list of volunteers"
+      security:
+        - JWTAuth: []
       description: "Get all available volunteer"
       responses:
         '200':
@@ -448,6 +459,8 @@ paths:
       tags:
         - "Volunteer"
       summary: "Get volunteer profile"
+      security:
+        - JWTAuth: []
       description: "Get available volunteer profile"
       responses:
         '200':
@@ -550,6 +563,8 @@ paths:
       tags:
         - "Service"
       summary: "Get service on cart"
+      security:
+        - JWTAuth: []
       description: "Get available service on cart"
       responses:
         '200':
@@ -629,6 +644,8 @@ paths:
       tags:
         - "Service"
       summary: "Add service to cart"
+      security:
+        - JWTAuth: []
       description: "Add available service to cart"
       requestBody:
         required: true
@@ -728,6 +745,8 @@ paths:
       tags:
         - "Service"
       summary: "Update service on cart"
+      security:
+        - JWTAuth: []
       description: "Update available service on cart"
       requestBody:
         required: true
@@ -826,6 +845,8 @@ paths:
       tags:
         - "Service"
       summary: "Delete service on cart"
+      security:
+        - JWTAuth: []
       description: "Delete service on cart"
       responses:
         '200':
@@ -873,6 +894,8 @@ paths:
       tags:
         - "Service"
       summary: "Confirmation of service"
+      security:
+        - JWTAuth: []
       description: "Add confirmation of service"
       responses:
         '200':
@@ -964,6 +987,8 @@ paths:
       tags:
         - "Service"
       summary: "Confirmation of service"
+      security:
+        - JWTAuth: []
       description: "Get available service confirmation"
       parameters:
         - $ref: '#/components/parameters/verificationId'
@@ -1058,6 +1083,8 @@ paths:
       tags:
         - "Completion"
       summary: "Get completion of volunteer activity."
+      security:
+        - JWTAuth: []
       parameters: 
         - $ref: '#/components/parameters/verificationId'
       responses:
@@ -1123,6 +1150,8 @@ paths:
       tags:
         - "Completion"
       summary: "Update completion status of volunteer activity."
+      security:
+        - JWTAuth: []
       parameters: 
         - $ref: '#/components/parameters/verificationId'
         - $ref: '#/components/parameters/statusCompletion'
@@ -1410,5 +1439,13 @@ components:
           value: {
             "status" : "completed"  
           } 
+
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "use Token"
+
           
       
