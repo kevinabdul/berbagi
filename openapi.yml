@@ -16,7 +16,6 @@ servers:
           - "prod"
           - "dev"
 paths:
-
 ### proficiencies
   /proficiencies:
     get:
