@@ -1,0 +1,1506 @@
+{
+	"info": {
+		"_postman_id": "149a8e51-ea3b-4299-963d-c29903f36713",
+		"name": "presentasi-final",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8000/register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"lukman\",\n    \"email\": \"lukman@gmail.com\",\n    \"password\": \"lukman\",\n    \"nik\": \"12345678901232\",\n    \"latitude\": \"12312\",\n    \"longitude\": \"903765\",\n    \"city_id\": 1,\n    \"province_id\": 1,\n    \"role_id\": 1,\n    \"admin_key\": \"final\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"admin2\", pm.response.json().Token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"lukman@gmail.com\",\n    \"password\": \"lukman\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/proficiencies",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admin2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "health",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/proficiencies",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"proficiencies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/proficiencies",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admin2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/proficiencies",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"proficiencies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/proficiencies/2",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admin2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "public health",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/proficiencies/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"proficiencies",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/proficiencies/2",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admin2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/proficiencies/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"proficiencies",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register volunteer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"ahmad\",\n    \"email\": \"ahmad@gmail.com\",\n    \"password\": \"ahmad\",\n    \"nik\": \"1234567890123187\",\n    \"address_name\": \"flamboyan 3\",\n    \"latitude\": \"12312\",\n    \"longitude\": \"903765\",\n    \"city_id\": 1,\n    \"province_id\": 1,\n    \"proficiency_id\": 1,\n    \"role\": \"volunteer\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login volunteer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"volunteer1\", pm.response.json().Token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"ahmad@gmail.com\",\n    \"password\": \"ahmad\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all volunteer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admin2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/volunteers",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"volunteers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get volunteer profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/volunteers/profile",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"volunteers",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register foundation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"yayasan mundur terus\",\n    \"email\": \"mundur@gmail.com\",\n    \"password\": \"mundur\",\n    \"nik\": \"32345678901238\",\n    \"address_name\": \"flamboyan 4\",\n    \"latitude\": \"123123\",\n    \"longitude\": \"9037654\",\n    \"city_id\": 1,\n    \"province_id\": 1,\n    \"license_id\" : 12223,\n    \"role\": \"foundation\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add service to cart",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient_id",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "start_date",
+							"value": "2021-12-11",
+							"type": "text"
+						},
+						{
+							"key": "finish_date",
+							"value": "2021-12-30",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/services",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get service cart by volunteer id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/services",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit date or recipient on cart",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient_id",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "start_date",
+							"value": "2021-10-20",
+							"type": "text"
+						},
+						{
+							"key": "finish_date",
+							"value": "2021-12-31",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/services",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete service on cart",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/services",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "confirm service on cart",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/services/verification",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"services",
+						"verification"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get confirmation of service by confirmation id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/services/verification/16",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"services",
+						"verification",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get completion by verification id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/completion/17",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"completion",
+						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update completion status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{admin2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/completion/17?status=completed",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"completion",
+						"17"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "completed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "certificate of completion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{volunteer1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/certificates/17",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"certificates",
+						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "donor 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"ali\",\n    \"email\": \"ali@gmail.com\",\n    \"password\": \"ali\",\n    \"nik\": \"12345678901233\",\n    \"latitude\": \"12313\",\n    \"longitude\": \"903767\",\n    \"city_id\": 1,\n    \"province_id\": 1,\n    \"role\": \"donor\",\n    \"role_id\": 2,\n    \"admin_key\": \"final\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "children 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"umar\",\n    \"email\": \"umar@gmail.com\",\n    \"password\": \"umar\",\n    \"nik\": \"12345678901234\",\n    \"latitude\": \"12314\",\n    \"longitude\": \"903768\",\n    \"city_id\": 1,\n    \"province_id\": 1,\n    \"role\": \"children\",\n    \"role_id\": 3,\n    \"admin_key\": \"final\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "children 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"farid\",\n    \"email\": \"farid@gmail.com\",\n    \"password\": \"farid\",\n    \"nik\": \"12345678901235\",\n    \"latitude\": \"12315\",\n    \"longitude\": \"903769\",\n    \"city_id\": 1,\n    \"province_id\": 1,\n    \"role\": \"children\",\n    \"role_id\": 3,\n    \"admin_key\": \"final\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login donor 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"donor1\", pm.response.json().Token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"ali@gmail.com\",\n    \"password\": \"ali\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login children 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"children1\", pm.response.json().Token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"umar@gmail.com\",\n    \"password\": \"umar\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login children2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"children2\", pm.response.json().Token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"farid@gmail.com\",\n    \"password\": \"farid\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get product carts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/product-carts",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product-carts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update product-cart",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \"recipient_id\": 5,\n    \"product_package_id\": 3,\n    \"quantity\": 4\n    },\n    {\n        \"recipient_id\": 5,\n        \"product_package_id\": 1,\n        \"quantity\": 4 \n    },\n    {\n        \"recipient_id\": 6,\n        \"product_package_id\": 1,\n        \"quantity\": 4 \n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/product-cart",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product-cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get checkout by donor id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/checkout",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"checkout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post checkout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\" : 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/checkout",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"checkout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get payment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/payments",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add payments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"invoice_id\": \"BERBAGI.DONOR.004.2021-10-04 16:40:16\",\n        \"total\": 4028000,\n        \"payment_method_id\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/payments",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gift ",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{children1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/gift",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"gift"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/request/",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/request/:recipient_id",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request",
+						":recipient_id"
+					],
+					"variable": [
+						{
+							"key": "recipient_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post gift request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/request/gift",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request",
+						"gift"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post request donation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/request/donation",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request",
+						"donation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post request services",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/request/service",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request",
+						"service"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete request by request id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/request/:request_id",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"request",
+						":request_id"
+					],
+					"variable": [
+						{
+							"key": "request_id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list nearby location",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/nearby/request?type=gift&range=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"nearby",
+						"request"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "gift"
+						},
+						{
+							"key": null,
+							"value": "donation",
+							"disabled": true
+						},
+						{
+							"key": "range",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get nearby location recipient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/nearby/recipient?type=foundation&=children&range=99",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"nearby",
+						"recipient"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "foundation"
+						},
+						{
+							"key": null,
+							"value": "children"
+						},
+						{
+							"key": "range",
+							"value": "99"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post donation",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{children1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "request_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/donation",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"donation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update cart donation",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{children1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "request_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/cart/donation",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cart",
+						"donation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get cart donation",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{children1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/cart/donation",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cart",
+						"donation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete cart donation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "request_id",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/cart/donation",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cart",
+						"donation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkout donation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "recipient_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "request_id",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/donation/checkout",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"donation",
+						"checkout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update donation checkout by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{donor1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/donation/checkout/0",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"donation",
+						"checkout",
+						"0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
