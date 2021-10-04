@@ -21,11 +21,11 @@ type Address struct {
 }
 
 type NearestAddressIdResponseAPI struct {
-	ID       uint
-	Distance float64
+	ID       uint    `json:"address_id"`
+	Distance float64 `json:"distance"`
 }
 
 type LocationPointResponseAPI struct {
-	Latitude  float64
-	Longitude float64
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }

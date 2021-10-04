@@ -37,3 +37,12 @@ type LoginResponseAPI struct {
 	Message string `json:"message"`
 	Token   string	`json:"token"`
 }
+
+type UserProfile struct {
+	UserID uint
+	Name string
+	Role string
+	Address string
+	City string
+	Province string
+}

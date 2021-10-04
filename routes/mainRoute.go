@@ -35,6 +35,10 @@ func New() *echo.Echo {
 
 	CertificateRoutes()
 
+	DonationRoutes()
+
+	RequestRoute()
+
 	paymentRoutes()
 
 	giftRoutes()
