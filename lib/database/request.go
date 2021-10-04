@@ -16,7 +16,7 @@ import (
 
 func CreateGiftRequest(data models.NewGiftRequest) (models.NewGiftRequestResponseAPI, error) {
 	// check package exists & retrieve package name
-	var pack models.Package
+	var pack models.ProductPackage
 	if tx := config.Db.First(&pack, data.PackageID); tx.Error != nil {
 		return models.NewGiftRequestResponseAPI{}, tx.Error
 	} else if tx.RowsAffected == 0 {

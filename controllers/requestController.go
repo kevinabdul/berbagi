@@ -17,8 +17,8 @@ func RequestGift(c echo.Context) error {
 
 	if role != "children" {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
-			Message: "Your role can't request gift"})
+			Status:  "failed",
+			Message: "your role can't request gift"})
 	}
 
 	c.Bind(&newRequest)
@@ -27,18 +27,18 @@ func RequestGift(c echo.Context) error {
 	res, err := libdb.CreateGiftRequest(newRequest)
 	if err == errors.New("package doesn't exist") {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
+			Status:  "failed",
 			Message: "package doesn't exist"})
 	}
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
-			Message: "Can't create new request"})
+			Status:  "failed",
+			Message: "can't create new request"})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
 		Status:  "success",
-		Message: "Request has been submitted!",
+		Message: "request has been submitted!",
 		Data:    res})
 }
 
@@ -49,8 +49,8 @@ func RequestDonation(c echo.Context) error {
 
 	if role != "foundation" {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
-			Message: "Your role can't request donation"})
+			Status:  "failed",
+			Message: "your role can't request donation"})
 	}
 
 	c.Bind(&newRequest)
@@ -59,13 +59,13 @@ func RequestDonation(c echo.Context) error {
 	res, err := libdb.CreateDonationRequest(newRequest)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
-			Message: "Can't create new request"})
+			Status:  "failed",
+			Message: "can't create new request"})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
 		Status:  "success",
-		Message: "Request has been submitted!",
+		Message: "request has been submitted!",
 		Data:    res})
 }
 
@@ -76,8 +76,8 @@ func RequestService(c echo.Context) error {
 
 	if role != "foundation" {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
-			Message: "Your role can't request gift"})
+			Status:  "failed",
+			Message: "your role can't request gift"})
 	}
 
 	c.Bind(&newRequest)
@@ -86,18 +86,18 @@ func RequestService(c echo.Context) error {
 	res, err := libdb.CreateServiceRequest(newRequest)
 	if err == errors.New("service doesn't exist") {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
+			Status:  "failed",
 			Message: "service doesn't exist"})
 	}
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
-			Message: "Can't create new request"})
+			Status:  "failed",
+			Message: "can't create new request"})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
 		Status:  "success",
-		Message: "Request has been submitted!",
+		Message: "request has been submitted!",
 		Data:    res})
 }
 
@@ -122,7 +122,7 @@ func GetAllRequestListController(c echo.Context) error {
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "Failed",
+			Status:  "failed",
 			Message: "can't get request list"})
 	}
 

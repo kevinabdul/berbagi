@@ -52,14 +52,14 @@ func GetAllNearestRecipientsController(c echo.Context) error {
 	nearestAddressId, rowAffected, err := libdb.GetAllNearestAddressId(lat, lon, _range)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "Failed", 
-			Message: "Failed to get nearest recipients"})
+			Status: "failed", 
+			Message: "failed to get nearest recipients"})
 	}
 
 	if rowAffected == 0 {
 		return c.JSON(http.StatusOK, models.ResponseOK{
-			Status: "Success", 
-			Message: "No target nearby"})
+			Status: "success", 
+			Message: "no target nearby"})
 	}
 // ----------------------------------------------------------------------------
 	var res interface{}
@@ -103,7 +103,7 @@ func GetAllNearestRecipientsController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "Success", 
-		Message: "Success getting target nearby", 
+		Status: "success", 
+		Message: "success getting target nearby", 
 		Data: res})
 }

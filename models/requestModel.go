@@ -28,18 +28,18 @@ type NewGiftRequest struct {
 }
 
 type GiftRequestDetails struct {
-	RequestID uint           `json:"request_id"`
-	UserID    uint           `json:"user_id"`
-	AddressID uint           `json:"address_id"`
-	PackageID uint           `json:"package_id"`
-	Quantity  int            `json:"quantity"`
-	Request   Request        `gorm:"foreignKey:RequestID"`
-	User      User           `gorm:"foreignKey:UserID"`
-	Address   Address        `gorm:"foreignKey:AddressID"`
-	Package   Package        `gorm:"foreignKey:PackageID"`
-	CreatedAt time.Time      `json:"-"`
-	UpdatedAt time.Time      `json:"-"`
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	RequestID      uint           `json:"request_id"`
+	UserID         uint           `json:"user_id"`
+	AddressID      uint           `json:"address_id"`
+	PackageID      uint           `json:"package_id"`
+	Quantity       int            `json:"quantity"`
+	Request        Request        `gorm:"foreignKey:RequestID"`
+	User           User           `gorm:"foreignKey:UserID"`
+	Address        Address        `gorm:"foreignKey:AddressID"`
+	ProductPackage ProductPackage `gorm:"foreignKey:PackageID"`
+	CreatedAt      time.Time      `json:"-"`
+	UpdatedAt      time.Time      `json:"-"`
+	DeletedAt      gorm.DeletedAt `gorm:"index"`
 }
 
 type NewGiftRequestResponseAPI struct {
@@ -50,26 +50,14 @@ type NewGiftRequestResponseAPI struct {
 }
 
 type RequestProfile struct {
-	RequestId   uint
-	RecipientId uint
-	Role        string
-	AddressID   uint
-	Type 		string
-	Distance	float64
+	RequestId   uint    `json:"request_id"`
+	RecipientId uint    `json:"recipient_id"`
+	Role        string  `json:"role"`
+	AddressID   uint    `json:"address_id"`
+	Type        string  `json:"type"`
+	Distance    float64 `json:"distance"`
 	// PackageID   uint
 	// Quantity    int
-}
-
-type Package struct {
-	PackageID  uint
-	Name       string
-	ProductID  uint
-	Price      float64
-	Quantity   int
-	TotalPrice float64        // needed?
-	CreatedAt  time.Time      `json:"-"`
-	UpdatedAt  time.Time      `json:"-"`
-	DeletedAt  gorm.DeletedAt `gorm:"index"`
 }
 
 type NewDonationRequest struct {
