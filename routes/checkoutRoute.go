@@ -6,7 +6,7 @@ import (
 )
 
 func checkoutRoutes() {
-	e.GET("/checkout", handler.GetCheckoutByUserIdController, middlewares.AuthenticateUser)
+	e.GET("/checkout", handler.GetCheckoutByUserIdController, middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 
-	e.POST("/checkout", handler.AddCheckoutByUserIdController, middlewares.AuthenticateUser)
+	e.POST("/checkout", handler.AddCheckoutByUserIdController, middlewares.AuthenticateUser, middlewares.AuthorizeUser)
 }
