@@ -12,7 +12,7 @@ type Donation struct {
 	RecipientID   uint           `json:"recipient_id" form:"recipient_id"` // as prevention if donation can be given to Children
 	RequestID     uint           `json:"request_id" form:"request_id"`
 	Amount        float64        `json:"amount" form:"amount"`
-	PaymentStatus bool           `json:"payment_status" form:"payment_status"`
+	PaymentStatus string         `sql:"type:ENUM('true', 'false')" gorm:"default:false" json:"payment_status" form:"payment_status"`
 	CreatedAt     time.Time      `json:"-"`
 	UpdatedAt     time.Time      `json:"-"`
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
@@ -24,7 +24,7 @@ type DonationResponse struct {
 	RecipientID   uint      `json:"recipient_id" form:"recipient_id"`
 	RequestID     uint      `json:"request_id" form:"request_id"`
 	Amount        float64   `json:"amount" form:"amount"`
-	PaymentStatus bool      `json:"payment_status" form:"payment_status"`
+	PaymentStatus string    `json:"payment_status" form:"payment_status"`
 	MadeAt        time.Time `json:"made_at"`
 }
 
@@ -53,9 +53,9 @@ type DonationCart struct {
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-	Address   Address        `gorm:"foreignKey:AddressID" json:"-"`
-	User      User           `gorm:"foreignKey:RecipientID" json:"-"`
-	Request   Request        `gorm:"foreignKey:RequestID" json:"-"`
+	// Address     Address        `gorm:"foreignKey:AddressID" json:"-"`
+	User    User    `gorm:"foreignKey:RecipientID" json:"-"`
+	Request Request `gorm:"foreignKey:RequestID" json:"-"`
 }
 
 // For read, update, delete operation in donation_cart

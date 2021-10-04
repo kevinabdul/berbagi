@@ -60,6 +60,12 @@ func InitDb() {
 	Db.Migrator().DropTable("permissions")
 	Db.Migrator().DropTable("roles")
 	Db.Migrator().DropTable("role_permissions")
+	Db.Migrator().DropTable(&models.Request{})
+	Db.Migrator().DropTable(&models.GiftRequestDetails{})
+	Db.Migrator().DropTable(&models.Donation{})
+	Db.Migrator().DropTable(&models.DonationCart{})
+	Db.Migrator().DropTable(&models.DonationRequestDetails{})
+	Db.Migrator().DropTable(&models.ServiceRequestDetails{})
 	Db.AutoMigrate(&models.Province{})
 	Db.AutoMigrate(&models.City{})
 	Db.AutoMigrate(&models.Address{})
@@ -87,6 +93,12 @@ func InitDb() {
 	Db.AutoMigrate(&models.Role{})
 	Db.AutoMigrate(&models.Permission{})
 	Db.AutoMigrate(&models.RolePermission{})
+	Db.AutoMigrate(&models.Request{})
+	Db.AutoMigrate(&models.GiftRequestDetails{})
+	Db.AutoMigrate(&models.DonationRequestDetails{})
+	Db.AutoMigrate(&models.ServiceRequestDetails{})
+	Db.AutoMigrate(&models.Donation{})
+	Db.AutoMigrate(&models.DonationCart{})
 
 	insertProvince()
 
@@ -112,4 +124,3 @@ func InitDb() {
 
 	insertRolePermission()
 }
-

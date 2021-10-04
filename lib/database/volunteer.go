@@ -7,7 +7,7 @@ import (
 
 func ListVolunteers(volunteer *[]models.User) (interface{}, int, error) {
 	res := []models.VolunteerAPI{}
-	tx := config.Db.Where("users.role = ?", "volunteer").Model(volunteer).Find(&res)
+	tx := config.Db.Where("users.role_id = ?", 3).Model(volunteer).Find(&res)
 	if tx.Error != nil {
 		return nil, 0, tx.Error
 	}

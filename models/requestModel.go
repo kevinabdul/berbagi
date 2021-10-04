@@ -11,7 +11,7 @@ type Request struct {
 	RecipientID uint           `json:"user_id"`
 	AddressID   uint           `json:"address_id"`
 	Type        string         `json:"type"`
-	Resolved    bool           `json:"resolved"`
+	Resolved    string         `sql:"type:ENUM('true', 'false')" gorm:"default:false" json:"resolved"`
 	User        User           `gorm:"foreignKey:RecipientID"`
 	Address     Address        `gorm:"foreignKey:AddressID"`
 	CreatedAt   time.Time      `json:"-"`
@@ -99,18 +99,19 @@ type NewServiceRequest struct {
 }
 
 type ServiceRequestDetails struct {
-	RequestID  uint           `json:"request_id"`
-	UserID     uint           `json:"user_id"`
-	AddressID  uint           `json:"address_id"`
-	ServiceID  uint           `json:"service_id"`
-	StartDate  time.Time      `gorm:"not null" json:"start_date" form:"start_date"`
-	FinishDate time.Time      `gorm:"not null" json:"finish_date" form:"finish_date"`
-	Request    Request        `gorm:"foreignKey:RequestID"`
-	User       User           `gorm:"foreignKey:UserID"`
-	Address    Address        `gorm:"foreignKey:AddressID"`
-	CreatedAt  time.Time      `json:"-"`
-	UpdatedAt  time.Time      `json:"-"`
-	DeletedAt  gorm.DeletedAt `gorm:"index"`
+	RequestID     uint           `json:"request_id"`
+	UserID        uint           `json:"user_id"`
+	AddressID     uint           `json:"address_id"`
+	ProficiencyID uint           `json:"proficiency_id"`
+	StartDate     time.Time      `gorm:"not null" json:"start_date" form:"start_date"`
+	FinishDate    time.Time      `gorm:"not null" json:"finish_date" form:"finish_date"`
+	Request       Request        `gorm:"foreignKey:RequestID"`
+	User          User           `gorm:"foreignKey:UserID"`
+	Address       Address        `gorm:"foreignKey:AddressID"`
+	Proficiency   Proficiency    `gorm:"foreignKey:ProficiencyID"`
+	CreatedAt     time.Time      `json:"-"`
+	UpdatedAt     time.Time      `json:"-"`
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
 type NewServiceRequestResponseAPI struct {

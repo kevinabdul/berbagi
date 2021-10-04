@@ -140,7 +140,7 @@ func GetUserByAddressIdRole(addressId uint, role string) (models.UserProfile, in
 		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
 		res.UserID = user.ID
 		res.Name = user.Name
-		res.Role = user.Role
+		// res.Role = user.Role
 	} else {
 		return models.UserProfile{}, 0, errors.New("invalid role")
 	}

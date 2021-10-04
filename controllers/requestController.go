@@ -152,9 +152,7 @@ func GetTypeRequestListController(c echo.Context) error {
 
 	var res interface{}
 	var err error
-	if (reqType == "gift" && role == "children") || (
-		reqType == "donation" && role == "foundation") || (
-		reqType == "service" && role == "foundation") {
+	if (reqType == "gift" && role == "children") || (reqType == "donation" && role == "foundation") || (reqType == "service" && role == "foundation") {
 		// Get gift requests list
 		res, err = libdb.GetTypeRequests(uint(userId), reqType, resolved)
 	} else {
@@ -185,21 +183,21 @@ func DeleteRequestController(c echo.Context) error {
 			Status:  "failed",
 			Message: "can't find unresolved request"})
 	}
-	if uint(userId) != get.ID {
+
+	if uint(userId) != get.RecipientID {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
 			Status:  "failed",
 			Message: "can't delete other's request"})
 	}
-
 	if err := libdb.DeleteRequest(uint(requestId)); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to delete request",
 		})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success delete request",
 	})
 }
@@ -214,8 +212,8 @@ func GetRequestByRecipientIdController(c echo.Context) error {
 			Message: "can't find request list"})
 	}
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success getting request list",
-		Data: res,
+		Data:    res,
 	})
 }

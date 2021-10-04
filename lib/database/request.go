@@ -27,12 +27,12 @@ func CreateGiftRequest(data models.NewGiftRequest) (models.NewGiftRequestRespons
 	request.RecipientID = data.UserID
 	request.AddressID = data.AddressID
 	request.Type = "gift"
-	
+	request.Resolved = "false"
 
 	if tx := config.Db.Create(&request); tx.Error != nil {
 		return models.NewGiftRequestResponseAPI{}, tx.Error
 	}
-	
+
 	var details models.GiftRequestDetails
 	details.RequestID = request.ID
 	details.UserID = data.UserID
@@ -58,12 +58,11 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 	request.RecipientID = data.FoundationID
 	request.AddressID = data.AddressID
 	request.Type = "donation"
-	
 
 	if tx := config.Db.Create(&request); tx.Error != nil {
 		return models.NewDonationRequestResponseAPI{}, tx.Error
 	}
-	
+
 	var details models.DonationRequestDetails
 	details.RequestID = request.ID
 	details.UserID = data.FoundationID
@@ -86,8 +85,8 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 
 func CreateServiceRequest(data models.NewServiceRequest) (models.NewServiceRequestResponseAPI, error) {
 	// check package exists & retrieve package name
-	var serv models.Service
-	if tx := config.Db.First(&serv, data.FoundationID); tx.Error != nil {
+	var serv models.Proficiency
+	if tx := config.Db.First(&serv, data.ServiceID); tx.Error != nil {
 		return models.NewServiceRequestResponseAPI{}, tx.Error
 	} else if tx.RowsAffected == 0 {
 		return models.NewServiceRequestResponseAPI{}, errors.New("service doesn't exist")
@@ -97,18 +96,17 @@ func CreateServiceRequest(data models.NewServiceRequest) (models.NewServiceReque
 	request.RecipientID = data.FoundationID
 	request.AddressID = data.AddressID
 	request.Type = "service"
-	
 
 	if tx := config.Db.Create(&request); tx.Error != nil {
 		return models.NewServiceRequestResponseAPI{}, tx.Error
 	}
-	
+
 	timeConfig := "2006-01-02"
 	var details models.ServiceRequestDetails
 	details.RequestID = request.ID
 	details.UserID = data.FoundationID
 	details.AddressID = data.AddressID
-	details.ServiceID = data.ServiceID
+	details.ProficiencyID = data.ServiceID
 	details.StartDate, _ = time.Parse(timeConfig, data.StartDate)
 	details.FinishDate, _ = time.Parse(timeConfig, data.FinishDate)
 
@@ -172,9 +170,9 @@ func GetTypeRequests(userId uint, reqType, resolved string) (interface{}, error)
 		}
 
 		tx := config.Db.Joins(
-				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`, 
+			fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
 				requestTable, requestTable, joinTable)).Where(
-				fmt.Sprintf("%s.recipient_id = %d AND %s.resolved = %s", 
+			fmt.Sprintf("%s.recipient_id = %d AND %s.resolved = %s",
 				requestTable, userId, requestTable, resolve)).Find(&request)
 
 		if tx.Error != nil {
@@ -182,9 +180,9 @@ func GetTypeRequests(userId uint, reqType, resolved string) (interface{}, error)
 		}
 	} else {
 		tx := config.Db.Joins(
-				fmt.Sprintf(`JOIN %s ON %s.id = gift_request_detailss.request_id`, 
+			fmt.Sprintf(`JOIN %s ON %s.id = gift_request_detailss.request_id`,
 				joinTable, joinTable)).Where(
-				fmt.Sprintf("%ss.recipient_id = %d", 
+			fmt.Sprintf("%ss.recipient_id = %d",
 				joinTable, userId)).Find(&request)
 
 		if tx.Error != nil {
@@ -196,7 +194,7 @@ func GetTypeRequests(userId uint, reqType, resolved string) (interface{}, error)
 }
 
 func DeleteRequest(requestId uint) error {
-	tx := config.Db.Where("id = ?", requestId).Delete(&models.DonationCart{})
+	tx := config.Db.Where("request_id = ?", requestId).Delete(&models.DonationCart{})
 
 	if tx.Error != nil {
 		return tx.Error
@@ -207,15 +205,17 @@ func DeleteRequest(requestId uint) error {
 func GetRequestByIdResolve(requestId uint, resolved string) (models.Request, error) {
 	var request models.Request
 
+	request.ID = requestId
+
 	var tx *gorm.DB
 	if resolved == "no" {
-		tx = config.Db.Where("id = ? AND resolved = false", requestId).Find(&request)
+		tx = config.Db.Where("resolved = 'false'").Find(&request)
 	} else if resolved == "yes" {
-		tx = config.Db.Where("id = ? AND resolved = true", requestId).Find(&request)
+		tx = config.Db.Where("resolved = 'true'").Find(&request)
 	} else {
-		tx = config.Db.Where("id = ?", requestId).Find(&request)
+		tx = config.Db.Table("requests").Find(&request)
 	}
-	
+
 	if tx.Error != nil {
 		return models.Request{}, tx.Error
 	}
@@ -233,7 +233,7 @@ func GetRequestByRecipientIdResolve(recipientId uint, resolved string) ([]models
 	} else {
 		tx = config.Db.Where("recipient_id = ?", recipientId).Find(&request)
 	}
-	
+
 	if tx.Error != nil {
 		return []models.Request{}, tx.Error
 	}

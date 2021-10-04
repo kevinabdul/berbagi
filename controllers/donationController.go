@@ -21,18 +21,18 @@ func MakeDonationController(c echo.Context) error {
 
 	c.Bind(&newDonation)
 	newDonation.DonorID = uint(userId)
-	
+
 	res, err := libdb.MakeDonationToCart(newDonation)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to make donation",
 		})
 	}
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success add donation to cart",
-		Data: res,
+		Data:    res,
 	})
 }
 
@@ -43,15 +43,15 @@ func GetDonationListInCartController(c echo.Context) error {
 	res, err := libdb.ListDonationInCart(uint(userId))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to get cart",
 		})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success get donations in cart",
-		Data: res,
+		Data:    res,
 	})
 }
 
@@ -60,29 +60,29 @@ func GetDonationListInCartController(c echo.Context) error {
 func UpdateDonationInCartController(c echo.Context) error {
 	var update models.CartItemInputData
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
-	
+
 	c.Bind(&update)
 	update.DonorID = uint(userId)
 
 	if _, err := libdb.GetDonationInCart(update); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to find item in cart",
 		})
 	}
-	
+
 	if err := libdb.UpdateDonationInCart(update); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to update cart",
 		})
 	}
 
 	res, _ := libdb.GetDonationInCart(update)
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success add donation to cart",
-		Data: res,
+		Data:    res,
 	})
 }
 
@@ -90,30 +90,29 @@ func UpdateDonationInCartController(c echo.Context) error {
 func DeleteDonationFromCartController(c echo.Context) error {
 	var update models.CartItemInputData
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
-	
+
 	c.Bind(&update)
 	update.DonorID = uint(userId)
 
 	if _, err := libdb.GetDonationInCart(update); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to find item in cart",
 		})
 	}
-	
+
 	if err := libdb.DeleteDonationFromCart(update); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to delete donation from cart",
 		})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success delete donation from cart",
 	})
 }
-
 
 // Checkout donation from cart to unresolved donation
 // May add countdown timer
@@ -128,15 +127,15 @@ func CheckoutDonationFromCartController(c echo.Context) error {
 	res, err := libdb.CheckoutDonation(donation)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to checkout donation",
 		})
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success checkout donation, proceed to payment",
-		Data: res,
+		Data:    res,
 	})
 }
 
@@ -145,35 +144,35 @@ func CheckoutDonationFromCartController(c echo.Context) error {
 // Input : donation_id
 func PaidDonationController(c echo.Context) error {
 	donationId, _ := strconv.ParseUint(c.Param("donation_id"), 0, 0)
-	
+
 	// Find unresolved donation
 	tx, err := libdb.GetSpecificDonation(uint(donationId))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: fmt.Sprintf("failed to find unresolved donation with id %d", donationId),
 		})
 	}
-	if !tx.PaymentStatus {
+	if tx.PaymentStatus == "true" {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: fmt.Sprintf("donation with id %d is resolved", donationId),
 		})
 	}
 
-	paid := true // Mock payment process
-	
+	paid := "true" // Mock payment process
+
 	res, err := libdb.ChangePaymentStatusToPaid(uint(donationId), paid)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to process payment, fund will be returned",
 		})
 	}
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success make donation",
-		Data: res,
+		Data:    res,
 	})
 }
 
@@ -185,13 +184,13 @@ func GetDonationsListController(c echo.Context) error {
 	res, err := libdb.GetBulkDonations(uint(userId), resolved)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status: "failed",
+			Status:  "failed",
 			Message: "failed to get donations list",
 		})
 	}
 	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status: "success",
+		Status:  "success",
 		Message: "success get donations list",
-		Data: res,
+		Data:    res,
 	})
 }

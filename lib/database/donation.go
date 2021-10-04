@@ -135,7 +135,7 @@ func CheckoutDonation(data models.DonationCheckout) (models.DonationResponse, er
 		RecipientID:   donation.RecipientID,
 		RequestID:     donation.RequestID,
 		Amount:        donation.Amount,
-		PaymentStatus: false,
+		PaymentStatus: "false",
 	}
 	tx := config.Db.Create(&checkout)
 	if tx.Error != nil {
@@ -150,8 +150,8 @@ func CheckoutDonation(data models.DonationCheckout) (models.DonationResponse, er
 
 func GetSpecificDonation(donationId uint) (models.DonationResponse, error) {
 	var donation models.Donation
-
-	tx := config.Db.Where("donation_id = ?", donationId).Find(&donation)
+	donation.DonationID = donationId
+	tx := config.Db.Find(&donation)
 	if tx.Error != nil {
 		return models.DonationResponse{}, tx.Error
 	}
@@ -191,11 +191,11 @@ func GetBulkDonations(userId uint, resolved string) ([]models.Donation, error) {
 	return donation, nil
 }
 
-func ChangePaymentStatusToPaid(donationId uint, paid bool) (models.DonationResponse, error) {
+func ChangePaymentStatusToPaid(donationId uint, paid string) (models.DonationResponse, error) {
 	var donation models.Donation
 
-	tx := config.Db.Model(&donation).Where(
-		`donation_id = ?`, donationId).Update("payment_status", paid)
+	donation.DonationID = donationId
+	tx := config.Db.Find(&donation).Update("payment_status", paid)
 	if tx.Error != nil {
 		return models.DonationResponse{}, tx.Error
 	}
