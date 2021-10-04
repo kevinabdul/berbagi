@@ -37,5 +37,7 @@ func New() *echo.Echo {
 
 	paymentRoutes()
 
+	giftRoutes()
+
 	return e
 }

@@ -6,6 +6,9 @@ import (
 	"strings"
 	"strconv"
 	"os"
+	"berbagi/config"
+	"berbagi/models"
+	"berbagi/utils/response"
 
 	"github.com/labstack/echo/v4"
 	"github.com/golang-jwt/jwt"
@@ -75,4 +78,33 @@ func checkToken(tokenString string) (bool, interface{}, interface{}, error) {
 	}
 
 	return false, -1, "", err
+}
+
+func AuthorizeUser(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		role := c.Request().Header.Get("role")
+		method := c.Request().Header.Get("method")
+		path := c.Request().Header.Get("path")
+
+		if role == "admin" {
+			return next(c)
+		}
+
+		rolePermission := models.PermissionAPI{}
+		res := config.Db.Table("role_permissions").Select("roles.name as role_name, actions.name as action_name, resources.path as path").
+		Joins("left join permissions on role_permissions.permission_id = permissions.id").
+		Joins("left join resources on resources.id = permissions.resource_id").
+		Joins("left join actions on actions.id = permissions.action_id").Joins("left join roles on roles.id = role_permissions.role_id").
+		Where(`roles.name = ? and actions.name = ? and resources.path = ?`, role, method, path).Find(&rolePermission)
+
+		if res.Error != nil {
+			return c.JSON(http.StatusBadRequest,response.Create("failed", res.Error.Error(), nil))
+		}
+
+		if res.RowsAffected == 0 {
+			return c.JSON(http.StatusUnauthorized, response.Create("failed", "You dont have permission to access this resource", nil))
+		}
+		
+		return next(c)
+		}
 }
