@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,7 +11,6 @@ func ExtractPathAndMethod(next echo.HandlerFunc) echo.HandlerFunc {
 
 		c.Request().Header.Set("path", path)
 		c.Request().Header.Set("method", method)
-		fmt.Println(method, path)
 
 		return next(c)
 		}

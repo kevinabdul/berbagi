@@ -14,7 +14,7 @@ type RegistrationAPI struct {
 	ProvinceID   	uint   `json:"province_id"`
 	ProficiencyID	uint   `json:"proficiency_id"`
 	LicenseID    	uint   `json:"license_id"`
-	Role         	string `json:"role"`
+	RoleID         	uint `json:"role_id"`
 	AdminKey 		string `json:"admin_key"`
 }
 

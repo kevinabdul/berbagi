@@ -29,6 +29,8 @@ func New() *echo.Echo {
 
 	LocationsRoute()
 
+	checkoutRoutes()
+
 	CompletionRoutes()
 
 	CertificateRoutes()
@@ -36,5 +38,10 @@ func New() *echo.Echo {
 	DonationRoutes()
 
 	RequestRoute()
+
+	paymentRoutes()
+
+	giftRoutes()
+
 	return e
 }

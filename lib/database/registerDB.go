@@ -43,7 +43,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 		newUser.NIK = incomingData.NIK
 		newUser.Email = incomingData.Email
 		newUser.Password = hashedPassword
-		newUser.Role = incomingData.Role
+		newUser.RoleID = incomingData.RoleID
 
 		if err := tx.Model(models.User{}).Create(&newUser).Error; err != nil {
 			return err
@@ -51,7 +51,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 
 		// Yes, there is a lot of unnecessary duplication of code but i prefer clarity over brevity
 		// when doing a non trivial project
-		if incomingData.Role == "donor" {
+		if incomingData.RoleID == 2 {
 			newUserRole := models.Donor{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.BirthDate = incomingData.BirthDate
@@ -62,7 +62,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			if res.Error != nil {
 				return res.Error
 			}
-		} else if incomingData.Role == "admin" {
+		} else if incomingData.RoleID == 1 {
 			// If we want to add credential check when someone register themselves as admin,
 			// we could do that here, before adding the new user to admin table
 			// e.g: we can define some sort of admin key that must be included in request body
@@ -84,7 +84,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			if res.Error != nil {
 				return res.Error
 			}
-		} else if incomingData.Role == "children" {
+		} else if incomingData.RoleID == 4 {
 			newUserRole := models.Children{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.BirthDate = incomingData.BirthDate
@@ -95,11 +95,11 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			if res.Error != nil {
 				return res.Error
 			}
-		} else if incomingData.Role == "volunteer" {
+		} else if incomingData.RoleID == 3 {
 			newUserRole := models.Volunteer{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.BirthDate = incomingData.BirthDate
-			//newUserRole.ProficiencyID = incomingData.ProficiencyID
+			newUserRole.ProficiencyID = incomingData.ProficiencyID
 			newUserRole.AddressID = newAddress.ID
 
 			// addProficiency := tx.Table("proficiencies").Create(&models.Proficiency{ID : incomingData.ProficiencyID})
@@ -113,7 +113,7 @@ func RegisterUser(incomingData models.RegistrationAPI) (models.RegistrationRespo
 			if res.Error != nil {
 				return res.Error
 			}
-		} else if incomingData.Role == "foundation" {
+		} else if incomingData.RoleID == 5 {
 			newUserRole := models.Foundation{}
 			newUserRole.UserID = newUser.ID
 			newUserRole.LicenseID = incomingData.LicenseID
