@@ -29,6 +29,7 @@ type TransactionDetail struct {
 	UpdatedAt			time.Time
 	Transaction   		Transaction 	`gorm:"foreignKey:InvoiceID;references:InvoiceID"`
 	ProductPackage   	ProductPackage  `gorm:"foreignKey:ProductPackageID"`
+	Children 			Children 		`gorm:"foreignKey:RecipientID"`
 }
 
 // Response struct used in case of a succesful checkout in post checkout endpoint

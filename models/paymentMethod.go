@@ -12,7 +12,7 @@ type PaymentMethod struct {
 	Description string 			`gorm:"type:varchar(1000)" json:"description"`
 	CreatedAt 	time.Time      `json:"-"`
 	UpdatedAt 	time.Time      `json:"-"`
-	DeletedAt 	gorm.DeletedAt `gorm:"index"`
+	DeletedAt 	gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 // Response struct to be returned for all transaction with pending payments status from a given user
