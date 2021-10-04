@@ -4,7 +4,10 @@ import (
 	"berbagi/config"
 	"berbagi/models"
 	"database/sql"
+	"errors"
 	"fmt"
+
+	"gorm.io/gorm"
 )
 
 func GetAddressLatLonByUserId(id uint, role string) (models.LocationPointResponseAPI, error) {
@@ -33,19 +36,6 @@ func GetAddressLatLonByUserId(id uint, role string) (models.LocationPointRespons
 func GetAllNearestAddressId(lat, lon, _range float64) ([]models.NearestAddressIdResponseAPI, int, error) {
 	var address []models.NearestAddressIdResponseAPI
 
-	// query := `SELECT id, distance
-	// 		  From (
-	// 			Select
-	// 			( 6371 * acos( cos( radians( @lat ) )
-	// 		  	* cos( radians( latitude ) )
-	// 		  	* cos( radians( longitude ) - radians( @lon ) )
-	// 			+ sin( radians( @lat ) )
-	// 		  	* sin(radians( latitude ) ) ) ) distance
-	// 	  	  	From addresses )
-	// 		  Where distance < @range
-	// 		  ORDER BY distance`
-
-	// BACKUP QUERY
 	query := `SELECT id, (
 		6371 * acos( cos( radians( @lat ) )
 		* cos( radians( latitude ) )
@@ -63,11 +53,6 @@ func GetAllNearestAddressId(lat, lon, _range float64) ([]models.NearestAddressId
 		sql.Named("lon", lon),
 		sql.Named("range", _range)).Scan(&address) // All saved or per row?
 
-	// tx := config.Db.Where(`
-	// 				(latitude BETWEEN ? AND ?)
-	// 				AND
-	// 				(longitude BETWEEN ? AND ?)`,lat1, lat2, lon1, lon2).Find(&address)
-
 	if tx.Error != nil {
 		return nil, 0, tx.Error
 	}
@@ -79,39 +64,94 @@ func GetAllNearestAddressId(lat, lon, _range float64) ([]models.NearestAddressId
 	return nil, 0, nil
 }
 
-// SELECT id, distance
-// From (Select ( 6371 * acos( cos( radians(37) )
-//           * cos( radians( latitude ) )
-//           * cos( radians( Longitude ) - radians(-122) ) +
-//              sin( radians(37) )
-//           * sin(radians(latitude)) ) ) distance
-//       From DriverLocationHistory)z
-// Where distance < 5
-// ORDER BY distance
-// type user interface {
-// 	model() interface{}
-// }
+func GetRequestByAddressIdResolve(addressId uint, resolved string) ([]models.Request, int, error) {
+	var request []models.Request
 
-// type roleDonor string
-// func (r *roleDonor) model() interface{} {return models.Donor{}}
+	var tx *gorm.DB
+	if resolved == "no" {
+		tx = config.Db.Where("address_id = ? AND resolved = false", addressId).Find(&request)
+	} else if resolved == "yes" {
+		tx = config.Db.Where("address_id = ? AND resolved = true", addressId).Find(&request)
+	} else {
+		tx = config.Db.Where("address_id = ?", addressId).Find(&request)
+	}
 
-// type roleVolunteer string
-// func (r *roleVolunteer) model() interface{} {return models.Volunteer{}}
+	if tx.Error != nil {
+		return nil, 0, tx.Error
+	}
 
-// func GetAddressIdByUserIdRole(userId int, role string) (int, error) {
-// 	var r user
-// 	if role == "donor" {
-// 		r = new(roleDonor)
-// 	} else if role == "volunteer" {
-// 		r = new(roleVolunteer)
-// 	}
+	if tx.RowsAffected > 0 {
+		return request, int(tx.RowsAffected), nil
+	}
 
-// 	model := r.model()
+	return nil, 0, nil
+}
 
-// 	tx := config.Db.First(&model, userId)
-// 	if tx.Error != nil {
-// 		return nil, tx.Error
-// 	}
+func GetUserByAddressIdRole(addressId uint, role string) (models.UserProfile, int, error) {
+	var res models.UserProfile
 
-// 	addressId := model.AddressID
-// }
+	var tx *gorm.DB
+	if role == "admin" {
+		user := models.Admin{}
+		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
+		res.UserID = user.UserID
+		res.Role = "admin"
+		res.Address = user.Address.Name
+		res.City = user.Address.City.Name
+		res.Province = user.Address.Province.Name
+	} else if role == "donor" {
+		user := models.Donor{}
+		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
+		res.UserID = user.UserID
+		res.Name = user.User.Name
+		res.Role = "donor"
+		res.Address = user.Address.Name
+		res.City = user.Address.City.Name
+		res.Province = user.Address.Province.Name
+	} else if role == "volunteer" {
+		user := models.Volunteer{}
+		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
+		res.UserID = user.UserID
+		res.Name = user.User.Name
+		res.Role = "volunteer"
+		res.Address = user.Address.Name
+		res.City = user.Address.City.Name
+		res.Province = user.Address.Province.Name
+	} else if role == "children" {
+		user := models.Children{}
+		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
+		res.UserID = user.UserID
+		res.Name = user.User.Name
+		res.Role = "children"
+		res.Address = user.Address.Name
+		res.City = user.Address.City.Name
+		res.Province = user.Address.Province.Name
+	} else if role == "foundation" {
+		user := models.Foundation{}
+		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
+		res.UserID = user.UserID
+		res.Name = user.User.Name
+		res.Role = "foundation"
+		res.Address = user.Address.Name
+		res.City = user.Address.City.Name
+		res.Province = user.Address.Province.Name
+	} else if role == "" {
+		user := models.User{}
+		tx = config.Db.Where("address_id = ?", addressId).Find(&user)
+		res.UserID = user.ID
+		res.Name = user.Name
+		res.Role = user.Role
+	} else {
+		return models.UserProfile{}, 0, errors.New("invalid role")
+	}
+
+	if tx.Error != nil {
+		return models.UserProfile{}, 0, tx.Error
+	}
+
+	if tx.RowsAffected > 0 {
+		return res, int(tx.RowsAffected), nil
+	}
+
+	return models.UserProfile{}, 0, nil
+}
