@@ -3,7 +3,9 @@ package controllers
 import (
 	libdb "berbagi/lib/database"
 	"berbagi/models"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -21,7 +23,25 @@ func RequestGift(c echo.Context) error {
 			Message: "your role can't request gift"})
 	}
 
-	c.Bind(&newRequest)
+	if c.Request().Header.Get("Content-Type") == "application/json" {
+		json_map := make(map[string]interface{})
+		err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't parse new request"})
+		}
+
+		addr, _ := strconv.ParseUint(json_map["address_id"].(string), 0, 0)
+		pkg, _ := strconv.ParseUint(json_map["package_id"].(string), 0, 0)
+		qty, _ := strconv.ParseInt(json_map["quantity"].(string), 0, 0)
+		newRequest.AddressID = uint(addr)
+		newRequest.PackageID = uint(pkg)
+		newRequest.Quantity = int(qty)
+	} else {
+		c.Bind(&newRequest)
+	}
+
 	newRequest.UserID = uint(userId)
 
 	res, err := libdb.CreateGiftRequest(newRequest)
@@ -53,7 +73,25 @@ func RequestDonation(c echo.Context) error {
 			Message: "your role can't request donation"})
 	}
 
-	c.Bind(&newRequest)
+	if c.Request().Header.Get("Content-Type") == "application/json" {
+		json_map := make(map[string]interface{})
+		err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't parse new request"})
+		}
+
+		addr, _ := strconv.ParseUint(json_map["address_id"].(string), 0, 0)
+		amt, _ := strconv.ParseFloat(json_map["amount"].(string), 64)
+		pps, _ := json_map["purpose"].(string)
+		newRequest.AddressID = uint(addr)
+		newRequest.Amount = amt
+		newRequest.Purpose = pps
+	} else {
+		c.Bind(&newRequest)
+	}
+
 	newRequest.FoundationID = uint(userId)
 
 	res, err := libdb.CreateDonationRequest(newRequest)
@@ -80,7 +118,27 @@ func RequestService(c echo.Context) error {
 			Message: "your role can't request gift"})
 	}
 
-	c.Bind(&newRequest)
+	if c.Request().Header.Get("Content-Type") == "application/json" {
+		json_map := make(map[string]interface{})
+		err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't parse new request"})
+		}
+
+		addr, _ := strconv.ParseUint(json_map["address_id"].(string), 0, 0)
+		srv, _ := strconv.ParseUint(json_map["service_id"].(string), 0, 0)
+		start, _ := json_map["start_date"].(string)
+		finish, _ := json_map["finish_date"].(string)
+		newRequest.AddressID = uint(addr)
+		newRequest.ServiceID = uint(srv)
+		newRequest.StartDate = start
+		newRequest.FinishDate = finish
+	} else {
+		c.Bind(&newRequest)
+	}
+
 	newRequest.FoundationID = uint(userId)
 
 	res, err := libdb.CreateServiceRequest(newRequest)
@@ -175,7 +233,8 @@ func GetTypeRequestListController(c echo.Context) error {
 
 func DeleteRequestController(c echo.Context) error {
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
-	requestId, _ := strconv.ParseUint(c.Param("request_id"), 0, 0)
+	requestId, _ := strconv.ParseUint(c.QueryParams().Get("request_id"), 0, 0)
+	// requestId, _ := strconv.ParseUint(c.Param("request_id"), 0, 0)
 
 	get, err := libdb.GetRequestByIdResolve(uint(requestId), "no")
 	if err != nil {
@@ -189,6 +248,7 @@ func DeleteRequestController(c echo.Context) error {
 			Status:  "failed",
 			Message: "can't delete other's request"})
 	}
+
 	if err := libdb.DeleteRequest(uint(requestId)); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
 			Status:  "failed",

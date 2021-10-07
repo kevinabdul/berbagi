@@ -67,7 +67,7 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 	details.RequestID = request.ID
 	details.UserID = data.FoundationID
 	details.AddressID = data.AddressID
-	details.Nominal = data.Nominal
+	details.Amount = data.Amount
 	details.Purpose = data.Purpose
 
 	if tx := config.Db.Create(&details); tx.Error != nil {
@@ -77,7 +77,7 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 	var res models.NewDonationRequestResponseAPI
 	res.RequestID = request.ID
 	res.UserID = data.FoundationID
-	res.Nominal = data.Nominal
+	res.Amount = data.Amount
 	res.Purpose = data.Purpose
 
 	return res, nil
@@ -194,8 +194,7 @@ func GetTypeRequests(userId uint, reqType, resolved string) (interface{}, error)
 }
 
 func DeleteRequest(requestId uint) error {
-	tx := config.Db.Where("request_id = ?", requestId).Delete(&models.DonationCart{})
-
+	tx := config.Db.Where("id = ?", requestId).Delete(&models.Request{})
 	if tx.Error != nil {
 		return tx.Error
 	}

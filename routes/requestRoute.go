@@ -14,5 +14,6 @@ func RequestRoute() {
 	e.POST("/request/donation", handler.RequestDonation, middlewares.AuthenticateUser)
 	e.POST("/request/service", handler.RequestService, middlewares.AuthenticateUser)
 	
-	e.DELETE("/request/:request_id", handler.DeleteRequestController, middlewares.AuthenticateUser)
+	e.DELETE("/request", handler.DeleteRequestController, middlewares.AuthenticateUser)
+	// e.DELETE("/request/:request_id", handler.DeleteRequestController, middlewares.AuthenticateUser)
 }
