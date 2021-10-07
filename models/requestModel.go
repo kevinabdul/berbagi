@@ -7,16 +7,16 @@ import (
 )
 
 type Request struct {
-	ID          uint           `gorm:"primaryKey"`
-	RecipientID uint           `json:"user_id"`
-	AddressID   uint           `json:"address_id"`
-	Type        string         `json:"type"`
-	Resolved    string         `sql:"type:ENUM('true', 'false')" gorm:"default:false" json:"resolved"`
-	User        User           `gorm:"foreignKey:RecipientID" json:"-"`
-	Address     Address        `gorm:"foreignKey:AddressID" json:"-"`
-	CreatedAt   time.Time      `json:"-"`
-	UpdatedAt   time.Time      `json:"-"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
+	ID        uint           `gorm:"primaryKey"`
+	UserID    uint           `json:"user_id"`
+	AddressID uint           `json:"address_id"`
+	Type      string         `json:"type"`
+	Resolved  string         `sql:"type:ENUM('true', 'false')" gorm:"default:false" json:"resolved"`
+	User      User           `gorm:"foreignKey:UserID" json:"-"`
+	Address   Address        `gorm:"foreignKey:AddressID" json:"-"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 type NewGiftRequest struct {
@@ -64,7 +64,7 @@ type NewDonationRequest struct {
 	RequestID    uint    `json:"request_id" form:"request_id"`
 	FoundationID uint    `json:"user_id" form:"user_id"`
 	AddressID    uint    `json:"address_id" form:"address_id"`
-	Amount      float64 `json:"amount" form:"amount"`
+	Amount       float64 `json:"amount" form:"amount"`
 	Purpose      string  `json:"purpose" form:"purpose"`
 }
 
@@ -72,7 +72,7 @@ type DonationRequestDetails struct {
 	RequestID uint           `json:"request_id"`
 	UserID    uint           `json:"user_id"`
 	AddressID uint           `json:"address_id"`
-	Amount   float64        `json:"amount" form:"amount"`
+	Amount    float64        `json:"amount" form:"amount"`
 	Purpose   string         `json:"purpose" form:"purpose"`
 	Request   Request        `gorm:"foreignKey:RequestID" json:"-"`
 	User      User           `gorm:"foreignKey:UserID" json:"-"`
@@ -85,7 +85,7 @@ type DonationRequestDetails struct {
 type NewDonationRequestResponseAPI struct {
 	RequestID uint    `json:"request_id"`
 	UserID    uint    `json:"user_id"`
-	Amount   float64 `json:"amount" form:"amount"`
+	Amount    float64 `json:"amount" form:"amount"`
 	Purpose   string  `json:"purpose" form:"purpose"`
 }
 

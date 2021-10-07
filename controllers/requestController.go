@@ -4,9 +4,8 @@ import (
 	libdb "berbagi/lib/database"
 	"berbagi/models"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -45,15 +44,16 @@ func RequestGift(c echo.Context) error {
 	newRequest.UserID = uint(userId)
 
 	res, err := libdb.CreateGiftRequest(newRequest)
-	if err == errors.New("package doesn't exist") {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: "package doesn't exist"})
-	}
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: "can't create new request"})
+		if err.Error() == "package doesn't exist" {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "package doesn't exist"})
+		} else {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't create new request"})
+		}
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
@@ -115,7 +115,7 @@ func RequestService(c echo.Context) error {
 	if role != "foundation" {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
 			Status:  "failed",
-			Message: "your role can't request gift"})
+			Message: "your role can't request service"})
 	}
 
 	if c.Request().Header.Get("Content-Type") == "application/json" {
@@ -142,15 +142,16 @@ func RequestService(c echo.Context) error {
 	newRequest.FoundationID = uint(userId)
 
 	res, err := libdb.CreateServiceRequest(newRequest)
-	if err == errors.New("service doesn't exist") {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: "service doesn't exist"})
-	}
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: "can't create new request"})
+		if err.Error() == "service doesn't exist" {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "service doesn't exist"})
+		} else {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't create new request"})
+		}
 	}
 
 	return c.JSON(http.StatusOK, models.ResponseOK{
@@ -190,10 +191,25 @@ func GetAllRequestListController(c echo.Context) error {
 		Data:    res})
 }
 
+func IdTypeRedirector(c echo.Context) error {
+	digitCheck := regexp.MustCompile(`^[0-9]+$`)
+	field := c.Param("field")
+
+	if field == "gift" || field == "donation" || field == "service" {
+		return GetTypeRequestListController(c)
+	} else if digitCheck.MatchString(field) {
+		return GetRequestByRecipientIdController(c)
+	} else {
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "invalid parameter"})
+	}
+}
+
 func GetTypeRequestListController(c echo.Context) error {
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
 	role := c.Request().Header.Get("role")
-	reqType := c.Param("type")
+	reqType := c.Param("field")
 	resolved := c.QueryParams().Get("resolved")
 
 	if reqType != "gift" && reqType != "donation" && reqType != "service" {
@@ -233,8 +249,7 @@ func GetTypeRequestListController(c echo.Context) error {
 
 func DeleteRequestController(c echo.Context) error {
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
-	requestId, _ := strconv.ParseUint(c.QueryParams().Get("request_id"), 0, 0)
-	// requestId, _ := strconv.ParseUint(c.Param("request_id"), 0, 0)
+	requestId, _ := strconv.ParseUint(c.Param("request_id"), 0, 0)
 
 	get, err := libdb.GetRequestByIdResolve(uint(requestId), "no")
 	if err != nil {
@@ -243,7 +258,7 @@ func DeleteRequestController(c echo.Context) error {
 			Message: "can't find unresolved request"})
 	}
 
-	if uint(userId) != get.RecipientID {
+	if uint(userId) != get.UserID {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
 			Status:  "failed",
 			Message: "can't delete other's request"})
@@ -263,7 +278,7 @@ func DeleteRequestController(c echo.Context) error {
 }
 
 func GetRequestByRecipientIdController(c echo.Context) error {
-	recipientId, _ := strconv.ParseUint(c.Param("recipient_id"), 0, 0)
+	recipientId, _ := strconv.ParseUint(c.Param("field"), 0, 0)
 
 	res, err := libdb.GetRequestByRecipientIdResolve(uint(recipientId), "no")
 	if err != nil {
