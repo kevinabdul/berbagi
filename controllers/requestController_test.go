@@ -156,6 +156,32 @@ func TestRequestGift(t *testing.T) {
 			expectBodyContains1:  "submitted",
 			expectBodyContains2:  "School",
 		},
+		{
+			testName:             "failed",
+			path:                 "/request/gift",
+			userId:               "3",
+			role:                 "foundation",
+			addressId:            "3",
+			packageId:            "1",
+			quantity:             "2",
+			expectStatus:         http.StatusBadRequest,
+			expectBodyStartsWith: "{\"status\":\"failed",
+			expectBodyContains1:  "role",
+			expectBodyContains2:  "gift",
+		},
+		{
+			testName:             "failed",
+			path:                 "/request/gift",
+			userId:               "2",
+			role:                 "children",
+			addressId:            "2",
+			packageId:            "5",
+			quantity:             "2",
+			expectStatus:         http.StatusBadRequest,
+			expectBodyStartsWith: "{\"status\":\"failed",
+			expectBodyContains1:  "package",
+			expectBodyContains2:  "doesn't",
+		},
 	}
 
 	e := echo.New()
@@ -212,6 +238,19 @@ func TestRequestDonation(t *testing.T) {
 			expectBodyContains1:  "submitted",
 			expectBodyContains2:  "100000",
 		},
+		{
+			testName:             "failed",
+			path:                 "/request/donation",
+			foundationId:         "2",
+			role:                 "children",
+			addressId:            "2",
+			amount:               "1000",
+			purpose:              "main",
+			expectStatus:         http.StatusBadRequest,
+			expectBodyStartsWith: "{\"status\":\"failed",
+			expectBodyContains1:  "role",
+			expectBodyContains2:  "donation",
+		},
 	}
 
 	e := echo.New()
@@ -232,6 +271,93 @@ func TestRequestDonation(t *testing.T) {
 		c.SetPath(testCase.path)
 
 		if assert.NoError(t, controllers.RequestDonation(c)) {
+			assert.Equal(t, testCase.expectStatus, rec.Code)
+			body := rec.Body.String()
+			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
+			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
+			assert.True(t, strings.Contains(body, testCase.expectBodyContains2))
+		}
+	}
+}
+
+func TestRequestService(t *testing.T) {
+	var testCases = []struct {
+		testName             string
+		path                 string
+		foundationId         string
+		role                 string
+		addressId            string
+		serviceId            string
+		start_date           string
+		finish_date          string
+		expectStatus         int
+		expectBodyStartsWith string
+		expectBodyContains1  string
+		expectBodyContains2  string
+	}{
+		{
+			testName:             "success",
+			path:                 "/request/service",
+			foundationId:         "3",
+			role:                 "foundation",
+			addressId:            "3",
+			serviceId:            "1",
+			start_date:           "2021-10-19",
+			finish_date:          "2021-10-22",
+			expectStatus:         http.StatusOK,
+			expectBodyStartsWith: "{\"status\":\"success",
+			expectBodyContains1:  "submitted",
+			expectBodyContains2:  "health",
+		},
+		{
+			testName:             "failed",
+			path:                 "/request/service",
+			foundationId:         "2",
+			role:                 "children",
+			addressId:            "2",
+			serviceId:            "1",
+			start_date:           "2021-10-19",
+			finish_date:          "2021-10-22",
+			expectStatus:         http.StatusBadRequest,
+			expectBodyStartsWith: "{\"status\":\"failed",
+			expectBodyContains1:  "role",
+			expectBodyContains2:  "service",
+		},
+		{
+			testName:             "failed",
+			path:                 "/request/gift",
+			foundationId:               "3",
+			role:                 "foundation",
+			addressId:            "3",
+			serviceId:            "3",
+			start_date:           "2021-10-19",
+			finish_date:          "2021-10-22",
+			expectStatus:         http.StatusBadRequest,
+			expectBodyStartsWith: "{\"status\":\"failed",
+			expectBodyContains1:  "service",
+			expectBodyContains2:  "doesn't",
+		},
+	}
+
+	e := echo.New()
+
+	for _, testCase := range testCases {
+		request := map[string]string{
+			"address_id":  testCase.addressId,
+			"service_id":  testCase.serviceId,
+			"start_date":  testCase.start_date,
+			"finish_date": testCase.finish_date,
+		}
+		data, _ := json.Marshal(request)
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(data)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Add("userId", testCase.foundationId)
+		req.Header.Add("role", testCase.role)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(testCase.path)
+
+		if assert.NoError(t, controllers.RequestService(c)) {
 			assert.Equal(t, testCase.expectStatus, rec.Code)
 			body := rec.Body.String()
 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
@@ -271,11 +397,11 @@ func TestGetAllRequestList(t *testing.T) {
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
 			expectBodyContains1:  "list",
-			expectBodyContains2:  "service",
+			expectBodyContains2:  "donation",
 		},
 		{
 			testName:             "success",
-			path:                 "/request?resolve=",
+			path:                 "/request",
 			userId:               "3",
 			role:                 "foundation",
 			resolved:             "yes",
@@ -294,12 +420,13 @@ func TestGetAllRequestList(t *testing.T) {
 		req.Header.Add("role", testCase.role)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
-		c.SetPath(testCase.path + testCase.resolved)
+
+		c.SetPath(testCase.path)
+		c.QueryParams().Add("resolved", testCase.resolved)
 
 		if assert.NoError(t, controllers.GetAllRequestListController(c)) {
 			assert.Equal(t, testCase.expectStatus, rec.Code)
 			body := rec.Body.String()
-			fmt.Println(testCase.testName, "all request ->", body)
 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains2))
@@ -323,7 +450,7 @@ func TestGetTypeRequestList(t *testing.T) {
 	}{
 		{
 			testName:             "success",
-			path:                 "/request/",
+			path:                 "/request",
 			userId:               "3",
 			role:                 "foundation",
 			addressId:            "3",
@@ -335,7 +462,7 @@ func TestGetTypeRequestList(t *testing.T) {
 		},
 		{
 			testName:             "success",
-			path:                 "/request/",
+			path:                 "/request",
 			userId:               "3",
 			role:                 "foundation",
 			addressId:            "3",
@@ -347,7 +474,7 @@ func TestGetTypeRequestList(t *testing.T) {
 		},
 		{
 			testName:             "success",
-			path:                 "/request/",
+			path:                 "/request",
 			userId:               "2",
 			role:                 "children",
 			addressId:            "2",
@@ -359,12 +486,12 @@ func TestGetTypeRequestList(t *testing.T) {
 		},
 		{
 			testName:             "success",
-			path:                 "/request/",
+			path:                 "/request",
 			userId:               "2",
 			role:                 "children",
 			addressId:            "2",
 			reqType:              "gift",
-			resolved:             "?resolved=yes",
+			resolved:             "yes",
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
 			expectBodyContains1:  "list",
@@ -380,12 +507,14 @@ func TestGetTypeRequestList(t *testing.T) {
 		req.Header.Add("role", testCase.role)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
-		c.SetPath(testCase.path + testCase.reqType + testCase.resolved)
+		c.SetPath(testCase.path)
+		c.SetParamNames("field")
+		c.SetParamValues(testCase.reqType)
+		c.QueryParams().Add("resolved", testCase.resolved)
 
-		if assert.NoError(t, controllers.GetTypeRequestListController(c)) {
+		if assert.NoError(t, controllers.IdTypeRedirector(c)) {
 			assert.Equal(t, testCase.expectStatus, rec.Code)
 			body := rec.Body.String()
-			fmt.Println(testCase.testName, "type request ->", body)
 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains2))
@@ -405,7 +534,7 @@ func TestGetRequestByRecipientId(t *testing.T) {
 	}{
 		{
 			testName:             "success",
-			path:                 "/request/",
+			path:                 "/request",
 			userId:               "3",
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
@@ -414,7 +543,7 @@ func TestGetRequestByRecipientId(t *testing.T) {
 		},
 		{
 			testName:             "success",
-			path:                 "/request/",
+			path:                 "/request",
 			userId:               "2",
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
@@ -430,12 +559,13 @@ func TestGetRequestByRecipientId(t *testing.T) {
 		req.Header.Add("userId", testCase.userId)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
-		c.SetPath(testCase.path + testCase.userId)
+		c.SetPath(testCase.path)
+		c.SetParamNames("field")
+		c.SetParamValues(testCase.userId)
 
-		if assert.NoError(t, controllers.GetRequestByRecipientIdController(c)) {
+		if assert.NoError(t, controllers.IdTypeRedirector(c)) {
 			assert.Equal(t, testCase.expectStatus, rec.Code)
 			body := rec.Body.String()
-			fmt.Println(testCase.testName, "user_id request ->", body)
 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains2))
@@ -456,17 +586,17 @@ func TestDeleteRequest(t *testing.T) {
 		{
 			testName:             "success",
 			path:                 "/request",
-			userId:         "2",
-			requestId: "1",
+			userId:               "2",
+			requestId:            "1",
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
-			expectBodyContains1:  "delete",
+			expectBodyContains1:  "delete request",
 		},
 		{
 			testName:             "failed",
 			path:                 "/request",
-			userId:         "2",
-			requestId: "2",
+			userId:               "2",
+			requestId:            "2",
 			expectStatus:         http.StatusBadRequest,
 			expectBodyStartsWith: "{\"status\":\"failed",
 			expectBodyContains1:  "other's",
@@ -474,11 +604,11 @@ func TestDeleteRequest(t *testing.T) {
 		{
 			testName:             "success",
 			path:                 "/request",
-			userId:         "3",
-			requestId: "2",
+			userId:               "3",
+			requestId:            "2",
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
-			expectBodyContains1:  "delete",
+			expectBodyContains1:  "delete request",
 		},
 	}
 
@@ -490,11 +620,13 @@ func TestDeleteRequest(t *testing.T) {
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 		c.SetPath(testCase.path)
-		c.QueryParams().Add("request_id", testCase.requestId)
+		c.SetParamNames("request_id")
+		c.SetParamValues(testCase.requestId)
 
 		if assert.NoError(t, controllers.DeleteRequestController(c)) {
 			assert.Equal(t, testCase.expectStatus, rec.Code)
 			body := rec.Body.String()
+			fmt.Println(body)
 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
 		}
