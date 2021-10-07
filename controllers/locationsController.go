@@ -72,7 +72,7 @@ func GetAllNearestRecipientsController(c echo.Context) error {
 				for _, r := range res {
 					req := models.RequestProfile{
 						RequestId: r.ID,
-						RecipientId: r.RecipientID,
+						RecipientId: r.UserID,
 						AddressID: r.AddressID,
 						Type: r.Type,
 						Distance: elem.Distance,

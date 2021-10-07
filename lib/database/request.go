@@ -18,13 +18,11 @@ func CreateGiftRequest(data models.NewGiftRequest) (models.NewGiftRequestRespons
 	// check package exists & retrieve package name
 	var pack models.ProductPackage
 	if tx := config.Db.First(&pack, data.PackageID); tx.Error != nil {
-		return models.NewGiftRequestResponseAPI{}, tx.Error
-	} else if tx.RowsAffected == 0 {
 		return models.NewGiftRequestResponseAPI{}, errors.New("package doesn't exist")
 	}
 
 	var request models.Request
-	request.RecipientID = data.UserID
+	request.UserID = data.UserID
 	request.AddressID = data.AddressID
 	request.Type = "gift"
 	request.Resolved = "false"
@@ -55,7 +53,7 @@ func CreateGiftRequest(data models.NewGiftRequest) (models.NewGiftRequestRespons
 
 func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRequestResponseAPI, error) {
 	var request models.Request
-	request.RecipientID = data.FoundationID
+	request.UserID = data.FoundationID
 	request.AddressID = data.AddressID
 	request.Type = "donation"
 
@@ -67,7 +65,7 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 	details.RequestID = request.ID
 	details.UserID = data.FoundationID
 	details.AddressID = data.AddressID
-	details.Nominal = data.Nominal
+	details.Amount = data.Amount
 	details.Purpose = data.Purpose
 
 	if tx := config.Db.Create(&details); tx.Error != nil {
@@ -77,7 +75,7 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 	var res models.NewDonationRequestResponseAPI
 	res.RequestID = request.ID
 	res.UserID = data.FoundationID
-	res.Nominal = data.Nominal
+	res.Amount = data.Amount
 	res.Purpose = data.Purpose
 
 	return res, nil
@@ -87,13 +85,11 @@ func CreateServiceRequest(data models.NewServiceRequest) (models.NewServiceReque
 	// check package exists & retrieve package name
 	var serv models.Proficiency
 	if tx := config.Db.First(&serv, data.ServiceID); tx.Error != nil {
-		return models.NewServiceRequestResponseAPI{}, tx.Error
-	} else if tx.RowsAffected == 0 {
 		return models.NewServiceRequestResponseAPI{}, errors.New("service doesn't exist")
 	}
 
 	var request models.Request
-	request.RecipientID = data.FoundationID
+	request.UserID = data.FoundationID
 	request.AddressID = data.AddressID
 	request.Type = "service"
 
@@ -126,19 +122,20 @@ func CreateServiceRequest(data models.NewServiceRequest) (models.NewServiceReque
 
 func GetBulkRequests(userId uint, resolved string) ([]models.Request, error) {
 	var request []models.Request
+	table := "requests"
 
 	if resolved == "yes" {
-		tx := config.Db.Where("recipient_id = ? AND resolved = true", userId).Find(&request)
+		tx := config.Db.Table(table).Where("user_id = ? AND resolved = true", userId).Find(&request)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
 	} else if resolved == "no" {
-		tx := config.Db.Where("recipient_id = ? AND resolved = false", userId).Find(&request)
+		tx := config.Db.Table(table).Where("user_id = ? AND resolved = false", userId).Find(&request)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
 	} else {
-		tx := config.Db.Where("recipient_id = ?", userId).Find(&request)
+		tx := config.Db.Table(table).Where("user_id = ?", userId).Find(&request)
 		if tx.Error != nil {
 			return nil, tx.Error
 		}
@@ -148,54 +145,106 @@ func GetBulkRequests(userId uint, resolved string) ([]models.Request, error) {
 }
 
 func GetTypeRequests(userId uint, reqType, resolved string) (interface{}, error) {
-	var request interface{}
 	var joinTable string
 	requestTable := "requests"
 
 	if reqType == "gift" {
-		request = []models.GiftRequestDetails{}
-		joinTable = "gift_request_detailss"
+		request := []models.GiftRequestDetails{}
+		joinTable = "gift_request_details"
+		if resolved != "" {
+			resolve := "false"
+			if resolved == "yes" {
+				resolve = "true"
+			}
+
+			tx := config.Db.Joins(
+				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
+					requestTable, requestTable, joinTable)).Where(
+				fmt.Sprintf("%s.user_id = %d AND %s.resolved = %s",
+					requestTable, userId, requestTable, resolve)).Find(&request)
+
+			if tx.Error != nil {
+				return nil, tx.Error
+			}
+		} else {
+			tx := config.Db.Joins(
+				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
+					requestTable, requestTable, joinTable)).Where(
+				fmt.Sprintf("%s.user_id = %d",
+					joinTable, userId)).Find(&request)
+
+			if tx.Error != nil {
+				return nil, tx.Error
+			}
+		}
+		return request, nil
 	} else if reqType == "donation" {
-		request = []models.DonationRequestDetails{}
-		joinTable = "donation_request_detailss"
-	} else {
-		request = []models.ServiceRequestDetails{}
-		joinTable = "service_request_detailss"
+		request := []models.DonationRequestDetails{}
+		joinTable = "donation_request_details"
+		if resolved != "" {
+			resolve := "false"
+			if resolved == "yes" {
+				resolve = "true"
+			}
+
+			tx := config.Db.Joins(
+				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
+					requestTable, requestTable, joinTable)).Where(
+				fmt.Sprintf("%s.user_id = %d AND %s.resolved = %s",
+					requestTable, userId, requestTable, resolve)).Find(&request)
+
+			if tx.Error != nil {
+				return nil, tx.Error
+			}
+		} else {
+			tx := config.Db.Joins(
+				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
+					requestTable, requestTable, joinTable)).Where(
+				fmt.Sprintf("%s.user_id = %d",
+					joinTable, userId)).Find(&request)
+
+			if tx.Error != nil {
+				return nil, tx.Error
+			}
+		}
+		return request, nil
+	} else if reqType == "service" {
+		request := []models.ServiceRequestDetails{}
+		joinTable = "service_request_details"
+		if resolved != "" {
+			resolve := "false"
+			if resolved == "yes" {
+				resolve = "true"
+			}
+
+			tx := config.Db.Joins(
+				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
+					requestTable, requestTable, joinTable)).Where(
+				fmt.Sprintf("%s.user_id = %d AND %s.resolved = %s",
+					requestTable, userId, requestTable, resolve)).Find(&request)
+
+			if tx.Error != nil {
+				return nil, tx.Error
+			}
+		} else {
+			tx := config.Db.Joins(
+				fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
+					requestTable, requestTable, joinTable)).Where(
+				fmt.Sprintf("%s.user_id = %d",
+					joinTable, userId)).Find(&request)
+
+			if tx.Error != nil {
+				return nil, tx.Error
+			}
+		}
+		return request, nil
 	}
-
-	if resolved != "" {
-		resolve := "false"
-		if resolved == "yes" {
-			resolve = "true"
-		}
-
-		tx := config.Db.Joins(
-			fmt.Sprintf(`JOIN %s ON %s.id = %s.request_id`,
-				requestTable, requestTable, joinTable)).Where(
-			fmt.Sprintf("%s.recipient_id = %d AND %s.resolved = %s",
-				requestTable, userId, requestTable, resolve)).Find(&request)
-
-		if tx.Error != nil {
-			return nil, tx.Error
-		}
-	} else {
-		tx := config.Db.Joins(
-			fmt.Sprintf(`JOIN %s ON %s.id = gift_request_detailss.request_id`,
-				joinTable, joinTable)).Where(
-			fmt.Sprintf("%ss.recipient_id = %d",
-				joinTable, userId)).Find(&request)
-
-		if tx.Error != nil {
-			return nil, tx.Error
-		}
-	}
-
-	return request, nil
+	
+	return nil, errors.New("invalid type")
 }
 
 func DeleteRequest(requestId uint) error {
-	tx := config.Db.Where("request_id = ?", requestId).Delete(&models.DonationCart{})
-
+	tx := config.Db.Where("id = ?", requestId).Delete(&models.Request{})
 	if tx.Error != nil {
 		return tx.Error
 	}
@@ -227,11 +276,11 @@ func GetRequestByRecipientIdResolve(recipientId uint, resolved string) ([]models
 
 	var tx *gorm.DB
 	if resolved == "no" {
-		tx = config.Db.Where("recipient_id = ? AND resolved = false", recipientId).Find(&request)
+		tx = config.Db.Where("user_id = ? AND resolved = false", recipientId).Find(&request)
 	} else if resolved == "yes" {
-		tx = config.Db.Where("recipient_id = ? AND resolved = true", recipientId).Find(&request)
+		tx = config.Db.Where("user_id = ? AND resolved = true", recipientId).Find(&request)
 	} else {
-		tx = config.Db.Where("recipient_id = ?", recipientId).Find(&request)
+		tx = config.Db.Where("user_id = ?", recipientId).Find(&request)
 	}
 
 	if tx.Error != nil {

@@ -7,16 +7,16 @@ import (
 )
 
 type Request struct {
-	ID          uint           `gorm:"primaryKey"`
-	RecipientID uint           `json:"user_id"`
-	AddressID   uint           `json:"address_id"`
-	Type        string         `json:"type"`
-	Resolved    string         `sql:"type:ENUM('true', 'false')" gorm:"default:false" json:"resolved"`
-	User        User           `gorm:"foreignKey:RecipientID"`
-	Address     Address        `gorm:"foreignKey:AddressID"`
-	CreatedAt   time.Time      `json:"-"`
-	UpdatedAt   time.Time      `json:"-"`
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	ID        uint           `gorm:"primaryKey"`
+	UserID    uint           `json:"user_id"`
+	AddressID uint           `json:"address_id"`
+	Type      string         `json:"type"`
+	Resolved  string         `sql:"type:ENUM('true', 'false')" gorm:"default:false" json:"resolved"`
+	User      User           `gorm:"foreignKey:UserID" json:"-"`
+	Address   Address        `gorm:"foreignKey:AddressID" json:"-"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 type NewGiftRequest struct {
@@ -33,13 +33,13 @@ type GiftRequestDetails struct {
 	AddressID      uint           `json:"address_id"`
 	PackageID      uint           `json:"package_id"`
 	Quantity       int            `json:"quantity"`
-	Request        Request        `gorm:"foreignKey:RequestID"`
-	User           User           `gorm:"foreignKey:UserID"`
-	Address        Address        `gorm:"foreignKey:AddressID"`
-	ProductPackage ProductPackage `gorm:"foreignKey:PackageID"`
+	Request        Request        `gorm:"foreignKey:RequestID" json:"-"`
+	User           User           `gorm:"foreignKey:UserID" json:"-"`
+	Address        Address        `gorm:"foreignKey:AddressID" json:"-"`
+	ProductPackage ProductPackage `gorm:"foreignKey:PackageID" json:"-"`
 	CreatedAt      time.Time      `json:"-"`
 	UpdatedAt      time.Time      `json:"-"`
-	DeletedAt      gorm.DeletedAt `gorm:"index"`
+	DeletedAt      gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 type NewGiftRequestResponseAPI struct {
@@ -64,7 +64,7 @@ type NewDonationRequest struct {
 	RequestID    uint    `json:"request_id" form:"request_id"`
 	FoundationID uint    `json:"user_id" form:"user_id"`
 	AddressID    uint    `json:"address_id" form:"address_id"`
-	Nominal      float64 `json:"nominal" form:"nominal"`
+	Amount       float64 `json:"amount" form:"amount"`
 	Purpose      string  `json:"purpose" form:"purpose"`
 }
 
@@ -72,20 +72,20 @@ type DonationRequestDetails struct {
 	RequestID uint           `json:"request_id"`
 	UserID    uint           `json:"user_id"`
 	AddressID uint           `json:"address_id"`
-	Nominal   float64        `json:"nominal" form:"nominal"`
+	Amount    float64        `json:"amount" form:"amount"`
 	Purpose   string         `json:"purpose" form:"purpose"`
-	Request   Request        `gorm:"foreignKey:RequestID"`
-	User      User           `gorm:"foreignKey:UserID"`
-	Address   Address        `gorm:"foreignKey:AddressID"`
+	Request   Request        `gorm:"foreignKey:RequestID" json:"-"`
+	User      User           `gorm:"foreignKey:UserID" json:"-"`
+	Address   Address        `gorm:"foreignKey:AddressID" json:"-"`
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 type NewDonationRequestResponseAPI struct {
 	RequestID uint    `json:"request_id"`
 	UserID    uint    `json:"user_id"`
-	Nominal   float64 `json:"nominal" form:"nominal"`
+	Amount    float64 `json:"amount" form:"amount"`
 	Purpose   string  `json:"purpose" form:"purpose"`
 }
 
@@ -105,13 +105,13 @@ type ServiceRequestDetails struct {
 	ProficiencyID uint           `json:"proficiency_id"`
 	StartDate     time.Time      `gorm:"not null" json:"start_date" form:"start_date"`
 	FinishDate    time.Time      `gorm:"not null" json:"finish_date" form:"finish_date"`
-	Request       Request        `gorm:"foreignKey:RequestID"`
-	User          User           `gorm:"foreignKey:UserID"`
-	Address       Address        `gorm:"foreignKey:AddressID"`
-	Proficiency   Proficiency    `gorm:"foreignKey:ProficiencyID"`
+	Request       Request        `gorm:"foreignKey:RequestID" json:"-"`
+	User          User           `gorm:"foreignKey:UserID" json:"-"`
+	Address       Address        `gorm:"foreignKey:AddressID" json:"-"`
+	Proficiency   Proficiency    `gorm:"foreignKey:ProficiencyID" json:"-"`
 	CreatedAt     time.Time      `json:"-"`
 	UpdatedAt     time.Time      `json:"-"`
-	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 type NewServiceRequestResponseAPI struct {
@@ -127,5 +127,5 @@ type Service struct {
 	Name      string
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
