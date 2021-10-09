@@ -14,10 +14,10 @@ type Certificate struct {
 }
 
 type CertificateResponse struct {
-	Invoice         string    `json:"certificate_number"`
-	VolunteerName   string    `json:"volunteer_name"`
-	ProficiencyName string    `json:"proficiency_name"`
-	UserName        string    `json:"recipient_name"`
-	StartDate       time.Time `json:"start_date"`
-	FinishDate      time.Time `json:"finish_date"`
+	Invoice         string `json:"certificate_number"`
+	VolunteerName   string `json:"volunteer_name"`
+	ProficiencyName string `json:"proficiency_name"`
+	UserName        string `json:"recipient_name"`
+	StartDate       string `json:"start_date"`
+	FinishDate      string `json:"finish_date"`
 }

@@ -6,5 +6,7 @@ import (
 )
 
 func CertificateRoutes() {
+	e.Renderer = handler.NewRenderer("./*.html", true)
 	e.GET("/certificates/:completionId", handler.GetCertificateController, middlewares.AuthenticateUser)
+	e.GET("/certificates/display/:completionId", handler.CertificateDisplayController, middlewares.AuthenticateUser)
 }

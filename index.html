@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+
+            .box {
+                border: 2px solid grey;
+                height: 21cm;
+                width: 29.7cm;
+                margin: auto;
+                background-image: url("https://raw.githubusercontent.com/urnikrokhiyah/pictures/main/bg2.png");
+                background-size: cover;
+                background-position: 50% 50%;
+            }
+
+            .picture {
+                align-items: left;
+                margin-left: -75px;
+                display: block;
+                width: 35%;
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+
+            .content {
+                text-align: center;
+                font-family: Georgia, 'Times New Roman', Times, serif;
+            }
+
+            .child-title {
+                font-size: 50px;
+                color:  #0a3d58e3;
+                padding-top: -20px;
+            }
+
+            .main-title {
+                font-size: 80px;
+                color: #0a3d58;
+            }
+
+            .invoice {
+                font-size: 18px;
+                padding-top: 15px;
+                padding-bottom: 30px;
+                color: rgba(61, 58, 58, 0.616);
+            }
+
+            .assignment {
+                margin: 20px;
+                font-size: 25px;
+                padding-bottom: 40px;
+                color: rgba(0, 0, 0, 0.664);
+                font-weight: 500;
+            }
+            .person {
+                font-size: 50px;
+                font-style: italic;
+                margin: 20px auto;
+                width: 400px;
+                padding-bottom: 15px;
+                color: #0a3d58;
+            }
+            .reason {
+                margin: 20px;
+                font-size: 23px;
+                padding-left: 10%;
+                padding-right: 10%;
+                text-align: center;
+                color: rgba(0, 0, 0, 0.664);
+                font-weight: 500;
+            }
+
+            .signature-pic {
+                width: 12%;
+                padding-left: 50%;
+            }
+
+            .signature-name, .position {
+                color: rgba(0, 0, 0, 0.664);
+                padding-left: 50%;
+                font-size: 18px;
+            }
+              
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="box">
+                <img class="picture" src="https://raw.githubusercontent.com/urnikrokhiyah/pictures/main/logo.png" >
+                <div class="content">
+                    <div class="title">
+                        <div class="main-title">
+                            <b>CERTIFICATE</b> <br>
+                        </div>
+                        <div class="child-title">
+                            <b>of Appreciation</b> 
+                        </div>
+                    </div>
+                    <div class="invoice">
+                        {{.Invoice}}
+                    </div>
+                    <div class="assignment">
+                        This certificate is proudly presented to 
+                    </div>
+        
+                    <div class="person">
+                        <b>{{.VolunteerName}}</b> 
+                    </div>
+        
+                    <div class="reason">
+                        for your outstanding dedication and commitment to volunteering time and effort <br>
+                        in the {{.UserName}} foundation on {{.StartDate}}1 until {{.FinishDate}}  in the {{.ProficiencyName}} sector.
+                    </div>
+                    <img class="signature-pic" src="https://raw.githubusercontent.com/urnikrokhiyah/pictures/main/p1.png">
+                    <div class="signature-name"> <u>Muhammad farid</u> </div>
+                    <div class="position">Chief of Berbagi</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
