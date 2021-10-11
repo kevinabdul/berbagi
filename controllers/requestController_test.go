@@ -41,6 +41,7 @@ func TestRunner(t *testing.T) {
 	t.Run("delete donation cart", TestDeleteDonationInCart)
 	t.Run("checkout donation from cart", TestCheckoutDonation)
 	t.Run("get donations list", TestGetDonationResolved)
+	t.Run("pay donation", TestPayDonation)
 }
 
 func insertUser() {

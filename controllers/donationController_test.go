@@ -554,6 +554,75 @@ func TestGetDonationResolved(t *testing.T) {
 		if assert.NoError(t, controllers.GetDonationsListController(c)) {
 			assert.Equal(t, testCase.expectStatus, rec.Code)
 			body := rec.Body.String()
+			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
+			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
+			assert.True(t, strings.Contains(body, testCase.expectBodyContains2))
+		}
+	}
+}
+
+func TestPayDonation(t *testing.T) {
+	var testCases = []struct {
+		testName             string
+		path                 string
+		userId               string
+		role                 string
+		invoideId            string
+		total                string
+		paymentId            string
+		expectStatus         int
+		expectBodyStartsWith string
+		expectBodyContains1  string
+		expectBodyContains2  string
+	}{
+		{
+			testName:             "success",
+			path:                 "/payment/donation",
+			userId:               "1",
+			role:                 "donor",
+			invoideId:            "BERBAGI.DONOR.001.DONATE.001.2021-10-12",
+			total:                "200000",
+			paymentId:            "1",
+			expectStatus:         http.StatusOK,
+			expectBodyStartsWith: "{\"status\":\"success",
+			expectBodyContains1:  "payment success",
+			expectBodyContains2:  "",
+		},
+		{
+			testName:             "failed",
+			path:                 "/payment/donation",
+			userId:               "1",
+			role:                 "donor",
+			invoideId:            "BERBAGI.VOLUNTEER.001.DONATE.001.2021-10-12",
+			total:                "200000",
+			paymentId:            "1",
+			expectStatus:         http.StatusBadRequest,
+			expectBodyStartsWith: "{\"status\":\"failed",
+			expectBodyContains1:  "process",
+			expectBodyContains2:  "",
+		},
+	}
+
+	e := echo.New()
+
+	for _, testCase := range testCases {
+		request := map[string]string{
+			"invoice_id": testCase.invoideId,
+			"total":   testCase.total,
+			"payment_method_id":   testCase.paymentId,
+		}
+		data, _ := json.Marshal(request)
+		req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(data)))
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Add("userId", testCase.userId)
+		req.Header.Add("role", testCase.role)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath(testCase.path)
+
+		if assert.NoError(t, controllers.AddPendingDonationPaymentController(c)) {
+			assert.Equal(t, testCase.expectStatus, rec.Code)
+			body := rec.Body.String()
 			fmt.Println(body)
 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
 			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
