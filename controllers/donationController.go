@@ -4,7 +4,6 @@ import (
 	libdb "berbagi/lib/database"
 	"berbagi/models"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -270,43 +269,6 @@ func GetDonationsListController(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.ResponseOK{
 		Status:  "success",
 		Message: "success get donations list",
-		Data:    res,
-	})
-}
-
-// Paid donation status change - unresolved -> resolved donation
-// Will make invoice
-// Input : donation_id
-func PaidDonationController(c echo.Context) error {
-	donationId, _ := strconv.ParseUint(c.Param("donation_id"), 0, 0)
-
-	// Find unresolved donation
-	tx, err := libdb.GetSpecificDonation(uint(donationId))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: fmt.Sprintf("failed to find unresolved donation with id %d", donationId),
-		})
-	}
-	if tx.PaymentStatus == "true" {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: fmt.Sprintf("donation with id %d is resolved", donationId),
-		})
-	}
-
-	paid := "true" // Mock payment process
-
-	res, err := libdb.ChangePaymentStatusToPaid(uint(donationId), paid)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: "failed to process payment, fund will be returned",
-		})
-	}
-	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status:  "success",
-		Message: "success make donation",
 		Data:    res,
 	})
 }
