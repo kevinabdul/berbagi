@@ -36,6 +36,11 @@ func TestRunner(t *testing.T) {
 	t.Run("make donation", TestMakeDonation)
 	t.Run("make no request donation", TestNoRequestDonation)
 	t.Run("make quick donation", TestQuickDonation)
+	t.Run("get donations in cart", TestGetDonationInCart)
+	t.Run("update donation cart", TestUpdateDonationInCart)
+	t.Run("delete donation cart", TestDeleteDonationInCart)
+	t.Run("checkout donation from cart", TestCheckoutDonation)
+	t.Run("get donations list", TestGetDonationResolved)
 }
 
 func insertUser() {
@@ -62,6 +67,14 @@ func insertUser() {
 			RoleID:   5, // foundation
 			NIK:      "3333444455558888",
 			Email:    "joni@jin.jin",
+			Password: "jonjon",
+		},
+		{
+			ID:       4,
+			Name:     "jona",
+			RoleID:   5, // foundation
+			NIK:      "3333444455559999",
+			Email:    "jona@jin.jin",
 			Password: "jonjon",
 		},
 	}
@@ -91,6 +104,14 @@ func insertAddress() {
 			Name:       "kebumen3",
 			Latitude:   "-7.553844",
 			Longitude:  "110,863670",
+			CityID:     1,
+			ProvinceID: 1,
+		},
+		{
+			ID:         4,
+			Name:       "kebumen4",
+			Latitude:   "-7.553944",
+			Longitude:  "110,863770",
 			CityID:     1,
 			ProvinceID: 1,
 		},
@@ -126,6 +147,11 @@ func insertFoundation() {
 			UserID:    3,
 			LicenseID: 231,
 			AddressID: 3,
+		},
+		{
+			UserID:    4,
+			LicenseID: 233,
+			AddressID: 4,
 		},
 	}
 	config.Db.Create(&foundation)
