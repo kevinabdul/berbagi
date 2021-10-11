@@ -32,6 +32,18 @@ type TransactionDetail struct {
 	Children 			Children 		`gorm:"foreignKey:RecipientID"`
 }
 
+type TransactionDonationDetail struct {
+	InvoiceID		string		`gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
+	DonationID		uint		`gorm:"primaryKey;type:uint" json:"donation_id"`
+	RecipientID  	uint  		`gorm:"primaryKey" json:"recipient_id"`
+	Amount  		int         `json:"amount"`
+	CreatedAt 		time.Time
+	UpdatedAt		time.Time
+	Transaction   	Transaction `gorm:"foreignKey:InvoiceID;references:InvoiceID"`
+	Donation   		Donation  	`gorm:"foreignKey:DonationID"`
+	Foundation 		Foundation 	`gorm:"foreignKey:RecipientID"`
+}
+
 // Response struct used in case of a succesful checkout in post checkout endpoint
 // Succesful checkout means we are able to delete data from carts table, creating new data in transactions table,
 // and moving the deleted data into transaction_details table. Any failure in those step will fail whole transaction
