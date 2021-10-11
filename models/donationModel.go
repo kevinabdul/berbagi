@@ -39,7 +39,7 @@ type NewDonationResponseAPI struct {
 type DonationCart struct {
 	DonorID     uint           `gorm:"uniqueIndex:composite" json:"donor_id"`
 	RecipientID uint           `gorm:"uniqueIndex:composite" json:"recipient_id" form:"recipient_id"`
-	RequestID   uint           `json:"request_id" form:"request_id"`
+	RequestID   uint           `gorm:"uniqueIndex:composite" json:"request_id" form:"request_id"`
 	Amount      int            `json:"amount" form:"amount"`
 	CreatedAt   time.Time      `json:"-"`
 	UpdatedAt   time.Time      `json:"-"`

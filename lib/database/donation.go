@@ -19,13 +19,18 @@ func MakeDonationToCart(donation models.DonationInputData) (models.NewDonationRe
 	cart.RecipientID = donation.RecipientID
 	cart.Amount = donation.Amount
 
-	whereQuery := fmt.Sprintf("donor_id = %d AND recipient_id = %d",
-					cart.DonorID, cart.RecipientID)
+	whereQuery := fmt.Sprintf("donor_id = %d AND recipient_id = %d AND request_id = %d",
+					cart.DonorID, cart.RecipientID, cart.RequestID)
 
+	cart.RequestID = donation.RequestID
+	res.RequestID = donation.RequestID
+	
 	if donation.RequestID > 0 {
-		cart.RequestID = donation.RequestID
-		res.RequestID = donation.RequestID
-		whereQuery += fmt.Sprintf(" AND request_id = %d", cart.RequestID)
+		tx := config.Db.Table("requests").Find(&models.Request{}, donation.RequestID)
+		if tx.Error != nil || tx.RowsAffected == 0 {
+			return models.NewDonationResponseAPI{}, errors.New(
+				fmt.Sprintf("no request with id %d", donation.RequestID))
+		}
 	}
 
 	if config.Db.Model(&cart).Where(whereQuery).Updates(&cart).RowsAffected == 0 {
@@ -73,7 +78,7 @@ func ListDonationInCart(userId uint) ([]models.DonationResponse, error) {
 	queryField := `0 as donation_id, donor_id, recipient_id, 
 				request_id, amount, updated_at as added_at`
 
-	tx := config.Db.Table("donation_carts").Select(queryField).Scan(&donation)
+	tx := config.Db.Table("donation_carts").Select(queryField).Find(&donation)
 	if tx.Error != nil {
 		return []models.DonationResponse{}, tx.Error
 	}
@@ -88,26 +93,33 @@ func DeleteDonationFromCart(data models.DonationInputData) (int, error) {
 		data.RecipientID,
 		data.RequestID).Unscoped().Delete(&models.DonationCart{})
 
-	if tx.Error != nil {
+	if tx.Error != nil || tx.RowsAffected == 0 {
 		return 0, tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return 0, nil
 	}
 	return int(tx.RowsAffected), nil
 }
 
 func UpdateDonationInCart(data models.DonationInputData) error {
-	tx := config.Db.Model(&models.DonationCart{}).Where(
-		`donor_id = ? AND
-		recipient_id = ? AND
-		request_id = ?`,
-		data.DonorID,
-		data.RecipientID,
-		data.RequestID).Update("amount", data.Amount)
+	// tx := config.Db.Model(&models.DonationCart{}).Where(
+	// 	`donor_id = ? AND
+	// 	recipient_id = ? AND
+	// 	request_id = 0`,
+	// 	data.DonorID,
+	// 	data.RecipientID).Update("amount", data.Amount)
 
-	if tx.Error != nil {
-		return tx.Error
+	// cart := models.DonationCart{
+	// 	// DonorID: data.DonorID,
+	// 	// RecipientID: data.RecipientID,
+	// 	// RequestID: 0,
+	// 	Amount: data.Amount,
+	// }
+
+	query := fmt.Sprintf("donor_id = %d AND recipient_id = %d AND request_id = 0",
+			 data.DonorID, data.RecipientID)
+
+	tx := config.Db.Table("donation_carts").Where(query).Update("amount", data.Amount)
+	if tx.Error != nil || tx.RowsAffected == 0 {
+		return errors.New("can't update cart")
 	}
 	return nil
 }
@@ -115,8 +127,8 @@ func UpdateDonationInCart(data models.DonationInputData) error {
 func GetDonationInCart(data models.DonationInputData) (models.DonationResponse, error) {
 	var cart models.DonationCart
 
-	query := fmt.Sprintf("donor_id = %d AND recipient_id = %d",
-			 data.DonorID, data.RecipientID)
+	query := fmt.Sprintf("donor_id = %d AND recipient_id = %d AND request_id = %d",
+			 data.DonorID, data.RecipientID, data.RequestID)
 	tx := config.Db.Model(cart).Where(query).Find(&cart)
 
 	if tx.Error != nil {
@@ -131,7 +143,6 @@ func GetDonationInCart(data models.DonationInputData) (models.DonationResponse, 
 		Amount:      cart.Amount,
 		MadeAt:      cart.UpdatedAt,
 	}
-fmt.Println("res", tx.RowsAffected, res)
 	return res, nil
 }
 
@@ -174,6 +185,14 @@ func CheckoutDonation(data models.DonationInputData, quick string) (models.Trans
 	var transactionAPI models.TransactionAPI
 	var paymentMethod models.PaymentMethod
 
+	if data.RequestID > 0 {
+		var req models.Request
+		findCart := config.Db.Model(&req).Find(&req, data.RequestID)
+		if findCart.Error != nil || findCart.RowsAffected == 0{
+			return transactionAPI, errors.New("invalid request id")
+		}
+	}
+
 	err := config.Db.Transaction(func(tx *gorm.DB) error {
 		if quick != "yes" && quick != "true" && quick != "quick" {
 			var donationCart models.DonationCart
@@ -198,7 +217,7 @@ func CheckoutDonation(data models.DonationInputData, quick string) (models.Trans
 			deletedCart.DonorID = data.DonorID
 			deletedCart.RecipientID = data.RecipientID
 	
-			deleteCart := tx.Table("donation_carts").Unscoped().Delete(&deletedCart)
+			deleteCart := tx.Table("donation_carts").Where(findQuery).Unscoped().Delete(&deletedCart)
 			if deleteCart.Error != nil {
 				return deleteCart.Error
 			}
@@ -236,7 +255,7 @@ func CheckoutDonation(data models.DonationInputData, quick string) (models.Trans
 			}
 			return transactionDetailCreation.Error
 		}
-		
+
 		var transaction models.Transaction
 		transaction.DonorID = data.DonorID
 		transaction.InvoiceID = invoiceId

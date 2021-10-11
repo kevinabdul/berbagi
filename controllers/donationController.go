@@ -84,18 +84,48 @@ func GetDonationListInCartController(c echo.Context) error {
 }
 
 // Update donation in cart
+// Only update non-requested donation
 // Input : recipient_id, request_id, amount
 func UpdateDonationInCartController(c echo.Context) error {
 	var update models.DonationInputData
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
 
-	c.Bind(&update)
+	if c.Request().Header.Get("Content-Type") == "application/json" {
+		json_map := make(map[string]interface{})
+		err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't parse new request"})
+		}
+
+		rcp, _ := strconv.ParseUint(json_map["recipient_id"].(string), 0, 0)
+		amt, _ := strconv.ParseInt(json_map["amount"].(string), 0, 0)
+		update.RecipientID = uint(rcp)
+		update.Amount = int(amt)
+		if _, ok := json_map["request_id"]; ok {
+			rqs, _ := strconv.ParseUint(json_map["request_id"].(string), 0, 0)
+			if rqs > 0 {
+				update.RequestID = uint(rqs)
+			}
+		}
+	} else {
+		c.Bind(&update)
+	}
+
 	update.DonorID = uint(userId)
 
 	if _, err := libdb.GetDonationInCart(update); err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
 			Status:  "failed",
 			Message: "failed to find item in cart",
+		})
+	}
+
+	if update.RequestID != 0 {
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "only non-requested donation can be updated",
 		})
 	}
 
@@ -109,7 +139,7 @@ func UpdateDonationInCartController(c echo.Context) error {
 	res, _ := libdb.GetDonationInCart(update)
 	return c.JSON(http.StatusOK, models.ResponseOK{
 		Status:  "success",
-		Message: "success add donation to cart",
+		Message: "success update donation in cart",
 		Data:    res,
 	})
 }
@@ -119,7 +149,28 @@ func DeleteDonationFromCartController(c echo.Context) error {
 	var update models.DonationInputData
 	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
 
-	c.Bind(&update)
+	if c.Request().Header.Get("Content-Type") == "application/json" {
+		json_map := make(map[string]interface{})
+		err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+				Status:  "failed",
+				Message: "can't parse new request"})
+		}
+
+		rcp, _ := strconv.ParseUint(json_map["recipient_id"].(string), 0, 0)
+		update.RecipientID = uint(rcp)
+
+		if _, ok := json_map["request_id"]; ok {
+			rqs, _ := strconv.ParseUint(json_map["request_id"].(string), 0, 0)
+			if rqs > 0 {
+				update.RequestID = uint(rqs)
+			}
+		}
+	} else {
+		c.Bind(&update)
+	}
+
 	update.DonorID = uint(userId)
 
 	if _, err := libdb.GetDonationInCart(update); err != nil {
@@ -129,8 +180,8 @@ func DeleteDonationFromCartController(c echo.Context) error {
 		})
 	}
 
-	_, err := libdb.DeleteDonationFromCart(update)
-	if err != nil {
+	row, err := libdb.DeleteDonationFromCart(update)
+	if err != nil || row == 0 {
 		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
 			Status:  "failed",
 			Message: "failed to delete donation from cart",
@@ -204,6 +255,25 @@ func CheckoutDonationController(c echo.Context) error {
 	})
 }
 
+// View donations list - foundation
+func GetDonationsListController(c echo.Context) error {
+	resolved := c.QueryParams().Get("resolved")
+	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
+
+	res, err := libdb.GetBulkDonations(uint(userId), resolved)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "failed to get donations list",
+		})
+	}
+	return c.JSON(http.StatusOK, models.ResponseOK{
+		Status:  "success",
+		Message: "success get donations list",
+		Data:    res,
+	})
+}
+
 // Paid donation status change - unresolved -> resolved donation
 // Will make invoice
 // Input : donation_id
@@ -237,25 +307,6 @@ func PaidDonationController(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.ResponseOK{
 		Status:  "success",
 		Message: "success make donation",
-		Data:    res,
-	})
-}
-
-// View donations list - foundation
-func GetDonationsListController(c echo.Context) error {
-	resolved := c.QueryParams().Get("resolved")
-	userId, _ := strconv.ParseUint(c.Request().Header.Get("userId"), 0, 0)
-
-	res, err := libdb.GetBulkDonations(uint(userId), resolved)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
-			Status:  "failed",
-			Message: "failed to get donations list",
-		})
-	}
-	return c.JSON(http.StatusOK, models.ResponseOK{
-		Status:  "success",
-		Message: "success get donations list",
 		Data:    res,
 	})
 }
