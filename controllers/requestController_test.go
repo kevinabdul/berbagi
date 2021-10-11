@@ -5,7 +5,6 @@ import (
 	"berbagi/controllers"
 	models "berbagi/models"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -25,6 +24,18 @@ func TestMain(m *testing.M) {
 	insertFoundation()
 	insertService()
 	os.Exit(m.Run())
+}
+
+func TestRunner(t *testing.T) {
+	t.Run("request gift", TestRequestGift)
+	t.Run("request donation", TestRequestDonation)
+	t.Run("request service", TestRequestService)
+	t.Run("get all request", TestGetAllRequestList)
+	t.Run("get type request", TestGetTypeRequestList)
+	t.Run("get user id req", TestGetRequestByRecipientId)
+	t.Run("make donation", TestMakeDonation)
+	t.Run("make no request donation", TestNoRequestDonation)
+	t.Run("make quick donation", TestQuickDonation)
 }
 
 func insertUser() {
@@ -231,12 +242,12 @@ func TestRequestDonation(t *testing.T) {
 			foundationId:         "3",
 			role:                 "foundation",
 			addressId:            "3",
-			amount:               "100000",
+			amount:               "600000",
 			purpose:              "untuk",
 			expectStatus:         http.StatusOK,
 			expectBodyStartsWith: "{\"status\":\"success",
 			expectBodyContains1:  "submitted",
-			expectBodyContains2:  "100000",
+			expectBodyContains2:  "600000",
 		},
 		{
 			testName:             "failed",
@@ -573,62 +584,61 @@ func TestGetRequestByRecipientId(t *testing.T) {
 	}
 }
 
-func TestDeleteRequest(t *testing.T) {
-	var testCases = []struct {
-		testName             string
-		path                 string
-		userId               string
-		requestId            string
-		expectStatus         int
-		expectBodyStartsWith string
-		expectBodyContains1  string
-	}{
-		{
-			testName:             "success",
-			path:                 "/request",
-			userId:               "2",
-			requestId:            "1",
-			expectStatus:         http.StatusOK,
-			expectBodyStartsWith: "{\"status\":\"success",
-			expectBodyContains1:  "delete request",
-		},
-		{
-			testName:             "failed",
-			path:                 "/request",
-			userId:               "2",
-			requestId:            "2",
-			expectStatus:         http.StatusBadRequest,
-			expectBodyStartsWith: "{\"status\":\"failed",
-			expectBodyContains1:  "other's",
-		},
-		{
-			testName:             "success",
-			path:                 "/request",
-			userId:               "3",
-			requestId:            "2",
-			expectStatus:         http.StatusOK,
-			expectBodyStartsWith: "{\"status\":\"success",
-			expectBodyContains1:  "delete request",
-		},
-	}
+// func TestDeleteRequest(t *testing.T) {
+// 	var testCases = []struct {
+// 		testName             string
+// 		path                 string
+// 		userId               string
+// 		requestId            string
+// 		expectStatus         int
+// 		expectBodyStartsWith string
+// 		expectBodyContains1  string
+// 	}{
+// 		{
+// 			testName:             "success",
+// 			path:                 "/request",
+// 			userId:               "2",
+// 			requestId:            "1",
+// 			expectStatus:         http.StatusOK,
+// 			expectBodyStartsWith: "{\"status\":\"success",
+// 			expectBodyContains1:  "delete request",
+// 		},
+// 		{
+// 			testName:             "failed",
+// 			path:                 "/request",
+// 			userId:               "2",
+// 			requestId:            "2",
+// 			expectStatus:         http.StatusBadRequest,
+// 			expectBodyStartsWith: "{\"status\":\"failed",
+// 			expectBodyContains1:  "other's",
+// 		},
+// 		{
+// 			testName:             "success",
+// 			path:                 "/request",
+// 			userId:               "3",
+// 			requestId:            "2",
+// 			expectStatus:         http.StatusOK,
+// 			expectBodyStartsWith: "{\"status\":\"success",
+// 			expectBodyContains1:  "delete request",
+// 		},
+// 	}
 
-	e := echo.New()
+// 	e := echo.New()
 
-	for _, testCase := range testCases {
-		req := httptest.NewRequest(http.MethodDelete, "/", nil)
-		req.Header.Set("userId", testCase.userId)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath(testCase.path)
-		c.SetParamNames("request_id")
-		c.SetParamValues(testCase.requestId)
+// 	for _, testCase := range testCases {
+// 		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+// 		req.Header.Set("userId", testCase.userId)
+// 		rec := httptest.NewRecorder()
+// 		c := e.NewContext(req, rec)
+// 		c.SetPath(testCase.path)
+// 		c.SetParamNames("request_id")
+// 		c.SetParamValues(testCase.requestId)
 
-		if assert.NoError(t, controllers.DeleteRequestController(c)) {
-			assert.Equal(t, testCase.expectStatus, rec.Code)
-			body := rec.Body.String()
-			fmt.Println(body)
-			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
-			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
-		}
-	}
-}
+// 		if assert.NoError(t, controllers.DeleteRequestController(c)) {
+// 			assert.Equal(t, testCase.expectStatus, rec.Code)
+// 			body := rec.Body.String()
+// 			assert.True(t, strings.HasPrefix(body, testCase.expectBodyStartsWith))
+// 			assert.True(t, strings.Contains(body, testCase.expectBodyContains1))
+// 		}
+// 	}
+// }
