@@ -20,7 +20,7 @@ func InitDb() {
 	if err1 != nil {
 		log.Fatal("Error loading .env file")
 	}
-
+	fmt.Println("connecting database")
 	connectionString := fmt.Sprintf(
 		"%s:%s@tcp(%s:%v)/%s?charset=utf8&parseTime=True&loc=Local",
 		os.Getenv("DB_USERNAME"),
