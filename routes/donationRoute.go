@@ -12,5 +12,4 @@ func DonationRoutes() {
 	e.PUT("/cart/donation", handler.UpdateDonationInCartController, middlewares.AuthenticateUser)
 	e.DELETE("/cart/donation", handler.DeleteDonationFromCartController, middlewares.AuthenticateUser)
 	e.POST("/donation/checkout", handler.CheckoutDonationController, middlewares.AuthenticateUser)
-	e.PUT("/donation/checkout/:donation_id", handler.PaidDonationController, middlewares.AuthenticateUser)
 }
