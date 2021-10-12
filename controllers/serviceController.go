@@ -14,23 +14,20 @@ func GetServiceOnCartController(c echo.Context) error {
 
 	services, rowAffected, err := libdb.GetServiceByVolunteerId(volunteerId)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Failed to get service cart"})
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "failed to get service cart"})
 	}
 
 	if rowAffected == 0 {
-		return c.JSON(http.StatusOK, struct {
-			Status  string
-			Message string
-		}{Status: "Success", Message: "service cart not found !"})
+		return c.JSON(http.StatusOK, models.ResponseOK{
+			Status:  "success",
+			Message: "service cart not found !"})
 	}
-	return c.JSON(http.StatusOK, struct {
-		Status  string
-		Message string
-		Data    interface{}
-	}{Status: "Success", Message: "Success to get service cart", Data: services})
+	return c.JSON(http.StatusOK, models.ResponseOK{
+		Status:  "success",
+		Message: "success to get service cart",
+		Data:    services})
 }
 
 func AddServiceToCartController(c echo.Context) error {
@@ -41,30 +38,26 @@ func AddServiceToCartController(c echo.Context) error {
 
 	cart, rowAffected, err := libdb.AddServiceToCart(&service, volunteerId)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Failed to add service to cart"})
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "failed to add service to cart"})
 	}
 
 	if cart == "find another date !" {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Find another date!"})
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "find another date!"})
 	}
 
 	if rowAffected == 0 {
-		return c.JSON(http.StatusOK, struct {
-			Status  string
-			Message string
-		}{Status: "Success", Message: "volunteer id not found"})
+		return c.JSON(http.StatusOK, models.ResponseOK{
+			Status:  "success",
+			Message: "volunteer id not found"})
 	}
-	return c.JSON(http.StatusOK, struct {
-		Status  string
-		Message string
-		Data    interface{}
-	}{Status: "Success", Message: "Success to add service on cart", Data: cart})
+	return c.JSON(http.StatusOK, models.ResponseOK{
+		Status:  "success",
+		Message: "success to add service on cart",
+		Data:    cart})
 }
 
 func DeleteServiceCartController(c echo.Context) error {
@@ -72,21 +65,18 @@ func DeleteServiceCartController(c echo.Context) error {
 
 	_, rowAffected, err := libdb.DeleteServiceCart(volunteerId)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Failed to delete service cart"})
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "failed to delete service cart"})
 	}
 	if rowAffected == 0 {
-		return c.JSON(http.StatusOK, struct {
-			Status  string
-			Message string
-		}{Status: "Success", Message: "volunteer id not found"})
+		return c.JSON(http.StatusOK, models.ResponseOK{
+			Status:  "success",
+			Message: "volunteer id not found"})
 	}
-	return c.JSON(http.StatusOK, struct {
-		Status  string
-		Message string
-	}{Status: "Success", Message: "Success to delete service on cart"})
+	return c.JSON(http.StatusOK, models.ResponseOK{
+		Status:  "success",
+		Message: "success to delete service on cart"})
 }
 
 func UpdatedServiceOncartController(c echo.Context) error {
@@ -96,28 +86,24 @@ func UpdatedServiceOncartController(c echo.Context) error {
 	c.Bind(&updatedInput)
 	updatedService, rowAffected, err := libdb.UpdatedServiceOnCart(&updatedInput, volunteerId)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Failed to update service cart"})
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "failed to update service cart"})
 	}
 
 	if updatedService == "find another date !" {
-		return c.JSON(http.StatusBadRequest, struct {
-			Status  string
-			Message string
-		}{Status: "Failed", Message: "Find another date!"})
+		return c.JSON(http.StatusBadRequest, models.ResponseNotOK{
+			Status:  "failed",
+			Message: "find another date!"})
 	}
 
 	if rowAffected == 0 {
-		return c.JSON(http.StatusOK, struct {
-			Status  string
-			Message string
-		}{Status: "Success", Message: "volunteer id not found"})
+		return c.JSON(http.StatusOK, models.ResponseOK{
+			Status:  "success",
+			Message: "volunteer id not found"})
 	}
-	return c.JSON(http.StatusOK, struct {
-		Status  string
-		Message string
-		Data    interface{}
-	}{Status: "Success", Message: "success to update service on carts", Data: updatedService})
+	return c.JSON(http.StatusOK, models.ResponseOK{
+		Status:  "success",
+		Message: "success to update service on carts",
+		Data:    updatedService})
 }
