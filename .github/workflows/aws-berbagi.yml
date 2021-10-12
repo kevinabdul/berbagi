@@ -1,0 +1,25 @@
+name: Deploy to EC2
+on: 
+  push:
+    branches:
+      - main
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to EC2 using SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /documents/berbagi
+          git pull origin main
+          docker stop berbagiApp
+          docker rm berbagiApp
+          docker build -t berbagi1i:latest .
+          docker run -d -e "HTTP_PORT=:8000" -p 8000:8000 --name berbagiApp berbagi1i:latest
