@@ -8,6 +8,6 @@ import(
 )
 
 func registerRoutes() {
-	e.POST("/register/donors", handler.RegisterDonorController)
+	e.POST("/register", handler.RegisterUserController)
 }
 

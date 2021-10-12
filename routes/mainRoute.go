@@ -14,6 +14,34 @@ func New() *echo.Echo {
 	registerRoutes()
 
 	loginRoutes()
-	
+
+	ProficiencyRoute()
+
+	productRoutes()
+
+	productCartRoutes()
+
+	VolunteerRoutes()
+
+	ServiceRoute()
+
+	ConfirmServiceRoutes()
+
+	LocationsRoute()
+
+	checkoutRoutes()
+
+	CompletionRoutes()
+
+	CertificateRoutes()
+
+	DonationRoutes()
+
+	RequestRoute()
+
+	paymentRoutes()
+
+	giftRoutes()
+
 	return e
 }

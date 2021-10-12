@@ -9,13 +9,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func RegisterDonorController(c echo.Context) error {
-	var newDonor models.RegistrationAPI
-	newDonor.Role = "donor"
+func RegisterUserController(c echo.Context) error {
+	var newUser models.RegistrationAPI
 
-	c.Bind(&newDonor)
+	c.Bind(&newUser)
 
-	res, err := libdb.RegisterDonor(newDonor)
+	res, err := libdb.RegisterUser(newUser)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, struct {
@@ -27,7 +26,7 @@ func RegisterDonorController(c echo.Context) error {
 	return c.JSON(http.StatusOK, struct {
 		Status string
 		Message string
-		Donor models.DonorAPI
-	}{Status: "success", Message: "Donor has been created!", Donor: res})
+		User models.RegistrationResponseAPI
+	}{Status: "success", Message: "User has been created!", User: res})
 
 }

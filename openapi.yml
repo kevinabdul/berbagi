@@ -1,0 +1,2151 @@
+openapi: '3.0.2'
+info:
+  title: Berbagi API Documentation
+  version: '1.0'
+  description: "This OpenAPI documentation contains the guideline for 'Berbagi API Services'"
+  contact:
+    name : "Berbagi API Support"
+    email : "support.berbagi@gmail.com"
+servers:
+  - url: https://{environment}.api.server.test/v1
+    description: "Berbagi REStful API Server"
+    variables:
+      environment: 
+        default: dev
+        enum:
+          - "prod"
+          - "dev"
+paths:
+### proficiencies
+  /proficiencies:
+    get:
+      tags:
+        - "Proficiency"
+      summary: "Get list of profiencies data"
+      security:
+        - JWTAuth: []
+      description: "Get all available proficiencies"
+      responses:
+        '200':
+          description: "response while success to get list proficiencies "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: array,
+                    items: {
+                      type: object,
+                       properties: {
+                         "id": {
+                           type: number
+                         },
+                         "name": {
+                           type: string
+                         }
+                       }
+                         
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success get list proficiencies"
+                  value: {
+                    "Message": "Success to get list proficencies",
+                    "Status": "Success",
+                    "Data": [ 
+                      {
+                      "id": 1,
+                      "name": "education",
+                      },
+                      {
+                      "id": 2,
+                      "name": "health",
+                      },
+                    ]
+                  }
+                failed:
+                  description: "Example list proficiencies not found"
+                  value: {
+                    "Message": "List proficiencies not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to get list proficiencies "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get list proficiencies"
+                  value: {
+                    "Message": "Failed to get list proficiencies data",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  }             
+
+    post:
+      tags:
+        - "Proficiency"
+      summary: "Create new proficiency data"
+      security:
+        - JWTAuth: []
+      description: "Create new proficiency to database"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestProficiency'
+            examples:
+              education: 
+                description: "Example for education proficiency"
+                value: {
+                  "name" : "education"  
+               }
+              health: 
+                description: "Example for health proficiency"
+                value: {
+                  "name" : "health"  
+                }                    
+      responses:
+        '200':
+          description: "response while success to create new proficiency "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseUpdateCreate'
+              examples:
+                success: 
+                  description: "Example success create new proficiency"
+                  value: {
+                    "Message": "Success to create new proficiency",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                      "id": 1,
+                      "name": "education",
+                      },
+                  }
+                failed:
+                  description: "Example failed create new proficiency"
+                  value: {
+                    "Message": "New proficiency not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to create new proficiency"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to create new proficiency"
+                  value: {
+                    "Message": "Failed to create new proficiency",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  } 
+
+  /proficiencies/{id}:
+    put:
+      tags:
+        - "Proficiency"
+      summary: "Update proficiency data"
+      security:
+        - JWTAuth: []
+      description: "Update proficiency data in database"
+      parameters:
+        - $ref: '#/components/parameters/proficiencyId' 
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestProficiency'
+            examples:
+              education: 
+                description: "Example for education proficiency"
+                value: {
+                  "name" : "education"  
+                }
+              health: 
+                description: "Example for health proficiency"
+                value: {
+                  "name" : "health"  
+                }              
+      responses:
+        '200':
+          description: "response while success to update proficiency data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseUpdateCreate'
+              examples:
+                success: 
+                  description: "Example success to update proficiency data"
+                  value: {
+                    "Message": "Success to update proficiency",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                      "id": 1,
+                      "name": "education",
+                      },
+                  }
+                failed:
+                  description: "Example failed to update proficiency"
+                  value: {
+                    "Message": "Proficiency id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to update proficiency data"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to update proficiency data"
+                  value: {
+                    "Message": "Failed to update proficiency",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  }
+                invalid proficiencyId:
+                  description: "Example Invalid proficiency id"
+                  value: {
+                    "Message": "Invalid proficiency id",
+                    "Status": "Failed",
+                  }
+    delete:
+      tags:
+        - "Proficiency"
+      summary: "Delete proficiency data"
+      security:
+        - JWTAuth: []
+      description: "Delete proficiency data in database"
+      parameters:
+        - $ref: '#/components/parameters/proficiencyId' 
+      responses:
+        '200':
+          description: "response while success to delete proficiency data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseDelete'
+              examples:
+                success: 
+                  description: "Example success to delete proficiency data"
+                  value: {
+                    "Message": "Success to delete proficiency",
+                    "Status": "Success",
+                    "Data": "deleted",
+                  }
+                failed:
+                  description: "Example failed to delete proficiency"
+                  value: {
+                    "Message": "Proficiency id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to delete proficiency data"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to delete proficiency data"
+                  value: {
+                    "Message": "Failed to delete proficiency",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  }
+                invalid proficiencyId:
+                  description: "Example Invalid proficiency id"
+                  value: {
+                    "Message": "Invalid proficiency id",
+                    "Status": "Failed",
+                  }
+
+
+### certificate
+  /certificate/{completionId}:
+    get:
+      tags:
+        - "Certificate"
+      summary: "Get certificate of volunteer completion."
+      security:
+        - JWTAuth: []
+      description: "Get certificate of completion from volunteer activity"
+      parameters: 
+        - $ref: '#/components/parameters/completionId'
+      responses:
+        '200' : 
+          description: "success to get certificate"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseGetCertificate'
+              examples:
+                success: 
+                  description: "Example success to get certificate"
+                  value: {
+                    "Message": "Success to get certificate",
+                    "Status": "Success",
+                    "Data": 
+                          {
+                            "certificate_number": "002/BERBAGI/VOLUNTEER/001/003",
+                            "volunteer_name": "lukman hakim",
+                            "proficiency_name": "education",
+                            "recipient_name": "yayasan maju terus",
+                            "start_date": "2021-10-12 07:00:00.000",
+                            "finish_date": "2021-10-25 07:00:00.000",
+                          },
+                  }
+                not found certificate:
+                  description: "Example certificate not found"
+                  value: {
+                    "Message": "completion id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to get certificate "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get certificate"
+                  value: {
+                    "Message": "Failed to get certificate",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  } 
+                invalid completionId:
+                  description: "Example invalid completion id"
+                  value: {
+                    "Message": "Invalid completion id",
+                    "Status": "Failed",
+                  }                   
+
+### volunteer
+  /volunteers:
+    get:
+      tags:
+        - "Volunteer"
+      summary: "Get list of volunteers"
+      security:
+        - JWTAuth: []
+      description: "Get all available volunteer"
+      responses:
+        '200':
+          description: "response while success to get list of volunteers "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: array,
+                    items: {
+                      type: object,
+                       properties: {
+                         "id": {
+                           type: number
+                         },
+                         "name": {
+                           type: string
+                         },
+                         "email": {
+                           type: string
+                         },
+                       }
+                         
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success get list of volunteers"
+                  value: {
+                    "Message": "Success to get list volunteers",
+                    "Status": "Success",
+                    "Data": [ 
+                      {
+                      "id": 1,
+                      "name": "lukman hakim",
+                      "email": "lukman@gmail.com"
+                      },
+                      {
+                      "id": 2,
+                      "name": "ahmad",
+                      "email": "ahmad@gmail.com"
+                      },
+                    ]
+                  }
+                failed:
+                  description: "Example list volunteers not found"
+                  value: {
+                    "Message": "Volunteers not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to get list volunteers "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get list volunteers"
+                  value: {
+                    "Message": "Failed to get list volunteers",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  }             
+
+  /volunteers/profile:
+    get:
+      tags:
+        - "Volunteer"
+      summary: "Get volunteer profile"
+      security:
+        - JWTAuth: []
+      description: "Get available volunteer profile"
+      responses:
+        '200':
+          description: "response while success to to get volunteer profile "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: object,
+                    properties: {
+                     "name": {
+                        type: string
+                      },
+                      "email": {
+                        type: string
+                      },
+                      "nik": {
+                        type: string
+                      },
+                     "birth_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                      "address_name": {
+                        type: string
+                      },
+                      "city_name": {
+                        type: string
+                      },
+                      "province_name": {
+                        type: string
+                      },
+                      "proficiency_name": {
+                        type: string
+                      }
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success get volunteer profile"
+                  value: {
+                    "Message": "Success to get volunteer profile",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                        "name": "lukman hakim",
+                        "email": "lukman@gmail.com",
+                        "nik": "350716XXXXXXXX",
+                        "birth_date": "1997-11-05",
+                        "address_name": "flamboyan 3",
+                        "city_name": "malang",
+                        "province_name": "jawa timur",
+                        "proficiency_name": "education",
+                      },
+                  }
+                failed:
+                  description: "Example volunteer data not found"
+                  value: {
+                    "Message": "Volunteer data not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to get volunteer profile "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get volunteer profile"
+                  value: {
+                    "Message": "Failed to get volunteer profile",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  }
+                Invalid volunteerId:
+                  description: "Invalid volunteer id"
+                  value: {
+                    "Message": "Invalid volunteer id",
+                    "Status": "Failed",
+                  }
+
+### service
+  /services:
+    get:
+      tags:
+        - "Service"
+      summary: "Get service on cart"
+      security:
+        - JWTAuth: []
+      description: "Get available service on cart"
+      responses:
+        '200':
+          description: "response while success to get service on cart "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: object,
+                    properties: {
+                     "volunteer_name": {
+                        type: string
+                      },
+                      "recipient_name": {
+                        type: string
+                      },
+                      "recipient_address": {
+                        type: string
+                      },
+                     "start_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                      "finish_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success get service on cart"
+                  value: {
+                    "Message": "Success to get service cart",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                        "volunteer_name": "lukman hakim",
+                        "recipient_name": "yayasan maju terus",
+                        "address_name": "flamboyan 3",
+                        "start_date": "2021-10-12 07:00:00.000",
+                        "finish_date": "2021-10-25 07:00:00.000",
+
+                      },
+                  }
+                failed:
+                  description: "Example service cart not found"
+                  value: {
+                    "Message": "service cart not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to get service cart "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get service cart"
+                  value: {
+                    "Message": "Failed to get service cart",
+                    "Status": "Failed",
+                  }
+
+
+    post:
+      tags:
+        - "Service"
+      summary: "Add service to cart"
+      security:
+        - JWTAuth: []
+      description: "Add available service to cart"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestServiceCart'
+            examples:
+              service: 
+                description: "Example for adding service to cart"
+                value: {
+                  "recipient_id" : 1,
+                  "start_date": "2021-12-02",
+                  "finish_date": "2021-12-30"
+               }
+      responses:
+        '200':
+          description: "response while success to add service to cart "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: object,
+                    properties: {
+                     "volunteer_name": {
+                        type: string
+                      },
+                      "recipient_name": {
+                        type: string
+                      },
+                      "recipient_address": {
+                        type: string
+                      },
+                     "start_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                      "finish_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success add service to cart"
+                  value: {
+                    "Message": "Success to add service to cart",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                        "volunteer_name": "lukman hakim",
+                        "recipient_name": "yayasan maju terus",
+                        "address_name": "flamboyan 3",
+                        "start_date": "2021-12-02 07:00:00.000",
+                        "finish_date": "2021-12-30 07:00:00.000",
+
+                      },
+                  }
+                failed:
+                  description: "Example service cart not found"
+                  value: {
+                    "Message": "volunteer id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to add service to cart "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to add service to cart"
+                  value: {
+                    "Message": "Failed to add service to cart",
+                    "Status": "Failed",
+                  }
+                invalid date:
+                  description: "Example invalid service date"
+                  value: {
+                    "Message": "Find another date !",
+                    "Status": "Failed",
+                  }
+
+
+    put:
+      tags:
+        - "Service"
+      summary: "Update service on cart"
+      security:
+        - JWTAuth: []
+      description: "Update available service on cart"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestServiceCart'
+            examples:
+              service: 
+                description: "Example for updating service on cart"
+                value: {
+                  "recipient_id" : 1,
+                  "start_date": "2021-12-02",
+                  "finish_date": "2021-12-30"
+               }
+      responses:
+        '200':
+          description: "response while success to update service on cart "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: object,
+                    properties: {
+                     "volunteer_name": {
+                        type: string
+                      },
+                      "recipient_name": {
+                        type: string
+                      },
+                      "recipient_address": {
+                        type: string
+                      },
+                     "start_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                      "finish_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success update service on cart"
+                  value: {
+                    "Message": "Success to update service on cart",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                        "volunteer_name": "lukman hakim",
+                        "recipient_name": "yayasan maju terus",
+                        "address_name": "flamboyan 3",
+                        "start_date": "2021-12-02 07:00:00.000",
+                        "finish_date": "2021-12-30 07:00:00.000",
+
+                      },
+                  }
+                failed:
+                  description: "Example service cart not found"
+                  value: {
+                    "Message": "volunteer id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to update service on cart "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to update service on cart"
+                  value: {
+                    "Message": "Failed to update service on cart",
+                    "Status": "Failed",
+                  }
+                invalid date:
+                  description: "Example invalid service date"
+                  value: {
+                    "Message": "Find another date !",
+                    "Status": "Failed",
+                  }
+
+    delete:            
+      tags:
+        - "Service"
+      summary: "Delete service on cart"
+      security:
+        - JWTAuth: []
+      description: "Delete service on cart"
+      responses:
+        '200':
+          description: "response while success to delete service on cart"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseDelete'
+              examples:
+                success: 
+                  description: "Example success to delete service on cart"
+                  value: {
+                    "Message": "Success to delete service ",
+                    "Status": "Success",
+                    "Data": "deleted",
+                  }
+                failed:
+                  description: "Example failed to delete service on cart"
+                  value: {
+                    "Message": "Volunteer id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to delete service on cart"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to delete service on cart"
+                  value: {
+                    "Message": "Failed to delete service on cart",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  }
+
+  /services/verification:
+    post:
+      tags:
+        - "Service"
+      summary: "Confirmation of service"
+      security:
+        - JWTAuth: []
+      description: "Add confirmation of service"
+      responses:
+        '200':
+          description: "response while success to confirm service on cart "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: object,
+                    properties: {
+                      "invoice" : {
+                        type: string
+                      },
+                     "volunteer_name": {
+                        type: string
+                      },
+                      "volunteer_address": {
+                        type: string
+                      },
+                      "proficiency_name": {
+                        type: string
+                      },
+                      "recipient_name": {
+                        type: string
+                      },
+                      "recipient_address": {
+                        type: string
+                      },
+                     "start_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                      "finish_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success confirm service on cart"
+                  value: {
+                    "Message": "Success to confirm service on cart",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                        "invoice": "002/BERBAGI/VOLUNTEER/001/003",
+                        "volunteer_name": "lukman hakim",
+                        "volunteer_address": "cempaka 5",
+                        "proficiency_name": "education",
+                        "recipient_name": "yayasan maju terus",
+                        "recipient_address": "flamboyan 3",
+                        "start_date": "2021-12-02 07:00:00.000",
+                        "finish_date": "2021-12-30 07:00:00.000",
+
+                      },
+                  }
+                failed:
+                  description: "Example service cart not found"
+                  value: {
+                    "Message": "volunteer id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to confim service activity data"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to confim service activity data"
+                  value: {
+                    "Message": "Failed to confim service activity data",
+                    "Status": "Failed",
+                  }
+
+  /services/verification/{verificationId}:
+    get:
+      tags:
+        - "Service"
+      summary: "Confirmation of service"
+      security:
+        - JWTAuth: []
+      description: "Get available service confirmation"
+      parameters:
+        - $ref: '#/components/parameters/verificationId'
+      responses:
+        '200':
+          description: "response while success to get confirmation of service "
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "Message": {
+                    type: string
+                  },
+                  "Status": {
+                    type: string
+                  },
+                  "Data": {
+                    type: object,
+                    properties: {
+                      "invoice" : {
+                        type: string
+                      },
+                     "volunteer_name": {
+                        type: string
+                      },
+                      "volunteer_address": {
+                        type: string
+                      },
+                      "proficiency_name": {
+                        type: string
+                      },
+                      "recipient_name": {
+                        type: string
+                      },
+                      "recipient_address": {
+                        type: string
+                      },
+                     "start_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                      "finish_date": {
+                        type: string,
+                        format: date-time,
+                      },
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success to get confirmation service "
+                  value: {
+                    "Message": "Success to get confirmation service data",
+                    "Status": "Success",
+                    "Data": 
+                      {
+                        "invoice": "002/BERBAGI/VOLUNTEER/001/003",
+                        "volunteer_name": "lukman hakim",
+                        "volunteer_address": "cempaka 5",
+                        "proficiency_name": "education",
+                        "recipient_name": "yayasan maju terus",
+                        "recipient_address": "flamboyan 3",
+                        "start_date": "2021-12-02 07:00:00.000",
+                        "finish_date": "2021-12-30 07:00:00.000",
+
+                      },
+                  }
+                failed:
+                  description: "Example verification id cart not found"
+                  value: {
+                    "Message": "Verification id not found",
+                    "Status": "Success",
+                  }
+        '400':
+          description: "response while failed to get confirmation service"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get confirmation service"
+                  value: {
+                    "Message": "Failed to get confirmation service data",
+                    "Status": "Failed",
+                  }
+
+### completion
+  /completion/{verificationId}:
+    get:
+      tags:
+        - "Completion"
+      summary: "Get completion of volunteer activity."
+      security:
+        - JWTAuth: []
+      parameters: 
+        - $ref: '#/components/parameters/verificationId'
+      responses:
+        '200' : 
+          description: "Success to get completion data"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseCompletion'
+              examples:
+                success: 
+                  description: "Example success to get completion data"
+                  value: {
+                    "Message": "Success to get completion data",
+                    "Status": "Success",
+                    "Data": 
+                          {
+                            "invoice": "002/BERBAGI/VOLUNTEER/001/003",
+                            "volunteer_name": "lukman hakim",
+                            "volunteer_address": "cempaka 5",
+                            "proficiency_name": "education",
+                            "recipient_name": "yayasan maju terus",
+                            "recipient_address": "flamboyan 3",
+                            "start_date": "2021-10-12 07:00:00.000",
+                            "finish_date": "2021-10-25 07:00:00.000",
+                            "completion_status": "not verified",
+                          },
+                  }
+                not found certificate:
+                  description: "Example completion not found"
+                  value: {
+                    "Message": "verification id not found",
+                    "Status": "Success",
+                  }
+
+        '400':
+          description: "response while failed to get completion data "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get completion data"
+                  value: {
+                    "Message": "Failed to get completion data",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  } 
+                invalid completionId:
+                  description: "Example invalid verification id"
+                  value: {
+                    "Message": "Invalid verification id",
+                    "Status": "Failed",
+                  }   
+
+    put:
+      tags:
+        - "Completion"
+      summary: "Update completion status of volunteer activity."
+      security:
+        - JWTAuth: []
+      parameters: 
+        - $ref: '#/components/parameters/verificationId'
+        - $ref: '#/components/parameters/statusCompletion'
+      responses:
+        '200' : 
+          description: "Success to update completion status"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseCompletion'
+              examples:
+                success: 
+                  description: "Example success to update completion status"
+                  value: {
+                    "Message": "Success to update completion status",
+                    "Status": "Success",
+                    "Data": 
+                          {
+                            "invoice": "002/BERBAGI/VOLUNTEER/001/003",
+                            "volunteer_name": "lukman hakim",
+                            "volunteer_address": "cempaka 5",
+                            "proficiency_name": "education",
+                            "recipient_name": "yayasan maju terus",
+                            "recipient_address": "flamboyan 3",
+                            "start_date": "2021-10-12 07:00:00.000",
+                            "finish_date": "2021-10-25 07:00:00.000",
+                            "completion_status": "verified",
+                          },
+                  }
+                not found:
+                  description: "Example completion not found"
+                  value: {
+                    "Message": "verification id not found",
+                    "Status": "Success",
+                  }
+
+        '400':
+          description: "response while failed to update completion status "           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to update completion status"
+                  value: {
+                    "Message": "Failed to update completion status",
+                    "Status": "Failed",
+                  }
+                unauthorized:
+                  description: "Example unauthorized access"
+                  value: {
+                    "Message": "Unauthorized access",
+                    "Status": "Failed",
+                  } 
+                invalid completionId:
+                  description: "Example invalid verification id"
+                  value: {
+                    "Message": "Invalid verification id",
+                    "Status": "Failed",
+                  }   
+
+### requests
+  /request/gift:
+    post:
+      tags:
+        - "Requests"
+      summary: "Request gift by children"
+      security:
+        - JWTAuth: []
+      description: "Request gift by children users"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestGift'
+            examples:
+              gift:
+                description: "Example for posting gift request"
+                value: {
+                  "address_id": 1,
+                  "package_id": 1,
+                  "quantity": 2
+                }
+      responses:
+        '200':
+          description: "response when success posting request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestGiftResponse'
+              example:
+                  success:
+                    description: "Example success posting request"
+                    value: {
+                      "status": "success",
+                      "message": "request has been submitted",
+                      "data": {
+                          "request_id": 2,
+                          "user_id": 1,
+                          "package": "School Package-SD_Telkomsel",
+                          "quantity": 2
+                        }
+                      }
+        '400':
+          description: "response when failed posting request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed posting request"
+                    value: {
+                      "status": "failed",
+                      "message": "can't create new request",
+                    }
+  
+  /request/donation:
+    post:
+      tags:
+        - "Requests"
+      summary: "Request donation by foundation"
+      security:
+        - JWTAuth: []
+      description: "Request donation by foundation users"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestDonation'
+            examples:
+              gift:
+                description: "Example for posting donation request"
+                value: {
+                  "address_id": 1,
+                  "amount": 100000,
+                  "purpose": "renovation"
+                }
+      responses:
+        '200':
+          description: "response when success posting request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestDonationResponse'
+              example:
+                  success:
+                    description: "Example success posting request"
+                    value: {
+                      "status": "success",
+                      "message": "request has been submitted",
+                      "data": {
+                          "request_id": 2,
+                          "user_id": 1,
+                          "amount": 100000,
+                          "purpose": "renovation"
+                        }
+                      }
+        '400':
+          description: "response when failed posting request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed posting request"
+                    value: {
+                      "status": "failed",
+                      "message": "can't create new request",
+                    }
+  
+  /request/service:
+    post:
+      tags:
+        - "Requests"
+      summary: "Request service by foundation"
+      security:
+        - JWTAuth: []
+      description: "Request service by foundation users"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestService'
+            examples:
+              service:
+                description: "Example for posting service request"
+                value: {
+                  "address_id": 1,
+                  "service_id": 1,
+                  "start_date": "2021-10-17",
+                  "finish_date": "2021-10-19"
+                }
+      responses:
+        '200':
+          description: "response when success posting request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestServiceResponse'
+              example:
+                  success:
+                    description: "Example success posting request"
+                    value: {
+                      "status": "success",
+                      "message": "request has been submitted",
+                      "data": {
+                          "request_id": 3,
+                          "user_id": 1,
+                          "service_id": 1,
+                          "start_date": "2021-10-17",
+                          "finish_date": "2021-10-19"
+                        }
+                      }
+        '400':
+          description: "response when failed posting request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed posting request"
+                    value: {
+                      "status": "failed",
+                      "message": "can't create new request",
+                    }
+  
+  /request:
+    get:
+      tags:
+        - "Requests"
+      summary: "Get requests list"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resolved'
+      description: "Get requests list"
+      responses:
+        '200':
+          description: "response when success getting requests list"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/responseGetRequestList'
+              example:
+                  success:
+                    description: "Example success getting all requests list (no resolve specific status)"
+                    value: {
+                      "status": "success",
+                      "message": "success getting request list",
+                      "data": [
+                          {
+                            "ID": 2,
+                            "user_id": 1,
+                            "address_id": 1,
+                            "type": "gift",
+                            "resolved": "true"
+                          },
+                          {
+                            "ID": 3,
+                            "user_id": 1,
+                            "address_id": 1,
+                            "type": "gift",
+                            "resolved": "false"
+                          }
+                        ]
+                      }
+        '400':
+          description: "response when failed getting requests list"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed getting requests list"
+                    value: {
+                      "status": "failed",
+                      "message": "can't get request list",
+                    }
+
+    delete:
+      tags:
+        - "Requests"
+      summary: "Delete request"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/request_id'
+      description: "Delete request"
+      responses:
+        '400':
+          description: "response when failed deleting request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed deleting request"
+                    value: {
+                      "status": "failed",
+                      "message": "can't delete request",
+                    }
+
+  /request/{type}:
+    get:
+      tags:
+        - "Requests"
+      summary: "Get type specific requests list"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/resolved'
+      description: "Get requests list"
+      responses:
+        '200':
+          description: "response when success getting requests list"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/responseGetRequestList'
+              example:
+                  success:
+                    description: "Example success getting all requests list (no resolve specific status)"
+                    value: {
+                      "status": "success",
+                      "message": "success getting request list",
+                      "data": [
+                          {
+                            "ID": 2,
+                            "user_id": 1,
+                            "address_id": 1,
+                            "type": "gift",
+                            "resolved": "true"
+                          },
+                          {
+                            "ID": 3,
+                            "user_id": 1,
+                            "address_id": 1,
+                            "type": "gift",
+                            "resolved": "false"
+                          }
+                        ]
+                      }
+        '400':
+          description: "response when failed getting requests list"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed getting requests list"
+                    value: {
+                      "status": "failed",
+                      "message": "can't get request list",
+                    }
+
+  /request/{recipient_id}:
+    get:
+      tags:
+        - "Requests"
+      summary: "Get requests list for specific userID"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/recipient_id'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/resolved'
+      description: "Get requests list for specific userID"
+      responses:
+        '200':
+          description: "response when success getting requests list"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/responseGetRequestList'
+              example:
+                  success:
+                    description: "Example success getting all requests list (no resolve specific status)"
+                    value: {
+                      "status": "success",
+                      "message": "success getting request list",
+                      "data": [
+                          {
+                            "ID": 2,
+                            "user_id": 1,
+                            "address_id": 1,
+                            "type": "gift",
+                            "resolved": "true"
+                          },
+                          {
+                            "ID": 3,
+                            "user_id": 1,
+                            "address_id": 1,
+                            "type": "gift",
+                            "resolved": "false"
+                          }
+                        ]
+                      }
+        '400':
+          description: "response when failed getting requests list"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+                example:
+                  failed:
+                    description: "Example failed getting requests list"
+                    value: {
+                      "status": "failed",
+                      "message": "can't get request list",
+                    }
+
+#################
+components:
+#################
+  schemas:
+    requestProficiency: 
+      type: object
+      properties:
+        "name":
+          type: string
+          minLength: 1
+
+    requestCompletion: 
+      type: object
+      properties:
+        "status":
+          type: string
+
+    requestServiceCart:
+      type: object
+      properties:
+        "recipientId":
+          type: number
+        "start_date":
+          type: string
+          format: date
+        "finish_date":
+          type: string
+          format: date
+
+    login:
+      type: object
+      properties:
+        "email":
+          type: string
+          minLength: 1
+        "password":
+          type: string
+          minLength: 1
+
+    failedResponse:
+      type: object
+      properties: {
+        "Message": {
+          type: string
+        },
+        "Status": {
+          type: string
+        }
+      }
+
+
+    responseUpdateCreate:
+      type: object
+      properties: {
+        "Message": {
+          type: string
+        },
+        "Status": {
+          type: string
+        },
+        "Data": {
+          type: object,
+          properties: {
+            "id": {
+              type: number
+            },
+            "name": {
+              type: string
+            }
+          }
+        }
+      }
+
+    responseGetCertificate:
+      type: object
+      properties: {
+        "Message": {
+          type: string
+        },
+        "Status": {
+          type: string
+        },
+        "Data": {
+          type: object,
+          properties: {
+            "certificate_number": {
+              type: string
+            },
+            "volunteer_name": {
+              type: string
+            },
+            "proficiency_number": {
+              type: string
+            },
+            "recipient_name": {
+              type: string
+            },
+            "start_date": {
+              type: string,
+              format: date-time
+            },
+            "finish_date": {
+              type: string,
+              format: date-time
+            },
+          }
+        }
+      }
+    
+    responseCompletion:
+      type: object
+      properties: {
+        "Message": {
+          type: string
+        },
+        "Status": {
+          type: string
+        },
+        "Data": {
+          type: object,
+          properties: {
+            "invoice": {
+              type: string
+            },
+            "volunteer_name": {
+              type: string
+            },
+            "volunteer_address": {
+              type: string
+            },
+            "proficiency_name": {
+              type: string
+            },
+            "recipient_name": {
+              type: string
+            },
+            "recipient_address": {
+              type: string
+            },
+            "start_date": {
+              type: string,
+              format: date-time
+            },
+            "finish_date": {
+              type: string,
+              format: date-time
+            },
+            "completion_status": {
+              type: string
+            },
+          }
+        }
+      }
+
+    responseDelete:
+      type: object
+      properties: {
+        "Message": {
+          type: string
+        },
+        "Status": {
+          type: string
+        },
+        "Data": {
+          type: string
+          }
+        }
+    
+    responseGetRequests:
+      type: object
+      properties: {
+          "Message": {
+            type: string
+          },
+          "Status": {
+            type: string
+          },
+          "Data": {
+            type: object,
+            properties:{
+                "id": {
+                  type: number
+                },
+                "user_id": {
+                  type: number
+                },
+                "address_id": {
+                  type: number
+                },
+                "type": {
+                  type: string
+                },
+                "resolved": {
+                  type: string
+                },
+              }              
+            }
+          }
+        
+    requestGift:
+      type: object
+      properties: {
+        "address_id": {
+          type: number
+        },
+        "package_id": {
+          type: number
+        },
+        "quantity": {
+          type: number
+        },
+      }
+
+    requestGiftResponse:
+      type: object
+      properties: {
+          "status": {
+            type: string
+          },
+          "message": {
+            type: string
+          },
+          "data": {
+            type: object,
+            properties: {
+              "request_id": {
+                type: number
+              },
+              "user_id": {
+                type: number
+              },
+              "package": {
+                type: string
+              },
+              "quantity": {
+                type: number
+              },
+            }
+          }
+      }
+        
+    requestDonation:
+      type: object
+      properties: {
+        "address_id": {
+          type: number
+        },
+        "amount": {
+          type: number
+        },
+        "purpose": {
+          type: string
+        },
+      }
+
+    requestDonationResponse:
+      type: object
+      properties: {
+          "status": {
+            type: string
+          },
+          "message": {
+            type: string
+          },
+          "data": {
+            type: object,
+            properties: {
+              "request_id": {
+                type: number
+              },
+              "user_id": {
+                type: number
+              },
+              "amount": {
+                type: number
+              },
+              "purpose": {
+                type: string
+              },
+            }
+          }
+      }
+        
+    requestService:
+      type: object
+      properties: {
+        "address_id": {
+          type: number
+        },
+        "service_id": {
+          type: number
+        },
+        "start_date": {
+          type: string
+        },
+        "finish_date": {
+          type: string
+        },
+      }
+
+    requestServiceResponse:
+      type: object
+      properties: {
+          "status": {
+            type: string
+          },
+          "message": {
+            type: string
+          },
+          "data": {
+            type: object,
+            properties: {
+              "request_id": {
+                type: number
+              },
+              "user_id": {
+                type: number
+              },
+              "amount": {
+                type: number
+              },
+              "purpose": {
+                type: string
+              },
+            }
+          }
+      }
+        
+    responseGetRequestList:
+      type: object
+      properties: {
+          "message": {
+            type: string
+          },
+          "status": {
+            type: string
+          },
+          "data": {
+            type: array,
+            items: {
+              type: object,
+              properties:
+                {
+                  "id": {
+                    type: number
+                  },
+                  "user_id": {
+                    type: number
+                  },
+                  "address_id": {
+                    type: number
+                  },
+                  "type": {
+                    type: string
+                  },
+                  "resolved": {
+                    type: string
+                  },
+                }
+            }
+          },
+        }
+    
+    responseDeleteRequest:
+      type: object
+      properties: {
+        "message": {
+          type: string
+        },
+        "status": {
+          type: string
+        }
+      }
+
+  parameters:
+    proficiencyId:
+      name: "id"
+      in: "path"
+      required: true
+      description: "proficiency id for update or delete proficiency data"
+      schema:
+        type: number
+        example: 1
+      style: simple
+      examples:
+        education: 
+          description: "Sample proficiency id for education"
+          value: 1
+        health: 
+          description: "Sample proficiency id for health"
+          value: 2  
+
+    completionId:
+      name: "completionId"
+      in: "path"
+      required: true
+      description: "completion id for get certificate of completion"
+      schema:
+        type: number
+        example: 1
+      style: simple
+
+    verificationId:
+      name: "verificationId"
+      in: "path"
+      required: true
+      description: "verification id for get confirmation of service"
+      schema:
+        type: number
+        example: 1
+      style: simple
+
+    statusCompletion:
+      name: "status"
+      in: "query"
+      required: true
+      description: updated status of volunteer completion
+      schema:
+        $ref: '#/components/schemas/requestCompletion'
+      examples:
+        verified: 
+          description: "Example for verified status"
+          value: {
+            "status" : "verified"  
+          }
+        completed: 
+          description: "Example for completed status"
+          value: {
+            "status" : "completed"  
+          } 
+
+    resolved:
+      name: "resolved"
+      in: "query"
+      required: false
+      description: resolved status specific requests
+      schema:
+        $ref: '#/components/schemas/responseGetRequestList'
+      examples:
+        yes:
+          description: "Example of resolved request"
+          value:  {
+            "status": "success",
+            "message": "success getting request list",
+            "data": [
+                {
+                  "ID": 2,
+                  "user_id": 1,
+                  "address_id": 1,
+                  "type": "gift",
+                  "resolved": "true"
+                }
+              ]
+            }
+        no:
+          description: "Example of unresolved request"
+          value:  {
+            "status": "success",
+            "message": "success getting request list",
+            "data": [
+                {
+                  "ID": 3,
+                  "user_id": 1,
+                  "address_id": 1,
+                  "type": "gift",
+                  "resolved": "false"
+                }
+              ]
+            }
+
+    type:
+      name: "request type"
+      in: path
+      required: true
+      description: type specific request
+      schema:
+        $ref:
+          '#/components/schemas/responseGetRequestList'
+      examples:
+        gift:
+          description: "Example of gift request"
+          value:  {
+            "status": "success",
+            "message": "success getting request list",
+            "data": [
+                {
+                  "ID": 2,
+                  "user_id": 1,
+                  "address_id": 1,
+                  "type": "gift",
+                  "resolved": "true"
+                }
+              ]
+            }
+        donation:
+          description: "Example of donation request"
+          value:  {
+            "status": "success",
+            "message": "success getting request list",
+            "data": [
+                {
+                  "ID": 2,
+                  "user_id": 1,
+                  "address_id": 1,
+                  "type": "donation",
+                  "resolved": "false"
+                }
+              ]
+            }
+        service:
+          description: "Example of service request"
+          value:  {
+            "status": "success",
+            "message": "success getting request list",
+            "data": [
+                {
+                  "ID": 2,
+                  "user_id": 1,
+                  "address_id": 1,
+                  "type": "service",
+                  "resolved": "false"
+                }
+              ]
+            }
+
+    request_id:
+      name: "request id"
+      in: query
+      required: true
+      description: delete specific request
+      schema:
+        $ref:
+          '#/components/schemas/responseDeleteRequest'
+      examples:
+        1:
+          description: "Example of delete request"
+          value:  {
+            "status": "success",
+            "message": "success delete request",
+          }
+
+    recipient_id:
+      name: "recipient id"
+      in: path
+      required: true
+      description: type specific request
+      schema:
+        $ref:
+          '#/components/schemas/responseGetRequestList'
+      examples:
+        1:
+          description: "Example of service request"
+          value:  {
+            "status": "success",
+            "message": "success getting request list",
+            "data": [
+                {
+                  "ID": 2,
+                  "user_id": 1,
+                  "address_id": 1,
+                  "type": "gift",
+                  "resolved": "false"
+                }
+              ]
+            }
+
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "use Token"
+
+          
+      

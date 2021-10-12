@@ -6,23 +6,18 @@ import (
 	"berbagi/utils/jwt"
 	"berbagi/utils/password"
 	"errors"
-	"strings"
 	"fmt"
+	// "strings"
 )
 
-func LoginUser(user *models.LoginUserAPI) (string ,error) {
+func LoginUser(user models.LoginUserAPI) (string ,error) {
 	loginSearch := models.LoginSearchAPI{}
 
-	user.Role = strings.ToLower(fmt.Sprintf("%vs", user.Role))
-
-	if user.Role == "personalrecipients" {
-		user.Role = "personal_recipients"
-	}
-
-	res := config.Db.Table(user.Role).Where("email = ?", user.Email).First(&loginSearch)
+	res := config.Db.Table("users").Select("users.id, users.email, users.password, users.role_id, roles.name as role_name").
+	Joins("left join roles on roles.id = users.role_id").Where("email = ?", user.Email).First(&loginSearch)
 
 	if res.RowsAffected == 0 {
-		return "", errors.New("No donors with corresponding email")
+		return "", errors.New("No user with corresponding email")
 	}
 	
 	if res.Error != nil {
@@ -36,7 +31,9 @@ func LoginUser(user *models.LoginUserAPI) (string ,error) {
 		return "", err
 	}
 
-	token, err := implementjwt.CreateToken(int(loginSearch.ID), "donor")
+	fmt.Println(loginSearch)
+
+	token, err := implementjwt.CreateToken(int(loginSearch.ID), loginSearch.RoleName)
 
 	if err != nil {
 		return "", err

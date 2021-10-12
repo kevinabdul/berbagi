@@ -6,6 +6,9 @@ import (
 	"strings"
 	"strconv"
 	"os"
+	"berbagi/config"
+	"berbagi/models"
+	"berbagi/utils/response"
 
 	"github.com/labstack/echo/v4"
 	"github.com/golang-jwt/jwt"
@@ -40,10 +43,12 @@ func AuthenticateUser(next echo.HandlerFunc) echo.HandlerFunc {
 			}{Status: "Failed", Message: "Invalid JWT Format!"})
 		}
 
-		valid, id, _ := checkToken(tokenArr[1])
+		valid, id, role, _ := checkToken(tokenArr[1])
 		// id can be either float64 or int. In any case, its numeric type so its save to 
 		// ignore if the assertion is failed and just convert it to int when we set it to header
 		userId, _ := id.(float64)
+
+		userRole,_ := role.(string)
 
 		if !valid {
 			return c.JSON(http.StatusBadRequest, struct {
@@ -53,12 +58,13 @@ func AuthenticateUser(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Request().Header.Set("userId", strconv.Itoa(int(userId)))
+		c.Request().Header.Set("role", userRole)
 
 		return next(c)
 		}
 }
 
-func checkToken(tokenString string) (bool, interface{}, error) {
+func checkToken(tokenString string) (bool, interface{}, interface{}, error) {
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -68,8 +74,37 @@ func checkToken(tokenString string) (bool, interface{}, error) {
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return true, claims["userId"], nil
+		return true, claims["userId"], claims["role"], nil
 	}
 
-	return false, -1, err
+	return false, -1, "", err
+}
+
+func AuthorizeUser(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		role := c.Request().Header.Get("role")
+		method := c.Request().Header.Get("method")
+		path := c.Request().Header.Get("path")
+
+		if role == "admin" {
+			return next(c)
+		}
+
+		rolePermission := models.PermissionAPI{}
+		res := config.Db.Table("role_permissions").Select("roles.name as role_name, actions.name as action_name, resources.path as path").
+		Joins("left join permissions on role_permissions.permission_id = permissions.id").
+		Joins("left join resources on resources.id = permissions.resource_id").
+		Joins("left join actions on actions.id = permissions.action_id").Joins("left join roles on roles.id = role_permissions.role_id").
+		Where(`roles.name = ? and actions.name = ? and resources.path = ?`, role, method, path).Find(&rolePermission)
+
+		if res.Error != nil {
+			return c.JSON(http.StatusBadRequest,response.Create("failed", res.Error.Error(), nil))
+		}
+
+		if res.RowsAffected == 0 {
+			return c.JSON(http.StatusUnauthorized, response.Create("failed", "You dont have permission to access this resource", nil))
+		}
+		
+		return next(c)
+		}
 }
