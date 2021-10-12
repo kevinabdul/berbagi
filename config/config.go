@@ -68,6 +68,7 @@ func InitDb() {
 	Db.Migrator().DropTable(&models.DonationCart{})
 	Db.Migrator().DropTable(&models.DonationRequestDetails{})
 	Db.Migrator().DropTable(&models.ServiceRequestDetails{})
+  Db.Migrator().DropTable(&models.TransactionDonationDetail{})
 	Db.AutoMigrate(&models.User{})
 	Db.AutoMigrate(&models.Province{})
 	Db.AutoMigrate(&models.City{})
@@ -101,6 +102,7 @@ func InitDb() {
 	Db.AutoMigrate(&models.ServiceRequestDetails{})
 	Db.AutoMigrate(&models.Donation{})
 	Db.AutoMigrate(&models.DonationCart{})
+	Db.AutoMigrate(&models.TransactionDonationDetail{})
 
 	insertProvince()
 
