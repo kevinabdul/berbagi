@@ -1212,7 +1212,335 @@ paths:
                   value: {
                     "Message": "Invalid verification id",
                     "Status": "Failed",
-                  }   
+                  } 
+
+### productcarts
+  /product-carts:
+    get:
+      tags:
+        - "Product Carts"
+      summary: "Get array of product packages in Donor's product carts"
+      security:
+        - JWTAuth: []
+      description: "Get array of product packages in Donor's product carts"
+      responses:
+        '200':
+          description: "response while success to get product packages array"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "message": {
+                    type: string
+                  },
+                  "status": {
+                    type: string
+                  },
+                  "data": {
+                    type: object,
+                       properties: {
+                         "recipients": {
+                            type: object,
+                            properties: {
+                              "recipient_id": {
+                                type: number
+                              }, 
+                              "gifts":{
+                                type: array,
+                                items: {
+                                  type: object,
+                                  properties: {
+                                    "product_package_id": {
+                                      type: number
+                                     },
+                                    "quantity": {
+                                      type: number
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "package_list": {
+                            type: object,
+                            properties: {
+                              "product_package_id": {
+                                type: number
+                              }, "
+                              details":{
+                                type: array,
+                                items: {
+                                  type: object,
+                                  properties: {
+                                    "product_id": {
+                                      type: number
+                                     },
+                                    "quantity": {
+                                      type: number
+                                    }, 
+                                    "price": {
+                                      type: number
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }, 
+                          "payment_methods": {
+                            type: array,
+                            items: {
+                              type: object,
+                              properties: {
+                                "id": {
+                                  type: number
+                                }, 
+                                "name": {
+                                  type: string
+                                }
+                              }
+                            }
+                        }
+                    }
+                }
+              }
+              examples:
+                success: 
+                  description: "Example success get product packages array"
+                  value: {
+                    "message": "cart is retrieved succesfully!",
+                    "status": "Success",
+                    "data": [ 
+                      {
+                      "recipient_id": 2,
+                      "product_package_id": 3,
+                      "quantity": 5
+                      },
+                      {
+                      "recipient_id": 2,
+                      "product_package_id": 1,
+                      "quantity": 3
+                      },
+                      {
+                      "recipient_id": 1,
+                      "product_package_id": 1,
+                      "quantity": 7
+                      },
+                    ]
+                  }
+                
+        '400':
+          description: "response while failed to get product packages array"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get list proficiencies"
+                  value: {
+                    "status": "failed",
+                    "message": "no product_package_id found in user's product_carts",
+                  }
+                      
+
+    put:
+      tags:
+        - "Checkout"
+      summary: "Confirm checkout by specifying payment a method"
+      security:
+        - JWTAuth: []
+      description: "Confirm checkout by specifying payment a method"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putRequestProductCarts'
+            examples:
+              recipient: 
+                description: "Example for recipient with id number 1"
+                value: {
+                  "recipient_id" : 1,
+                  "product_package_id": 1,
+                  "quantity": 3
+               }
+              productPackage: 
+                description: "Example for product package id number 1"
+                value: {
+                  "recipient_id" : 1,
+                  "product_package_id": 1,
+                  "quantity": 7
+                }                    
+      responses:
+        '200':
+          description: "response while success to create update donor's product carts "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseUpdateProductCarts'
+              examples:
+                success: 
+                  description: "Example success update donor's product carts"
+                  value: {
+                    "status": "success",
+                    "message": "product cart is updated!",
+                    "data": null
+                  }
+                
+        '400':
+          description: "response while failed to update donor's product carts"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to update donor's product carts"
+                  value: {
+                    "status": "failed",
+                    "message": "no product_package_id with id: 1298 found in the product_package table",
+                  }
+
+### checkout
+  /checkout:
+    get:
+      tags:
+        - "Checkout"
+      summary: "Get array of product packages in Donor's product carts and array of payment options"
+      security:
+        - JWTAuth: []
+      description: "Get array of product packages in Donor's product carts and array of payment options"
+      responses:
+        '200':
+          description: "response while success to get product packages array and payment options array"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {
+                  "message": {
+                    type: string
+                  },
+                  "status": {
+                    type: string
+                  },
+                  "data": {
+                    type: array,
+                    items: {
+                      type: object,
+                       properties: {
+                         "recipient_id": {
+                           type: number
+                         },
+                         "product_package_id": {
+                           type: number
+                         },
+                         "quantity": {
+                          type: number
+                         }
+                       }
+                         
+                    }
+                  }
+                }
+              examples:
+                success: 
+                  description: "Example success get product packages array"
+                  value: {
+                    "message": "cart is retrieved succesfully!",
+                    "status": "Success",
+                    "data": [ 
+                      {
+                      "recipient_id": 2,
+                      "product_package_id": 3,
+                      "quantity": 5
+                      },
+                      {
+                      "recipient_id": 2,
+                      "product_package_id": 1,
+                      "quantity": 3
+                      },
+                      {
+                      "recipient_id": 1,
+                      "product_package_id": 1,
+                      "quantity": 7
+                      },
+                    ]
+                  }
+                
+        '400':
+          description: "response while failed to get product packages array"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to get list proficiencies"
+                  value: {
+                    "status": "failed",
+                    "message": "no product_package_id found in user's product_carts",
+                  }
+                      
+
+    put:
+      tags:
+        - "Product Carts"
+      summary: "Update quantity of product package to be received by the recipients"
+      security:
+        - JWTAuth: []
+      description: "Update quantity of product package to be received by the recipients"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putRequestProductCarts'
+            examples:
+              recipient: 
+                description: "Example for recipient with id number 1"
+                value: {
+                  "recipient_id" : 1,
+                  "product_package_id": 1,
+                  "quantity": 3
+               }
+              productPackage: 
+                description: "Example for product package id number 1"
+                value: {
+                  "recipient_id" : 1,
+                  "product_package_id": 1,
+                  "quantity": 7
+                }                    
+      responses:
+        '200':
+          description: "response while success to create update donor's product carts "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseUpdateProductCarts'
+              examples:
+                success: 
+                  description: "Example success update donor's product carts"
+                  value: {
+                    "status": "success",
+                    "message": "product cart is updated!",
+                    "data": null
+                  }
+                
+        '400':
+          description: "response while failed to update donor's product carts"           
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed to update donor's product carts"
+                  value: {
+                    "status": "failed",
+                    "message": "no product_package_id with id: 1298 found in the product_package table",
+                  }
 
 #################
 components:
@@ -1381,7 +1709,30 @@ components:
           type: string
           }
         }
-      
+
+    responseUpdateProductCarts:
+      type: object
+      properties: {
+        "status": {
+          type: string
+        },
+        "message": {
+          type: string
+        },
+        "data": {
+          type: null
+          }
+        }
+
+    putRequestProductCarts:
+      type: object
+      properties:
+        "recipient_id":
+          type: number
+        "product_package_id":
+          type: number
+        "quantity":
+          type: number
 
   parameters:
     proficiencyId:
