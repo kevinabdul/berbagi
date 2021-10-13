@@ -1,5 +1,7 @@
 package controllers_test
 
+// ACTIVATE TEST SECTION IN LIBDB.PAYMENT.GO
+
 import (
 	"berbagi/controllers"
 	"encoding/json"
@@ -580,7 +582,7 @@ func TestPayDonation(t *testing.T) {
 			path:                 "/payment/donation",
 			userId:               "1",
 			role:                 "donor",
-			invoideId:            "BERBAGI.DONOR.001.DONATE.001.2021-10-12",
+			invoideId:            "BERBAGI.DONOR.001.DONATE.001.2021-10-13",
 			total:                "200000",
 			paymentId:            "1",
 			expectStatus:         http.StatusOK,
@@ -593,7 +595,7 @@ func TestPayDonation(t *testing.T) {
 			path:                 "/payment/donation",
 			userId:               "1",
 			role:                 "donor",
-			invoideId:            "BERBAGI.VOLUNTEER.001.DONATE.001.2021-10-12",
+			invoideId:            "BERBAGI.VOLUNTEER.001.DONATE.001.2021-10-13",
 			total:                "200000",
 			paymentId:            "1",
 			expectStatus:         http.StatusBadRequest,
