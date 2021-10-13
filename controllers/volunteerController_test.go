@@ -129,10 +129,10 @@ func InsertCity() {
 	config.Db.Create(&cities)
 }
 
-// func TestVolunteer(t *testing.T) {
-// 	t.Run("get list volunteer", TestGetListVolunteer)
-// 	t.Run("get volunteer profile", TestGetVolunteerProfile)
-// }
+func TestVolunteer(t *testing.T) {
+	t.Run("get list volunteer", TestGetListVolunteer)
+	t.Run("get volunteer profile", TestGetVolunteerProfile)
+}
 
 func TestGetListVolunteer(t *testing.T) {
 	var testCases = []struct {

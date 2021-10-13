@@ -12,41 +12,41 @@ import (
 )
 
 var (
-	Db *gorm.DB
+	Db       *gorm.DB
 	dbTables = map[string]interface{}{
-		"provinces": &models.Province{}, 
-		"cities": &models.City{},
-		"addresses": &models.Address{},
-		"proficiencies": &models.Proficiency{},
-		"users": &models.User{},
-		"donors": &models.Donor{},
-		"categories":&models.Category{},
-		"products": &models.Product{},
-		"product_carts":&models.ProductCart{},
-		"product_packages": &models.ProductPackage{},
-		"product_package_details": &models.ProductPackageDetail{},
-		"payment_methods":&models.PaymentMethod{},
-		"volunteers": &models.Volunteer{},
-		"childrens":&models.Children{},
-		"foundations":&models.Foundation{},
-		"admins":&models.Admin{},
-		"service_carts":&models.ServiceCart{},
-		"confirm_services": &models.ConfirmService{},
-		"transactions": &models.Transaction{},
-		"transaction_details":&models.TransactionDetail{},
-		"completions":&models.Completion{},
-		"certificates":&models.Certificate{},
-		"actions": &models.Action{},
-		"resources": &models.Resource{},
-		"roles": &models.Role{},
-		"permissions": &models.Permission{},
-		"role_permissions": &models.RolePermission{},
-		"requests": &models.Request{},
-		"gift_request_details": &models.GiftRequestDetails{},
+		"provinces":                &models.Province{},
+		"cities":                   &models.City{},
+		"addresses":                &models.Address{},
+		"proficiencies":            &models.Proficiency{},
+		"users":                    &models.User{},
+		"donors":                   &models.Donor{},
+		"categories":               &models.Category{},
+		"products":                 &models.Product{},
+		"product_carts":            &models.ProductCart{},
+		"product_packages":         &models.ProductPackage{},
+		"product_package_details":  &models.ProductPackageDetail{},
+		"payment_methods":          &models.PaymentMethod{},
+		"volunteers":               &models.Volunteer{},
+		"childrens":                &models.Children{},
+		"foundations":              &models.Foundation{},
+		"admins":                   &models.Admin{},
+		"service_carts":            &models.ServiceCart{},
+		"confirm_services":         &models.ConfirmService{},
+		"transactions":             &models.Transaction{},
+		"transaction_details":      &models.TransactionDetail{},
+		"completions":              &models.Completion{},
+		"certificates":             &models.Certificate{},
+		"actions":                  &models.Action{},
+		"resources":                &models.Resource{},
+		"roles":                    &models.Role{},
+		"permissions":              &models.Permission{},
+		"role_permissions":         &models.RolePermission{},
+		"requests":                 &models.Request{},
+		"gift_request_details":     &models.GiftRequestDetails{},
 		"donation_request_details": &models.DonationRequestDetails{},
-		"service_request_details": &models.ServiceRequestDetails{},
-		"donations": &models.Donation{},
-		"donation_carts": &models.DonationCart{}}
+		"service_request_details":  &models.ServiceRequestDetails{},
+		"donations":                &models.Donation{},
+		"donation_carts":           &models.DonationCart{}}
 )
 
 func InitDb() {
@@ -68,7 +68,7 @@ func InitDb() {
 	if err2 != nil {
 		panic(err2)
 	}
-  
+
 	Db.Migrator().DropTable("provinces")
 	Db.Migrator().DropTable("cities")
 	Db.Migrator().DropTable("addresses")
@@ -102,7 +102,7 @@ func InitDb() {
 	Db.Migrator().DropTable(&models.DonationCart{})
 	Db.Migrator().DropTable(&models.DonationRequestDetails{})
 	Db.Migrator().DropTable(&models.ServiceRequestDetails{})
-  Db.Migrator().DropTable(&models.TransactionDonationDetail{})
+	Db.Migrator().DropTable(&models.TransactionDonationDetail{})
 	Db.AutoMigrate(&models.User{})
 	Db.AutoMigrate(&models.Province{})
 	Db.AutoMigrate(&models.City{})
@@ -138,31 +138,30 @@ func InitDb() {
 	Db.AutoMigrate(&models.DonationCart{})
 	Db.AutoMigrate(&models.TransactionDonationDetail{})
 
-	insertProvince()
+	InsertProvince()
 
-	insertCity()
+	InsertCity()
 
-	insertCategory()
+	InsertCategory()
 
-	insertProduct()
+	InsertProduct()
 
-	insertProductPackage()
+	InsertProductPackage()
 
-	insertProductPackageDetail()
+	InsertProductPackageDetail()
 
-	insertPaymentMethod()
+	InsertPaymentMethod()
 
-	insertAction()
+	InsertAction()
 
-	insertResource()
+	InsertResource()
 
-	insertPermission()
+	InsertPermission()
 
-	insertRole()
+	InsertRole()
 
-	insertRolePermission()
+	InsertRolePermission()
 }
-
 
 // this config for API testing purpose
 func InitDBTest(tables ...string) {

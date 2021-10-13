@@ -42,10 +42,10 @@ func InsertCertificate() error {
 	return nil
 }
 
-// func TestCertificate(t *testing.T) {
-// 	t.Run("get certificate of completion", TestGetCertificate)
-// 	t.Run("Display certificate", TestDisplayCertificate)
-// }
+func TestCertificate(t *testing.T) {
+	t.Run("get certificate of completion", TestGetCertificate)
+	t.Run("Display certificate", TestDisplayCertificate)
+}
 
 func TestGetCertificate(t *testing.T) {
 	var testCases = []struct {

@@ -7,30 +7,30 @@ import (
 )
 
 type Transaction struct {
-	DonorID         uint        	//`gorm:"primaryKey" json:"donor_id"`	
-	InvoiceID		string			`gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
-	PaymentMethodID uint           	`json:"payment_id" form:"payment_id"`
-	PaymentStatus	string			`gorm:"type:enum('pending', 'expired', 'cancelled', 'paid');default:'pending'" json:"payment_status"`
-	Total 			int 			`gorm:"type:int" json:"total"`
-	CreatedAt 		time.Time		`json:"-"`
-	UpdatedAt		time.Time		`json:"-"`
-	DeletedAt       gorm.DeletedAt 	`gorm:"index" json:"-"`
-	Donor 			Donor  			`gorm:"foreignKey:DonorID"`
-	PaymentMethod   PaymentMethod 	`gorm:"foreignKey:PaymentMethodID"`
+	DonorID         uint           //`gorm:"primaryKey" json:"donor_id"`
+	InvoiceID       string         `gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
+	PaymentMethodID uint           `json:"payment_id" form:"payment_id"`
+	PaymentStatus   string         `gorm:"type:enum('pending', 'expired', 'cancelled', 'paid');default:'pending'" json:"payment_status"`
+	Total           int            `gorm:"type:int" json:"total"`
+	CreatedAt       time.Time      `json:"-"`
+	UpdatedAt       time.Time      `json:"-"`
+	DeletedAt       gorm.DeletedAt `gorm:"index" json:"-"`
+	Donor           Donor          `gorm:"foreignKey:DonorID"`
+	PaymentMethod   PaymentMethod  `gorm:"foreignKey:PaymentMethodID"`
 }
 
 type TransactionDetail struct {
-	InvoiceID			string		`gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
-	RecipientID  		uint  		`gorm:"primaryKey" json:"recipient_id"`
-	ProductPackageID	uint		`gorm:"primaryKey;type:uint" json:"product_package_id"`
-	PackagePrice  		int         `json:"package_price"`
-	Quantity  			uint  		`gorm:"not null;type:smallint" json:"quantity"`
-	CreatedAt 			time.Time
-	UpdatedAt			time.Time
-	Transaction   		Transaction 	`gorm:"foreignKey:InvoiceID"`
-	ProductPackage   	ProductPackage  `gorm:"foreignKey:ProductPackageID"`
-	Children 			Children 		`gorm:"foreignKey:RecipientID"`
-
+	InvoiceID        string `gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
+	RecipientID      uint   `gorm:"primaryKey" json:"recipient_id"`
+	ProductPackageID uint   `gorm:"primaryKey;type:uint" json:"product_package_id"`
+	PackagePrice     int    `json:"package_price"`
+	Quantity         uint   `gorm:"not null;type:smallint" json:"quantity"`
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	Transaction      Transaction    `gorm:"foreignKey:InvoiceID"`
+	ProductPackage   ProductPackage `gorm:"foreignKey:ProductPackageID"`
+	Children         Children       `gorm:"foreignKey:RecipientID"`
+}
 
 type TransactionDonationDetail struct {
 	InvoiceID   string `gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
@@ -43,7 +43,6 @@ type TransactionDonationDetail struct {
 	Transaction Transaction `gorm:"foreignKey:InvoiceID;references:InvoiceID"`
 	Donation    Donation    `gorm:"foreignKey:DonationID"`
 	Foundation  Foundation  `gorm:"foreignKey:RecipientID"`
-
 }
 
 // Response struct used in case of a succesful checkout in post checkout endpoint

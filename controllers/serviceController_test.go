@@ -73,12 +73,12 @@ func FormatDate(date string) time.Time {
 	return formatedDate
 }
 
-// func TestServices(t *testing.T) {
-// 	t.Run("get service on cart", TestGetServiceOnCart)
-// 	t.Run("add service to cart", TestAddServiceToCart)
-// 	t.Run("update service on cart", TestUpdateServiceOnCart)
-// 	t.Run("delete service on cart", TestDeleteServiceOnCart)
-// }
+func TestServices(t *testing.T) {
+	t.Run("get service on cart", TestGetServiceOnCart)
+	t.Run("add service to cart", TestAddServiceToCart)
+	t.Run("update service on cart", TestUpdateServiceOnCart)
+	t.Run("delete service on cart", TestDeleteServiceOnCart)
+}
 
 func TestGetServiceOnCart(t *testing.T) {
 	var testCases = []struct {

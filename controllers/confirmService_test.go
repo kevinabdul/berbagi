@@ -50,11 +50,11 @@ func InsertServiceConfirm() error {
 	return nil
 }
 
-// func TestConfirmation(t *testing.T) {
-// 	t.Run("get confirmation services", TestGetConfirmSevice)
-// 	t.Run("Display verification letter", TestDisplayConfirmSevice)
-// 	t.Run("add confirmation services", TestAddConfirmSevice)
-// }
+func TestConfirmation(t *testing.T) {
+	t.Run("get confirmation services", TestGetConfirmSevice)
+	t.Run("Display verification letter", TestDisplayConfirmSevice)
+	t.Run("add confirmation services", TestAddConfirmSevice)
+}
 
 func TestGetConfirmSevice(t *testing.T) {
 	var testCases = []struct {

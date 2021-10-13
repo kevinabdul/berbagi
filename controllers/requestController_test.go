@@ -7,44 +7,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestMain(m *testing.M) {
-	config.InitDb()
-	insertUser()
-	insertAddress()
-	insertDonor()
-	insertChildren()
-	insertFoundation()
-	insertService()
-	os.Exit(m.Run())
-}
-
-func TestRunner(t *testing.T) {
-	t.Run("request gift", TestRequestGift)
-	t.Run("request donation", TestRequestDonation)
-	t.Run("request service", TestRequestService)
-	t.Run("get all request", TestGetAllRequestList)
-	t.Run("get type request", TestGetTypeRequestList)
-	t.Run("get user id req", TestGetRequestByRecipientId)
-	t.Run("make donation", TestMakeDonation)
-	t.Run("make no request donation", TestNoRequestDonation)
-	t.Run("make quick donation", TestQuickDonation)
-	t.Run("get donations in cart", TestGetDonationInCart)
-	t.Run("update donation cart", TestUpdateDonationInCart)
-	t.Run("delete donation cart", TestDeleteDonationInCart)
-	t.Run("checkout donation from cart", TestCheckoutDonation)
-	t.Run("get donations list", TestGetDonationResolved)
-	t.Run("pay donation", TestPayDonation)
-	t.Run("nearby target", TestGetNearbyTarget)
-	t.Run("delete request", TestDeleteRequest)
-}
 
 func insertUser() {
 	user := []models.User{
@@ -366,7 +334,7 @@ func TestRequestService(t *testing.T) {
 		{
 			testName:             "failed",
 			path:                 "/request/gift",
-			foundationId:               "3",
+			foundationId:         "3",
 			role:                 "foundation",
 			addressId:            "3",
 			serviceId:            "3",

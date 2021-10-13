@@ -44,10 +44,10 @@ func InsertCompletion() error {
 	return nil
 }
 
-// func TestCompletion(t *testing.T) {
-// 	t.Run("get completion", TestGetCompletion)
-// 	t.Run("update completion status", TestUpdateCompletionStatus)
-// }
+func TestCompletion(t *testing.T) {
+	t.Run("get completion", TestGetCompletion)
+	t.Run("update completion status", TestUpdateCompletionStatus)
+}
 
 func TestGetCompletion(t *testing.T) {
 	var testCases = []struct {

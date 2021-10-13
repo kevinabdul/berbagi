@@ -1,118 +1,116 @@
 package controllers
 
-// import (
-// 	"berbagi/config"
-// 	"berbagi/models"
+import (
+	"berbagi/config"
+	"berbagi/models"
 
-	
-// 	"testing"
-// 	"net/url"
-// 	"strings"
-// 	"net/http"
-// 	"net/http/httptest"
-// 	"encoding/json"
-// 	"github.com/stretchr/testify/assert"
-// 	"github.com/labstack/echo/v4"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strings"
+	"testing"
 
-// )
+	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
+)
 
-// func InitProductTest() *echo.Echo{
-// 	config.InitDBTest("categories", "products")
-	
-// 	e := echo.New()
-// 	return e
-// }
+func InitProductTest() *echo.Echo {
+	config.InitDBTest("categories", "products")
 
-// func Test_GetProductsController(t *testing.T) {
-// 	e := InitProductTest()
-	
-// 	emptyCase := models.UserCaseWithBody{
-// 	 	Name : "Get Product from empty table",
-// 	 	Method: "GET",
-// 		Path : "/products",
-// 		ExpectedCode: http.StatusBadRequest,
-// 		RequestBody: "",
-// 		Message:"No product found in the product table"}
+	e := echo.New()
+	return e
+}
 
-// 	var queryValues string
-// 	temp := strings.Split(emptyCase.Path, "?")
-// 	if len(temp) == 1 {
-// 		queryValues = ""
-// 	} else {
-// 		queryValues = strings.Split(temp[1], "=")[1]
-// 	}
+func Test_GetProductsController(t *testing.T) {
+	e := InitProductTest()
 
-// 	q := make(url.Values)
-// 	q.Set("categoryId", queryValues)
+	emptyCase := models.UserCaseWithBody{
+		Name:         "Get Product from empty table",
+		Method:       "GET",
+		Path:         "/products",
+		ExpectedCode: http.StatusBadRequest,
+		RequestBody:  "",
+		Message:      "No product found in the product table"}
 
-// 	req := httptest.NewRequest("GET", "/?"+q.Encode(), nil)
-// 	req.Header.Set("Content-Type", "application/json")
-// 	rec := httptest.NewRecorder()
-// 	c := e.NewContext(req, rec)
+	var queryValues string
+	temp := strings.Split(emptyCase.Path, "?")
+	if len(temp) == 1 {
+		queryValues = ""
+	} else {
+		queryValues = strings.Split(temp[1], "=")[1]
+	}
 
-// 	c.SetPath(emptyCase.Path)
+	q := make(url.Values)
+	q.Set("categoryId", queryValues)
 
-// 	if assert.NoError(t, GetProductsController(c)) {
-// 		assert.Equal(t, emptyCase.ExpectedCode, rec.Code)
+	req := httptest.NewRequest("GET", "/?"+q.Encode(), nil)
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
 
-// 		var userResponse models.ResponseOK
-		
-// 		if err := json.Unmarshal([]byte(rec.Body.String()), &userResponse); err != nil {
-// 			assert.Error(t, err, "error")
-// 		}
+	c.SetPath(emptyCase.Path)
 
-// 		assert.Equal(t, emptyCase.Message, userResponse.Message)
-// 	}
+	if assert.NoError(t, GetProductsController(c)) {
+		assert.Equal(t, emptyCase.ExpectedCode, rec.Code)
 
-// 	config.InsertCategory()
-// 	config.InsertProduct()
+		var userResponse models.ResponseOK
 
-// 	cases := []models.UserCaseWithBody {
-// 		 {
-// 		 	Name : "Get product packages",
-// 		 	Method: "GET",
-// 			Path : "/products",
-// 			ExpectedCode: http.StatusOK,
-// 			RequestBody: "",
-// 			Message:"Products retrieval are succesfull"},
-// 		{
-// 		 	Name : "Get Product with invalid category id",
-// 		 	Method: "GET",
-// 			Path : "/products?category=45",
-// 			ExpectedCode: http.StatusBadRequest,
-// 			RequestBody: "",
-// 			Message:"No product found for the given category"}}
+		if err := json.Unmarshal([]byte(rec.Body.String()), &userResponse); err != nil {
+			assert.Error(t, err, "error")
+		}
 
+		assert.Equal(t, emptyCase.Message, userResponse.Message)
+	}
 
-// 	for _, testcase := range cases {
-// 		var queryValues string
-// 		temp := strings.Split(testcase.Path, "?")
-// 		if len(temp) == 1 {
-// 			queryValues = ""
-// 		} else {
-// 			queryValues = strings.Split(temp[1], "=")[1]
-// 		}
+	config.InsertCategory()
+	config.InsertProduct()
 
-// 		q := make(url.Values)
-// 		q.Set("categoryId", queryValues)
+	cases := []models.UserCaseWithBody{
+		{
+			Name:         "Get product packages",
+			Method:       "GET",
+			Path:         "/products",
+			ExpectedCode: http.StatusOK,
+			RequestBody:  "",
+			Message:      "Products retrieval are succesfull"},
+		{
+			Name:         "Get Product with invalid category id",
+			Method:       "GET",
+			Path:         "/products?category=45",
+			ExpectedCode: http.StatusBadRequest,
+			RequestBody:  "",
+			Message:      "No product found for the given category"}}
 
-// 		req := httptest.NewRequest("GET", "/?"+q.Encode(), nil)
-// 		req.Header.Set("Content-Type", "application/json")
-// 		rec := httptest.NewRecorder()
-// 		c := e.NewContext(req, rec)
+	for _, testcase := range cases {
+		var queryValues string
+		temp := strings.Split(testcase.Path, "?")
+		if len(temp) == 1 {
+			queryValues = ""
+		} else {
+			queryValues = strings.Split(temp[1], "=")[1]
+		}
 
-// 		c.SetPath(testcase.Path)
+		q := make(url.Values)
+		q.Set("categoryId", queryValues)
 
-// 		if assert.NoError(t, GetProductsController(c)) {
-// 			assert.Equal(t, testcase.ExpectedCode, rec.Code)
+		req := httptest.NewRequest("GET", "/?"+q.Encode(), nil)
+		req.Header.Set("Content-Type", "application/json")
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
 
-// 			var userResponse models.ResponseOK
-			
-// 			if err := json.Unmarshal([]byte(rec.Body.String()), &userResponse); err != nil {
-// 				assert.Error(t, err, "error")
-// 			}
+		c.SetPath(testcase.Path)
 
-// 			assert.Equal(t, testcase.Message, userResponse.Message)
-// 		}
-// 	}
-// }
+		if assert.NoError(t, GetProductsController(c)) {
+			assert.Equal(t, testcase.ExpectedCode, rec.Code)
+
+			var userResponse models.ResponseOK
+
+			if err := json.Unmarshal([]byte(rec.Body.String()), &userResponse); err != nil {
+				assert.Error(t, err, "error")
+			}
+
+			assert.Equal(t, testcase.Message, userResponse.Message)
+		}
+	}
+}

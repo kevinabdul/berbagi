@@ -50,12 +50,12 @@ func AddUser(name, email, userPassword string) (uint, error) {
 	return user.ID, nil
 }
 
-// func TestProficiency(t *testing.T) {
-// 	t.Run("get list proficiency", TestGetAllProficienciesController)
-// 	t.Run("create new proficiency", TestCreateNewProficiencyController)
-// 	t.Run("delete proficiency", TestDeleteProficiency)
-// 	t.Run("update proficiency data", TestUpdateProficiency)
-// }
+func TestProficiency(t *testing.T) {
+	t.Run("get list proficiency", TestGetAllProficienciesController)
+	t.Run("create new proficiency", TestCreateNewProficiencyController)
+	t.Run("delete proficiency", TestDeleteProficiency)
+	t.Run("update proficiency data", TestUpdateProficiency)
+}
 
 func TestCreateNewProficiencyController(t *testing.T) {
 	var testCases = []struct {
