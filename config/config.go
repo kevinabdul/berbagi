@@ -165,7 +165,7 @@ func InitDb() {
 
 // this config for API testing purpose
 func InitDBTest(tables ...string) {
-	if err := godotenv.Load("./../.env"); err != nil {
+	if err := godotenv.Load("./../../.env"); err != nil {
 		log.Fatal(fmt.Sprintf("Error loading .env file. Got this error: %v", err))
 	}
 

@@ -6,6 +6,9 @@ import (
 	//datavalidation "berbagi/utils/registration"
 	"errors"
 	"os"
+	"fmt"
+	"time"
+	"strconv"
 
 	"gorm.io/gorm"
 
@@ -245,4 +248,79 @@ func InsertProductCart(userCart []models.ProductCart, donorId int) {
 		Db.Where(models.ProductCart{DonorID: uint(donorId), RecipientID: uint(cartItem.RecipientID),
 		ProductPackageID: cartItem.ProductPackageID}).Assign(models.ProductCart{Quantity: cartItem.Quantity}).FirstOrCreate(&targetCart)
 	}
+}
+
+func CheckoutProductCart(payment models.PaymentMethod,donorId int) models.Transaction{
+	var productCart []models.GiftAPI
+	Db.Table("product_carts").
+	Select("product_carts.recipient_id, product_carts.product_package_id, product_carts.quantity").
+	Where(`product_carts.donor_id = ?`, donorId).Find(&productCart)
+
+	Db.Table("product_carts").Where("donor_id = ?", donorId).Unscoped().Delete(&models.ProductCart{})
+
+	packageQuantity := map[uint]int{}
+	packagetarget := ""
+	dictRecipient := map[uint][]models.GiftAPI{}
+
+	for _, v := range productCart {
+		if _, ok := packageQuantity[v.ProductPackageID]; !ok {
+			packageQuantity[v.ProductPackageID] = v.Quantity
+		} else {
+			packageQuantity[v.ProductPackageID] += v.Quantity
+		}
+
+		if _, ok := dictRecipient[v.RecipientID]; !ok {
+			dictRecipient[v.RecipientID] = append(dictRecipient[v.RecipientID], v)
+		}
+	}
+
+	for k, _ := range packageQuantity {
+		packagetarget += strconv.Itoa(int(k)) + ","
+	}
+
+	packagetarget = "(" + packagetarget[0: len(packagetarget) - 1] + ")"
+
+	packagePrices := []models.PackagePrice{}
+	packagePriceMap := map[uint]int{}
+
+	Db.Table("product_package_details").
+	Select("product_package_details.product_package_id, sum(products.price) as price").
+	Joins("left join products on products.id = product_package_details.product_id").Group("product_package_details.product_package_id").
+	Having(fmt.Sprintf("product_package_id in %s", packagetarget)).Find(&packagePrices)
+
+	var total int
+
+	for _, v := range packagePrices {
+		total += v.Price * int(packageQuantity[v.ProductPackageID])
+		packagePriceMap[v.ProductPackageID] = v.Price
+	}
+
+	invoiceId := fmt.Sprintf("BERBAGI.DONOR.%03v.%v", donorId, time.Now().String()[0:19])
+
+	transaction := models.Transaction{}
+	transaction.DonorID = uint(donorId)
+	transaction.InvoiceID = invoiceId
+	transaction.PaymentMethodID = payment.ID
+	transaction.Total = total
+
+	Db.Create(&transaction)
+
+	transactionDetail := models.TransactionDetail{}
+
+	transactionDetail.InvoiceID = invoiceId
+
+	for _, cartItem := range productCart {
+		transactionDetail.RecipientID = cartItem.RecipientID
+		transactionDetail.ProductPackageID = cartItem.ProductPackageID
+		transactionDetail.Quantity = uint(cartItem.Quantity)
+		transactionDetail.PackagePrice = packagePriceMap[cartItem.ProductPackageID]
+
+		Db.Create(&transactionDetail)
+	}
+
+	return transaction
+}
+
+func ResolveOnePayment(transaction models.Transaction) {
+	Db.Table("transactions").Where("invoice_id = ?", transaction.InvoiceID).Updates(models.Transaction{PaymentStatus:"paid"})
 }

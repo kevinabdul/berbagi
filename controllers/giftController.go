@@ -20,5 +20,5 @@ func GetGiftsController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.Create("failed", err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, response.Create("success", "Pending gifts are retrieved succesfully", gifts))
+	return c.JSON(http.StatusOK, response.Create("success", "gifts are retrieved succesfully", gifts))
 }

@@ -32,7 +32,7 @@ func GetGiftsByChildrenId(childrenId int, paymentStatus string) ([]models.Pendin
 	}
 
 	if pendingGiftSearchRes.RowsAffected == 0 {
-		return []models.PendingGiftAPI{}, errors.New("No pending gifts found")
+		return []models.PendingGiftAPI{}, errors.New("no gifts found")
 	}
 
 	return pendingGifts, nil

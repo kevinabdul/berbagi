@@ -27,7 +27,7 @@ func GetPendingPaymentsByDonorId(donorId int) ([]models.PendingPaymentAPI, error
 	}
 
 	if pendingPaymentSearchRes.RowsAffected == 0 {
-		return []models.PendingPaymentAPI{}, errors.New("No pending payments found")
+		return []models.PendingPaymentAPI{}, errors.New("no pending payments found")
 	}
 
 	for _, paymentDetail := range paymentDetails {

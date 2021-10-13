@@ -78,7 +78,7 @@ func Test_GetCheckoutByUserIdController(t *testing.T) {
 	emptyCarts := models.UserCaseWithBody{
 		Name:         "Get checkout with empty cart",
 		Method:       "GET",
-		Path:         "/product-carts",
+		Path:         "/checkout",
 		ExpectedCode: http.StatusBadRequest,
 		RequestBody:  "",
 		Message:      "no product_package_id found in user's product_carts",
@@ -117,7 +117,7 @@ func Test_GetCheckoutByUserIdController(t *testing.T) {
 		{
 			Name:         "Get checkout from non empty product cart",
 			Method:       "POST",
-			Path:         "/product-carts",
+			Path:         "/checkout",
 			ExpectedCode: http.StatusOK,
 			RequestBody:  "",
 			Message:      "cart is retrieved succesfully!",
@@ -207,7 +207,7 @@ func Test_AddCheckoutByUserIdController(t *testing.T) {
 	emptyCarts := models.UserCaseWithBody{
 		Name:         "Add checkout with empty cart",
 		Method:       "POST",
-		Path:         "/product-carts",
+		Path:         "/checkout",
 		ExpectedCode: http.StatusBadRequest,
 		RequestBody:  validData.String(),
 		Message:      "no product_package found in the cart. add product_package first before checking out"}
@@ -242,14 +242,14 @@ func Test_AddCheckoutByUserIdController(t *testing.T) {
 		{
 			Name:         "Add checkout with invalid payment method",
 			Method:       "POST",
-			Path:         "/product-carts",
+			Path:         "/checkout",
 			ExpectedCode: http.StatusBadRequest,
 			RequestBody:  invalidData1.String(),
 			Message:      "no payment_method_id '122' found in the payment method table"},
 		{
 			Name:         "Add checkout with valid payment method",
 			Method:       "POST",
-			Path:         "/product-carts",
+			Path:         "/checkout",
 			ExpectedCode: http.StatusOK,
 			RequestBody:  validData.String(),
 			Message:      "checkout is succesfull"}}
