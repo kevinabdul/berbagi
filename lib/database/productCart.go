@@ -95,13 +95,12 @@ func UpdateProductCartByUserId(userCart []models.ProductCart, donorId int)  erro
 				continue
 			}
 
-			if cartItem.DonorID == cartItem.RecipientID {
+			if uint(donorId) == cartItem.RecipientID {
 				return errors.New("you cant donate to yourself. please specify different donor_id and recipient_id")
 			}
 
 			targetCart := models.ProductCart{}
 
-			//Just found about this awesome and convenient method the night before presentation 
 			res := tx.Where(models.ProductCart{DonorID: uint(donorId), RecipientID: uint(cartItem.RecipientID), ProductPackageID: cartItem.ProductPackageID}).
 			Assign(models.ProductCart{Quantity: cartItem.Quantity}).FirstOrCreate(&targetCart)
 
@@ -114,7 +113,7 @@ func UpdateProductCartByUserId(userCart []models.ProductCart, donorId int)  erro
 						return errors.New(fmt.Sprintf("no product_package_id with id: %v found in the product_package table", cartItem.ProductPackageID))	
 					}
 					if strings.Contains(res.Error.Error(), "recipient_id") {
-						return errors.New(fmt.Sprintf("No recipient_id with id: %v found in the children table", cartItem.RecipientID))	
+						return errors.New(fmt.Sprintf("no recipient_id with id: %v found in the children table", cartItem.RecipientID))	
 					}
 				}
 
@@ -132,7 +131,7 @@ func UpdateProductCartByUserId(userCart []models.ProductCart, donorId int)  erro
 
 func DeleteProductCartByUserId(items []models.ProductCartDelAPI, userId int) (error) {
 	if len(items) == 0 {
-		return errors.New("No item found in delete list. Please specify before deleting")
+		return errors.New("no item found in delete list. Please specify before deleting")
 	}
 
 	deletedCart := models.ProductCart{}
@@ -146,7 +145,7 @@ func DeleteProductCartByUserId(items []models.ProductCartDelAPI, userId int) (er
 			}
 
 			if deleteRes.RowsAffected == 0 {
-				return errors.New(fmt.Sprintf("no product_package_id with id: %v associated with recipient_id %v  found in user's product_carts", item.ProductPackageID, item.RecipientID))
+				return errors.New(fmt.Sprintf("no product_package_id with id: %v associated with recipient_id %v found in user's product_carts", item.ProductPackageID, item.RecipientID))
 			}
 		}
 		return nil

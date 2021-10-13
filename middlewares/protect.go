@@ -44,11 +44,12 @@ func AuthenticateUser(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		valid, id, role, _ := checkToken(tokenArr[1])
-		// id can be either float64 or int. In any case, its numeric type so its save to 
-		// ignore if the assertion is failed and just convert it to int when we set it to header
+		
 		userId, _ := id.(float64)
 
 		userRole,_ := role.(string)
+
+		fmt.Println(fmt.Sprintf("id is %v. userId is %v", id, userId))
 
 		if !valid {
 			return c.JSON(http.StatusBadRequest, struct {
