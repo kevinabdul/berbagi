@@ -29,3 +29,13 @@ type LocationPointResponseAPI struct {
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
 }
+
+type NearbyInputData struct {
+	UserID      uint
+	Role        string
+	Latitude    float64
+	Longitude   float64
+	Range       float64
+	GetResource string
+	Type        string
+}

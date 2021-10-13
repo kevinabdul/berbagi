@@ -75,7 +75,17 @@ func GetConfirmService(verificationId, volunteerId int) (interface{}, int, error
 
 	if tx.RowsAffected > 0 {
 		response := formattingVerification(verifiedService)
-		return response, 1, nil
+		output := models.ResponseVerification{
+			Invoice:          response.Invoice,
+			VolunteerName:    response.VolunteerName,
+			AddressVolunteer: response.AddressVolunteer,
+			UserName:         response.UserName,
+			ProficiencyName:  response.ProficiencyName,
+			AddressUser:      response.AddressUser,
+			StartDate:        response.StartDate.Format(layoutUS),
+			FinishDate:       response.FinishDate.Format(layoutUS),
+		}
+		return output, 1, nil
 	}
 	return nil, 0, nil
 }

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+            }
+
+            .box {
+                border: 2px solid grey;
+                height: 29.7cm;
+                width: 21cm;
+                margin: auto;
+            }
+
+            .logo {
+                background-color: rgba(20,51,98,255);
+                height: 0.5cm;
+                margin-top: 1cm;
+            }
+
+            .end-letter {
+                background-color: rgba(20,51,98,255);
+                height: 0.5cm;
+                margin-bottom: 1cm;
+            }
+
+            .picture {
+                align-items: center;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+                width: 50%;
+                padding-top: 100px;
+                padding-bottom: 20px;
+            }
+
+            .content {
+                text-align: center;
+                font-family: Georgia, 'Times New Roman', Times, serif;
+            }
+
+            .title {
+                font-size: 32px;
+                padding-bottom: 10px;
+            }
+
+            .invoice {
+                font-size: 18px;
+                padding-bottom: 30px;
+            }
+
+            .subject {
+                text-align: left;
+                padding-left: 5%;
+                padding-top: 75px;
+                font-size: 18px;
+                padding-bottom: 30px;
+            }
+
+            .target {
+                text-align: left;
+                padding-left: 5%;
+                font-size: 18px;
+                padding-bottom: 8px;
+            }
+
+            .volunteer {
+                text-align: left;
+                padding-left: 5%;
+                font-size: 18px;
+                padding-bottom: 8px;
+            }
+
+            .greeting {
+                text-align: left;
+                padding-left: 5%;
+                padding-top: 8%;
+                font-size: 18px;
+            }
+
+            .main {
+                text-align: justify;
+                padding-left: 5%;
+                padding-right: 5%;
+                padding-top: 5%;
+                font-size: 18px; 
+                padding-bottom: 50px;
+            }
+
+            .signature-volunteer {
+                text-align: left;
+                padding-left: 10%;
+                padding-right: 10%;
+                padding-top: 15%;
+                font-size: 18px;
+                display: inline-block;
+            }
+
+            .signature-foundation {
+                text-align: right;
+                padding-right: 10%;
+                padding-left: 10%;
+                font-size: 18px;
+                display: inline-block;
+                padding-bottom: 90px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="box">
+                <div class="logo">
+                </div>
+                    <img class="picture" src="https://raw.githubusercontent.com/urnikrokhiyah/pictures/main/logo.png" >
+                <div class="content">
+                    <div class="title">
+                        <b>VERIFICATION LETTER</b>
+                    </div>
+                    <div class="Invoice">
+                        {{.Invoice}}
+                    </div>
+                    <div class="subject">
+                        SUBJECT : Verification form for volunteering activity
+                    </div>
+                    <div class="volunteer"> Volunteer name  &emsp;&emsp;&nbsp;&nbsp;: &emsp; {{.VolunteerName}}</div>
+                    <div class="volunteer"> Volunteer address&emsp;&nbsp;&nbsp;&nbsp;&nbsp;: &emsp; {{.AddressVolunteer}} </div>
+                    <div class="volunteer"> Proficiency name  &emsp;&nbsp;&nbsp;&nbsp;: &emsp; {{.ProficiencyName}}</div>
+
+                    <div class="target"> Foundation name &emsp;&nbsp;&nbsp;&nbsp;: &emsp; {{.UserName}}</div>
+                    <div class="target"> Foundation address &nbsp;&nbsp;&nbsp;&nbsp;: &emsp; {{.AddressUser}}</div>
+                    <div class="greeting">
+                        Respected Sir/ Madam,
+                    </div>
+                    <div class="main">
+                        Most respectfully, this letter informs that your foundation give me permission for doing volunteer activities in {{.ProficiencyName}} sector, 
+                        that organized by Berbagi Application on {{.StartDate}} until {{.FinishDate}} and 
+                        I will be fully committed to participate in all these volunteer activities in accordance with applicable regulations.
+                        
+                    </div>
+                    <div class="signature-volunteer">
+                        {{.VolunteerName}}
+                    </div>
+                    <div class="signature-foundation">
+                        {{.UserName}}
+                    </div>
+                </div>
+                <div class="end-letter">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -33,35 +33,49 @@ func GetAddressLatLonByUserId(id uint, role string) (models.LocationPointRespons
 	return point, nil
 }
 
-func GetAllNearestAddressId(lat, lon, _range float64) ([]models.NearestAddressIdResponseAPI, int, error) {
-	var address []models.NearestAddressIdResponseAPI
+func GetAllNearestUsers(data models.NearbyInputData) ([]models.UserProfile, error) {
+	var address []models.UserProfile
+	var additionalCondition string
 
-	query := `SELECT id, (
+	if data.Type == "children" {
+		additionalCondition = ` AND roles.name = 'children' `
+	} else if data.Type == "foundation" {
+		additionalCondition = ` AND roles.name = 'foundation' `
+	} else {
+		additionalCondition = ``
+	}
+
+	query := `SELECT users.id as user_id, users.name, roles.name AS role,
+		addresses.name AS address, cities.name AS city,	provinces.name AS province,
+		addresses.latitude, addresses.longitude, (
 		6371 * acos( cos( radians( @lat ) )
-		* cos( radians( latitude ) )
-		* cos( radians( longitude ) - radians( @lon ) )
+		* cos( radians( addresses.latitude ) )
+		* cos( radians( addresses.longitude ) - radians( @lon ) )
 		+ sin( radians( @lat ) )
-		* sin( radians( latitude ) ) )) AS distance
-	FROM addresses
-	WHERE latitude<>''
-		AND longitude<>''
-	HAVING distance < @range
-	ORDER BY distance asc`
+		* sin( radians( addresses.latitude ) ) )) AS distance
+		FROM addresses
+		JOIN users ON users.id = addresses.id
+		JOIN roles ON users.role_id = roles.id
+		JOIN cities on addresses.city_id = cities.id
+		JOIN provinces on addresses.province_id = provinces.id
+		WHERE addresses.latitude<>''
+		AND addresses.longitude<>''
+		AND users.id <> @getter_id` +
+		additionalCondition +
+		`HAVING distance < @range
+		ORDER BY distance asc`
 
 	tx := config.Db.Raw(query,
-		sql.Named("lat", lat),
-		sql.Named("lon", lon),
-		sql.Named("range", _range)).Scan(&address) // All saved or per row?
+		sql.Named("lat", data.Latitude),
+		sql.Named("lon", data.Longitude),
+		sql.Named("range", data.Range),
+		sql.Named("getter_id", data.UserID)).Scan(&address) // All saved or per row?
 
 	if tx.Error != nil {
-		return nil, 0, tx.Error
+		return nil, tx.Error
 	}
 
-	if tx.RowsAffected > 0 {
-		return address, int(tx.RowsAffected), nil
-	}
-
-	return nil, 0, nil
+	return address, nil
 }
 
 func GetRequestByAddressIdResolve(addressId uint, resolved string) ([]models.Request, int, error) {
@@ -89,6 +103,7 @@ func GetRequestByAddressIdResolve(addressId uint, resolved string) ([]models.Req
 
 func GetUserByAddressIdRole(addressId uint, role string) (models.UserProfile, int, error) {
 	var res models.UserProfile
+	// config.Db.Table("addresses").Select()
 
 	var tx *gorm.DB
 	if role == "admin" {
@@ -154,4 +169,54 @@ func GetUserByAddressIdRole(addressId uint, role string) (models.UserProfile, in
 	}
 
 	return models.UserProfile{}, 0, nil
+}
+
+
+func GetNearbyRequestProfile(data models.NearbyInputData) ([]models.RequestProfile, error) {
+	var request []models.RequestProfile
+	var additionalCondition string
+
+	if data.Type == "gift" {
+		additionalCondition = ` AND requests.type = 'gift' `
+	} else if data.Type == "donation" {
+		additionalCondition = ` AND requests.type = 'donation' `
+	} else if data.Type == "service" {
+		additionalCondition = ` AND requests.type = 'service' `
+	} else {
+		additionalCondition = ``
+	}
+
+	query := `SELECT requests.id as request_id, users.name, roles.name AS role,
+		requests.type, addresses.name AS address, cities.name AS city,
+		provinces.name AS province, (
+		6371 * acos( cos( radians( @lat ) )
+		* cos( radians( addresses.latitude ) )
+		* cos( radians( addresses.longitude ) - radians( @lon ) )
+		+ sin( radians( @lat ) )
+		* sin( radians( addresses.latitude ) ) )) AS distance
+		FROM addresses
+		JOIN users ON users.id = addresses.id
+		JOIN requests ON requests.address_id = addresses.id
+		JOIN roles ON users.role_id = roles.id
+		JOIN cities on addresses.city_id = cities.id
+		JOIN provinces on addresses.province_id = provinces.id
+		WHERE addresses.latitude<>''
+		AND addresses.longitude<>''
+		AND users.id <> @getter_id
+		AND requests.resolved = 'false'`+
+		additionalCondition +
+		`HAVING distance < @range
+		ORDER BY distance asc`
+
+	tx := config.Db.Raw(query,
+		sql.Named("lat", data.Latitude),
+		sql.Named("lon", data.Longitude),
+		sql.Named("range", data.Range),
+		sql.Named("getter_id", data.UserID)).Scan(&request) // All saved or per row?
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	return request, nil
 }

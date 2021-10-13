@@ -6,6 +6,10 @@ import (
 	"errors"
 )
 
+const (
+	layoutUS = "January 2, 2006"
+)
+
 func GetCertificateService(volunteerId int, completionId int) (interface{}, int, error) {
 	completion := models.Completion{}
 	findCompletion := config.Db.Find(&completion, completionId)
@@ -29,8 +33,8 @@ func GetCertificateService(volunteerId int, completionId int) (interface{}, int,
 			Invoice:         verifiedData.Invoice,
 			VolunteerName:   verifiedData.VolunteerName,
 			UserName:        verifiedData.UserName,
-			StartDate:       verifiedData.StartDate,
-			FinishDate:      verifiedData.FinishDate,
+			StartDate:       verifiedData.StartDate.Format(layoutUS),
+			FinishDate:      verifiedData.FinishDate.Format(layoutUS),
 			ProficiencyName: verifiedData.ProficiencyName,
 		}
 		return response, 1, nil
