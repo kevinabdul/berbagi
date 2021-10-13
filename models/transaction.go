@@ -7,7 +7,7 @@ import (
 )
 
 type Transaction struct {
-	DonorID         uint        	`gorm:"primaryKey" json:"donor_id"`	
+	DonorID         uint        	//`gorm:"primaryKey" json:"donor_id"`	
 	InvoiceID		string			`gorm:"primaryKey;not null;type:varchar(60)" json:"invoice_id"`
 	PaymentMethodID uint           	`json:"payment_id" form:"payment_id"`
 	PaymentStatus	string			`gorm:"type:enum('pending', 'expired', 'cancelled', 'paid');default:'pending'" json:"payment_status"`
@@ -27,7 +27,7 @@ type TransactionDetail struct {
 	Quantity  			uint  		`gorm:"not null;type:smallint" json:"quantity"`
 	CreatedAt 			time.Time
 	UpdatedAt			time.Time
-	Transaction   		Transaction 	`gorm:"foreignKey:InvoiceID;references:InvoiceID"`
+	Transaction   		Transaction 	`gorm:"foreignKey:InvoiceID"`
 	ProductPackage   	ProductPackage  `gorm:"foreignKey:ProductPackageID"`
 	Children 			Children 		`gorm:"foreignKey:RecipientID"`
 }

@@ -2,27 +2,34 @@ package config
 
 import (
 	"berbagi/models"
+	"berbagi/utils/password"
+	//datavalidation "berbagi/utils/registration"
+	"errors"
+	"os"
+
+	"gorm.io/gorm"
+
 )
 
-func insertProvince() {
+func InsertProvince() {
 	provinces := []models.Province{{Name: "DKI Jakarta"}, {Name: "Denpasar"}}
 	
 	Db.Create(&provinces)
 }
 
-func insertCity() {
+func InsertCity() {
 	cities := []models.City{{Name: "Jakarta Pusat", ProvinceID: 1}, {Name: "Bali", ProvinceID: 2}}
 
 	Db.Create(&cities)
 }
 
-func insertCategory() {
+func InsertCategory() {
 	categories := []models.Category{{Name: "school uniform"}, {Name: "food"}, {Name: "school utility"}, {Name: "communication package"}}
 
 	Db.Create(&categories)
 }
 
-func insertProduct() {
+func InsertProduct() {
 	products := []models.Product{{Name: "Seragam SD", Price: 60000, CategoryID: 1}, {Name: "Seragam SMP", Price: 75000, CategoryID: 1},
 		{Name: "Beras 5Kg", Price: 65000, CategoryID: 2}, {Name: "Telur Ayam (10)", Price: 13000, CategoryID: 2},
 		{Name: "Daging Ayam 1Kg", Price: 35000, CategoryID: 2}, {Name: "Minyak Sayur 2L", Price: 24000, CategoryID: 2},
@@ -35,14 +42,14 @@ func insertProduct() {
 	Db.Create(&products)
 }
 
-func insertProductPackage() {
+func InsertProductPackage() {
 	productPackage := []models.ProductPackage{{Name: "School Package-SD_Telkomsel"}, {Name: "School Package-SMP-Telkomsel"},
 		{Name: "Food Package-Telur"}, {Name: "Food package-Ayam"}}
 
 	Db.Create(&productPackage)
 }
 
-func insertProductPackageDetail() {
+func InsertProductPackageDetail() {
 	productPackageDetail := []models.ProductPackageDetail{{ProductPackageID: 1, ProductID: 1, Quantity: 1},
 		{ProductPackageID: 1, ProductID: 9, Quantity: 1}, {ProductPackageID: 1, ProductID: 11, Quantity: 1},
 		{ProductPackageID: 2, ProductID: 2, Quantity: 1}, {ProductPackageID: 2, ProductID: 9, Quantity: 1},
@@ -56,26 +63,26 @@ func insertProductPackageDetail() {
 	Db.Create(&productPackageDetail)
 }
 
-func insertPaymentMethod() {
+func InsertPaymentMethod() {
 	paymentMethod := []models.PaymentMethod{{Name:"alfamart", Description: "steps to pay via alfamart"},
 	{Name: "bank transfer", Description:"steps to pay via bank transfer"}, {Name: "gopay", Description: "steps to pay via gopay"}}
 
 	Db.Create(&paymentMethod)
 }
 
-func insertAction() {
+func InsertAction() {
 	actions := []models.Action{{Name:"GET"}, {Name:"POST"}, {Name:"PUT"}, {Name:"DELETE"}}
 	Db.Create(&actions)
 }
 
-func insertResource() {
+func InsertResource() {
 	resources := []models.Resource{{Path:"/product-carts"}, {Path:"/checkout"}, {Path:"/payments"}, {Path:"/gifts"},
 	{Path:"/location"}, {Path:"/request/donations"}, {Path:"/request/gifts"}, {Path:"/request/services"},
 	{Path:"/proficiencies"}, {Path:"/volunteer"}, {Path:"/services"}, {Path:"/services/verification"}}
 	Db.Create(&resources)
 }
 
-func insertPermission() {
+func InsertPermission() {
 	permissions := []models.Permission{
 		{ActionID:1, ResourceID:1},  // 1.  GET 	product-carts
 		{ActionID:3, ResourceID:1},  // 2.  PUT 	product-carts
@@ -97,12 +104,12 @@ func insertPermission() {
 	Db.Create(&permissions)
 }
 
-func insertRole() {
+func InsertRole() {
 	roles := []models.Role{{Name:"admin"}, {Name:"donor"}, {Name:"volunteer"}, {Name:"children"}, {Name:"foundation"}}
 	Db.Create(&roles)
 }
 
-func insertRolePermission() {
+func InsertRolePermission() {
 	rolePermissions := []models.RolePermission{{RoleID:2, PermissionID:1}, {RoleID:2, PermissionID:2}, {RoleID:2, PermissionID:3},
 	{RoleID:2, PermissionID:4}, {RoleID:2, PermissionID:5}, {RoleID:2, PermissionID:6}, {RoleID:4, PermissionID:7},
 	{RoleID:2, PermissionID:8}, {RoleID:3, PermissionID:8}, {RoleID:5, PermissionID:9}, {RoleID:4, PermissionID:10},
@@ -111,3 +118,131 @@ func insertRolePermission() {
 	Db.Create(&rolePermissions)
 }
 
+type RegistrationAPI struct {
+	UserID		 	uint   `json:"user_id"`
+	Name         	string `json:"name"`
+	Email        	string `json:"email"`
+	Password     	string `json:"password"`
+	NIK          	string `json:"nik"`
+	BirthDate	 	string `json:"birth_date"`
+	AddressName  	string `json:"address_name"`
+	Latitude     	string `json:"latitude"`
+	Longitude    	string `json:"longitude"`
+	CityID       	uint   `json:"city_id"`
+	ProvinceID   	uint   `json:"province_id"`
+	ProficiencyID	uint   `json:"proficiency_id"`
+	LicenseID    	uint   `json:"license_id"`
+	RoleID         	uint `json:"role_id"`
+	AdminKey 		string `json:"admin_key"`
+}
+
+/* test seeder function */
+
+func InsertUser(incomingData models.RegistrationAPI) (int,error) {
+	hashedPassword,_ := password.Hash(incomingData.Password)
+	newUser := models.User{}
+
+	transactionErr := Db.Transaction(func(tx *gorm.DB) error {
+
+		newAddress := models.Address{}
+		newAddress.Name = incomingData.AddressName
+		newAddress.Latitude = incomingData.Latitude
+		newAddress.Longitude = incomingData.Longitude
+		newAddress.CityID = incomingData.CityID
+		newAddress.ProvinceID = incomingData.ProvinceID
+
+		if err := tx.Model(models.Address{}).Create(&newAddress).Error; err != nil {
+			return err
+		}
+
+		newUser.Name = incomingData.Name
+		newUser.NIK = incomingData.NIK
+		newUser.Email = incomingData.Email
+		newUser.Password = hashedPassword
+		newUser.RoleID = incomingData.RoleID
+
+		if err := tx.Model(models.User{}).Create(&newUser).Error; err != nil {
+			return err
+		}
+
+		if incomingData.RoleID == 2 {
+			newUserRole := models.Donor{}
+			newUserRole.UserID = newUser.ID
+			newUserRole.BirthDate = incomingData.BirthDate
+			newUserRole.AddressID = newAddress.ID
+
+			res := tx.Table("donors").Create(&newUserRole)
+
+			if res.Error != nil {
+				return res.Error
+			}
+		} else if incomingData.RoleID == 1 {
+			adminKey := os.Getenv("ADMIN_KEY")
+
+			if adminKey != incomingData.AdminKey || incomingData.AdminKey == "" {
+				return errors.New("Invalid admin key")
+			}
+
+			newUserRole := models.Admin{}
+			newUserRole.UserID = newUser.ID
+			newUserRole.BirthDate = incomingData.BirthDate
+			newUserRole.AddressID = newAddress.ID
+
+			res := tx.Table("admins").Create(&newUserRole)
+
+			if res.Error != nil {
+				return res.Error
+			}
+		} else if incomingData.RoleID == 4 {
+			newUserRole := models.Children{}
+			newUserRole.UserID = newUser.ID
+			newUserRole.BirthDate = incomingData.BirthDate
+			newUserRole.AddressID = newAddress.ID
+
+			res := tx.Table("childrens").Create(&newUserRole)
+
+			if res.Error != nil {
+				return res.Error
+			}
+		} else if incomingData.RoleID == 3 {
+			newUserRole := models.Volunteer{}
+			newUserRole.UserID = newUser.ID
+			newUserRole.BirthDate = incomingData.BirthDate
+			newUserRole.ProficiencyID = incomingData.ProficiencyID
+			newUserRole.AddressID = newAddress.ID
+
+			res := tx.Table("volunteers").Create(&newUserRole)
+
+			if res.Error != nil {
+				return res.Error
+			}
+		} else if incomingData.RoleID == 5 {
+			newUserRole := models.Foundation{}
+			newUserRole.UserID = newUser.ID
+			newUserRole.LicenseID = incomingData.LicenseID
+			newUserRole.AddressID = newAddress.ID
+
+			res := tx.Table("foundations").Create(&newUserRole)
+
+			if res.Error != nil {
+				return res.Error
+			}
+		}
+
+		return nil
+	})
+
+	if transactionErr != nil {
+		return -1, transactionErr
+	}
+
+	return int(newUser.ID), nil
+}
+
+func InsertProductCart(userCart []models.ProductCart, donorId int) {
+	for _, cartItem := range userCart {
+		targetCart := models.ProductCart{}
+		Db.Where(models.ProductCart{DonorID: uint(donorId), RecipientID: uint(cartItem.RecipientID),
+		ProductPackageID: cartItem.ProductPackageID}).Assign(models.ProductCart{Quantity: cartItem.Quantity}).FirstOrCreate(&targetCart)
+	}
+}

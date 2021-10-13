@@ -4,13 +4,11 @@ import (
 	"berbagi/config"
 	"berbagi/models"
 	"errors"
-	"fmt"
 )
 
 func GetProducts(categoryId int) ([]models.ProductAPI, error) {
 	var products []models.ProductAPI
 
-	fmt.Println(categoryId)
 
 	if categoryId == 0 {
 		prodSearchRes := config.Db.Table("products").
