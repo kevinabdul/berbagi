@@ -53,5 +53,7 @@ func TestRunner(t *testing.T) {
 	t.Run("get product cart", controllers.Test_GetProductCartByUserIdController)
 	t.Run("update product cart", controllers.Test_UpdateProductCartByUserIdController)
 	t.Run("delete product cart", controllers.Test_DeleteProductCartByUserIdController)
-
+	t.Run("get children gift", controllers.Test_GetGiftsController)
+	t.Run("get pending payment", controllers.Test_GetPendingPaymentsController)
+	t.Run("resolved payment", controllers.Test_AddPendingPaymentController)
 }
