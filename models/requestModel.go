@@ -51,13 +51,13 @@ type NewGiftRequestResponseAPI struct {
 
 type RequestProfile struct {
 	RequestId   uint    `json:"request_id"`
-	RecipientId uint    `json:"recipient_id"`
+	Name        string  `json:"name"`
 	Role        string  `json:"role"`
-	AddressID   uint    `json:"address_id"`
 	Type        string  `json:"type"`
+	Address     string    `json:"address"`
+	City        string  `json:"city"`
+	Province    string  `json:"province"`
 	Distance    float64 `json:"distance"`
-	// PackageID   uint
-	// Quantity    int
 }
 
 type NewDonationRequest struct {

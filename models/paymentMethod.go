@@ -8,7 +8,7 @@ import (
 
 type PaymentMethod struct {
 	ID        	uint           `gorm:"primaryKey" json:"id"`
-	Name      	string         `gorm:"type:varchar(50)" json:"name"`
+	Name      	string         `gorm:"type:varchar(50);unique" json:"name"`
 	Description string 			`gorm:"type:varchar(1000)" json:"description"`
 	CreatedAt 	time.Time      `json:"-"`
 	UpdatedAt 	time.Time      `json:"-"`

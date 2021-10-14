@@ -17,7 +17,7 @@ import (
 func CreateGiftRequest(data models.NewGiftRequest) (models.NewGiftRequestResponseAPI, error) {
 	// check package exists & retrieve package name
 	var pack models.ProductPackage
-	if tx := config.Db.First(&pack, data.PackageID); tx.Error != nil {
+	if tx := config.Db.Table("product_packages").Find(&pack, data.PackageID); tx.Error != nil || tx.RowsAffected == 0 {
 		return models.NewGiftRequestResponseAPI{}, errors.New("package doesn't exist")
 	}
 
@@ -84,7 +84,7 @@ func CreateDonationRequest(data models.NewDonationRequest) (models.NewDonationRe
 func CreateServiceRequest(data models.NewServiceRequest) (models.NewServiceRequestResponseAPI, error) {
 	// check package exists & retrieve package name
 	var serv models.Proficiency
-	if tx := config.Db.First(&serv, data.ServiceID); tx.Error != nil {
+	if tx := config.Db.Table("proficiencies").Find(&serv, data.ServiceID); tx.Error != nil || tx.RowsAffected == 0{
 		return models.NewServiceRequestResponseAPI{}, errors.New("service doesn't exist")
 	}
 
