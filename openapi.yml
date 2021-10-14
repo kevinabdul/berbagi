@@ -1542,7 +1542,7 @@ paths:
                     "message": "no product_package_id with id: 1298 found in the product_package table",
                   }
 
-### requests
+## requests
   /request/gift:
     post:
       tags:
@@ -1572,32 +1572,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/requestGiftResponse'
-              example:
-                  success:
-                    description: "Example success posting request"
-                    value: {
-                      "status": "success",
-                      "message": "request has been submitted",
-                      "data": {
-                          "request_id": 2,
-                          "user_id": 1,
-                          "package": "School Package-SD_Telkomsel",
-                          "quantity": 2
-                        }
+              examples:
+                success:
+                  description: "Example success posting request"
+                  value: {
+                    "status": "success",
+                    "message": "request has been submitted",
+                    "data": {
+                        "request_id": 2,
+                        "user_id": 1,
+                        "package": "School Package-SD_Telkomsel",
+                        "quantity": 2
                       }
+                  }
         '400':
           description: "response when failed posting request"
           content:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed posting request"
-                    value: {
-                      "status": "failed",
-                      "message": "can't create new request",
-                    }
+              examples:
+                failed:
+                  description: "Example failed posting request"
+                  value: {
+                    "status": "failed",
+                    "message": "can't create new request"
+                  }
   
   /request/donation:
     post:
@@ -1628,31 +1628,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/requestDonationResponse'
-              example:
-                  success:
-                    description: "Example success posting request"
-                    value: {
-                      "status": "success",
-                      "message": "request has been submitted",
-                      "data": {
-                          "request_id": 2,
-                          "user_id": 1,
-                          "amount": 100000,
-                          "purpose": "renovation"
-                        }
+              examples:
+                success:
+                  description: "Example success posting request"
+                  value: {
+                    "status": "success",
+                    "message": "request has been submitted",
+                    "data": {
+                        "request_id": 2,
+                        "user_id": 1,
+                        "amount": 100000,
+                        "purpose": "renovation"
                       }
+                    }
         '400':
           description: "response when failed posting request"
           content:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed posting request"
-                    value: {
-                      "status": "failed",
-                      "message": "can't create new request",
+              examples:
+                failed:
+                  description: "Example failed posting request"
+                  value: {
+                    "status": "failed",
+                    "message": "can't create new request",
                     }
   
   /request/service:
@@ -1685,33 +1685,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/requestServiceResponse'
-              example:
-                  success:
-                    description: "Example success posting request"
-                    value: {
-                      "status": "success",
-                      "message": "request has been submitted",
-                      "data": {
-                          "request_id": 3,
-                          "user_id": 1,
-                          "service_id": 1,
-                          "start_date": "2021-10-17",
-                          "finish_date": "2021-10-19"
-                        }
+              examples:
+                success:
+                  description: "Example success posting request"
+                  value: {
+                    "status": "success",
+                    "message": "request has been submitted",
+                    "data": {
+                        "request_id": 3,
+                        "user_id": 1,
+                        "service_id": 1,
+                        "start_date": "2021-10-17",
+                        "finish_date": "2021-10-19"
                       }
+                    }
         '400':
           description: "response when failed posting request"
           content:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed posting request"
-                    value: {
-                      "status": "failed",
-                      "message": "can't create new request",
-                    }
+              examples:
+                failed:
+                  description: "Example failed posting request"
+                  value: {
+                    "status": "failed",
+                    "message": "can't create new request",
+                  }
   
   /request:
     get:
@@ -1721,7 +1721,7 @@ paths:
       security:
         - JWTAuth: []
       parameters:
-        - $ref: '#/components/parameters/resolved'
+        - $ref: '#/components/parameters/resolvedRequest'
       description: "Get requests list"
       responses:
         '200':
@@ -1729,43 +1729,43 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/responseGetRequestList'
-              example:
-                  success:
-                    description: "Example success getting all requests list (no resolve specific status)"
-                    value: {
-                      "status": "success",
-                      "message": "success getting request list",
-                      "data": [
-                          {
-                            "ID": 2,
-                            "user_id": 1,
-                            "address_id": 1,
-                            "type": "gift",
-                            "resolved": "true"
-                          },
-                          {
-                            "ID": 3,
-                            "user_id": 1,
-                            "address_id": 1,
-                            "type": "gift",
-                            "resolved": "false"
-                          }
-                        ]
-                      }
+                $ref: '#/components/schemas/responseGetRequestList'
+              examples:
+                success:
+                  description: "Example success getting all requests list (no resolve specific status)"
+                  value: {
+                    "status": "success",
+                    "message": "success getting request list",
+                    "data": [
+                        {
+                          "ID": 2,
+                          "user_id": 1,
+                          "address_id": 1,
+                          "type": "gift",
+                          "resolved": "true"
+                        },
+                        {
+                          "ID": 3,
+                          "user_id": 1,
+                          "address_id": 1,
+                          "type": "gift",
+                          "resolved": "false"
+                        }
+                      ]
+                    }
         '400':
           description: "response when failed getting requests list"
           content:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed getting requests list"
-                    value: {
-                      "status": "failed",
-                      "message": "can't get request list",
-                    }
+              examples:
+                failed:
+                  description: "Example failed getting requests list"
+                  value: {
+                    "status": "failed",
+                    "message": "can't get request list",
+                  }
 
     delete:
       tags:
@@ -1783,13 +1783,13 @@ paths:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed deleting request"
-                    value: {
-                      "status": "failed",
-                      "message": "can't delete request",
-                    }
+              examples:
+                failed:
+                  description: "Example failed deleting request"
+                  value: {
+                    "status": "failed",
+                    "message": "can't delete request",
+                  }
 
   /request/{type}:
     get:
@@ -1799,8 +1799,8 @@ paths:
       security:
         - JWTAuth: []
       parameters:
-        - $ref: '#/components/parameters/type'
-        - $ref: '#/components/parameters/resolved'
+        - $ref: '#/components/parameters/requestType'
+        - $ref: '#/components/parameters/resolvedRequest'
       description: "Get requests list"
       responses:
         '200':
@@ -1809,42 +1809,42 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/responseGetRequestList'
-              example:
-                  success:
-                    description: "Example success getting all requests list (no resolve specific status)"
-                    value: {
-                      "status": "success",
-                      "message": "success getting request list",
-                      "data": [
-                          {
-                            "ID": 2,
-                            "user_id": 1,
-                            "address_id": 1,
-                            "type": "gift",
-                            "resolved": "true"
-                          },
-                          {
-                            "ID": 3,
-                            "user_id": 1,
-                            "address_id": 1,
-                            "type": "gift",
-                            "resolved": "false"
-                          }
-                        ]
-                      }
+              examples:
+                success:
+                  description: "Example success getting all requests list (no resolve specific status)"
+                  value: {
+                    "status": "success",
+                    "message": "success getting request list",
+                    "data": [
+                        {
+                          "ID": 2,
+                          "user_id": 1,
+                          "address_id": 1,
+                          "type": "gift",
+                          "resolved": "true"
+                        },
+                        {
+                          "ID": 3,
+                          "user_id": 1,
+                          "address_id": 1,
+                          "type": "gift",
+                          "resolved": "false"
+                        }
+                      ]
+                    }
         '400':
           description: "response when failed getting requests list"
           content:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed getting requests list"
-                    value: {
-                      "status": "failed",
-                      "message": "can't get request list",
-                    }
+              examples:
+                failed:
+                  description: "Example failed getting requests list"
+                  value: {
+                    "status": "failed",
+                    "message": "can't get request list",
+                  }
 
   /request/{recipient_id}:
     get:
@@ -1855,8 +1855,8 @@ paths:
         - JWTAuth: []
       parameters:
         - $ref: '#/components/parameters/recipient_id'
-        - $ref: '#/components/parameters/type'
-        - $ref: '#/components/parameters/resolved'
+        - $ref: '#/components/parameters/requestType'
+        - $ref: '#/components/parameters/resolvedRequest'
       description: "Get requests list for specific userID"
       responses:
         '200':
@@ -1865,42 +1865,585 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/responseGetRequestList'
-              example:
-                  success:
-                    description: "Example success getting all requests list (no resolve specific status)"
-                    value: {
-                      "status": "success",
-                      "message": "success getting request list",
-                      "data": [
-                          {
-                            "ID": 2,
-                            "user_id": 1,
-                            "address_id": 1,
-                            "type": "gift",
-                            "resolved": "true"
-                          },
-                          {
-                            "ID": 3,
-                            "user_id": 1,
-                            "address_id": 1,
-                            "type": "gift",
-                            "resolved": "false"
-                          }
-                        ]
-                      }
+              examples:
+                success:
+                  description: "Example success getting all requests list (no resolve specific status)"
+                  value: {
+                    "status": "success",
+                    "message": "success getting request list",
+                    "data": [
+                        {
+                          "ID": 2,
+                          "user_id": 1,
+                          "address_id": 1,
+                          "type": "gift",
+                          "resolved": "true"
+                        },
+                        {
+                          "ID": 3,
+                          "user_id": 1,
+                          "address_id": 1,
+                          "type": "gift",
+                          "resolved": "false"
+                        }
+                      ]
+                    }
         '400':
           description: "response when failed getting requests list"
           content:
             application/json:     
               schema:
                 $ref: '#/components/schemas/failedResponse'
-                example:
-                  failed:
-                    description: "Example failed getting requests list"
-                    value: {
-                      "status": "failed",
-                      "message": "can't get request list",
+              examples:
+                failed:
+                  description: "Example failed getting requests list"
+                  value: {
+                    "status": "failed",
+                    "message": "can't get request list",
+                  }
+
+## donations
+  /donation:
+    get:
+      tags:
+        - "Donations"
+      summary: "Get donations list"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/resolvedDonation'
+      description: "Get donations list"
+      responses:
+        '200':
+          description: "response when success getting donations list"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseGetDonationList'
+              examples:
+                success:
+                  description: "Example success getting all donations list (no resolve specific status)"
+                  value: {
+                    "status": "success",
+                    "message": "success getting donation list",
+                    "data": [
+                        {
+                          "donation_id": 2,
+                          "donor_id": 1,
+                          "recipient_id": 2,
+                          "request_id": 1,
+                          "amount": 100000,
+                          "payment_status": "true"
+                        },
+                        {
+                          "donation_id": 3,
+                          "donor_id": 1,
+                          "recipient_id": 3,
+                          "request_id": 0,
+                          "amount": 200000,
+                          "payment_status": "false"
+                        },
+                      ]
                     }
+        '400':
+          description: "response when failed getting donations list"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed getting donations list"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to get donations list",
+                  }
+
+    post:
+      tags:
+        - "Donations"
+      summary: "Make donations"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/quick_donation'
+      description: "Make donation <br /> <br />
+                    If `quick` query parameter set to yes/true will
+                    process donation to checkout immediately <br />
+                    Add `payment_method_id` in request body
+                    for quick donation<br /> <br />
+                    `request_id = 0` for un-requested donation"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/makeDonation'
+            examples:
+              regular donation:
+                description: "Example for making regular donation"
+                value: {
+                  "recipient_id": 2,
+                  "request_id": 1,
+                  "amount": 100000
+                }
+              quick donation:
+                description: "Example for making quick donation"
+                value: {
+                  "recipient_id": 2,
+                  "request_id": 1,
+                  "amount": 100000,
+                  "payment_id": 1
+                }
+      responses:
+        '200':
+          description: "response when success adding donation to cart"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestDonationResponse'
+              examples:
+                success:
+                  description: "Example success posting request"
+                  value: {
+                    "status": "success",
+                    "message": "success add donation to cart",
+                    "data": {
+                        "donation_id": 0,
+                        "donor_id": 1,
+                        "recipient_id": 2,
+                        "request_id": 2,
+                        "amount": 100000,
+                      }
+                    }
+        '400':
+          description: "response when failed deleting request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed making donation"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to make donation",
+                  }
+
+  /cart/donation:
+    get:
+      tags:
+        - "Donations"
+      summary: "Get donations in cart"
+      security:
+        - JWTAuth: []
+      description: "Get donation list in cart"
+      responses:
+        '200':
+          description: "response when success getting donations list in cart"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseGetDonationList'
+              examples:
+                success:
+                  description: "Example success getting donations list in cart"
+                  value: {
+                    "status": "success",
+                    "message": "success get donations in cart",
+                    "data": [
+                        {
+                          "donation_id": 0,
+                          "donor_id": 1,
+                          "recipient_id": 2,
+                          "request_id": 1,
+                          "amount": 100000,
+                          "payment_status": "false",
+                          "made_at": "2021-10-13 12:17:25"
+                        },
+                        {
+                          "donation_id": 0,
+                          "donor_id": 1,
+                          "recipient_id": 3,
+                          "request_id": 0,
+                          "amount": 100000,
+                          "payment_status": "false",
+                          "made_at": "2021-10-13 12:17:25"
+                        }
+                      ]
+                    }
+        '400':
+          description: "response when failed getting donations list in cart"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed getting donations list"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to get cart",
+                  }
+    
+    put:
+      tags:
+        - "Donations"
+      summary: "Update donations cart"
+      security:
+        - JWTAuth: []
+      description: "Update donation cart <br />
+                    Only update non-requested donations <br />
+                    Requested donation amount bound to request amount"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/makeDonation'
+            examples:
+              update donation:
+                description: "Example for updating donation cart"
+                value: {
+                  "recipient_id": 2,
+                  "request_id": 0,
+                  "amount": 100000
+                }
+      responses:
+        '200':
+          description: "response when success updating donation in cart"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseMakeDonation'
+              examples:
+                success:
+                  description: "Example success updating donation in cart"
+                  value: {
+                    "status": "success",
+                    "message": "success update donation in cart",
+                    "data":
+                        {
+                          "donation_id": 0,
+                          "donor_id": 1,
+                          "recipient_id": 2,
+                          "request_id": 0,
+                          "amount": 100000,
+                          "payment_status": "false",
+                          "made_at": "2021-10-13 12:15:30"
+                        }
+                    }
+        '400':
+          description: "response when failed updating donation in cart"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed to find item in cart:
+                  description: "Example failed to find donation in cart"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to find item in cart",
+                  }
+                update requested donation:
+                  description: "Example failed trying to update requested donation"
+                  value: {
+                    "status": "failed",
+                    "message": "only non-requested donation can be updated",
+                  }
+                failed:
+                  description: "Example failed to update donation in cart"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to update cart",
+                  }
+
+    delete:
+      tags:
+        - "Donations"
+      summary: "Delete donations in cart"
+      security:
+        - JWTAuth: []
+      description: "Delete donation in cart"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/deleteDonation'
+            examples:
+              update donation:
+                description: "Example for deleting donation cart"
+                value: {
+                  "recipient_id": 2,
+                  "request_id": 0,
+                }
+      responses:
+        '200':
+          description: "response when success deleting donation from cart"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/successResponse'
+              examples:
+                success:
+                  description: "Example success deleting donation from cart"
+                  value: {
+                    "Status": "success",
+                    "Message": "success delete donation from cart",
+                  }
+        '400':
+          description: "response when failed deleting request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed to find item in cart:
+                  description: "Example failed to find donation in cart"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to find item in cart",
+                  }
+                failed:
+                  description: "Example failed deleting donation from cart"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to delete donation from cart",
+                  }
+
+  /donation/checkout:
+    post:
+      tags:
+        - "Donations"
+      summary: "Checkout donations"
+      security:
+        - JWTAuth: []
+      description: "Checkout donation <br />
+                    Only checkout one donation at a time"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/checkoutDonation'
+            examples:
+              checkout donation:
+                description: "Example checkout donation"
+                value: {
+                  "recipient_id": 2,
+                  "request_id": 1,
+                  "payment_id": 1
+                }
+      responses:
+        '200':
+          description: "response when success posting request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestGiftResponse'
+              examples:
+                success:
+                  description: "Example of checkout donation"
+                  value:  {
+                    "status": "success",
+                    "message": "success checkout donation, proceed to payment",
+                    "data": [
+                        {
+                          "recipient_id": 2,
+                          "request_id": 1,
+                          "amount": 100000
+                        }
+                      ]
+                    }
+        '400':
+          description: "response when failed checkout request"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed checkout donation"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to checkout donation"
+                  }
+  
+  /payment/donation:
+    post:
+      tags:
+        - "Donations"
+      summary: "Pay donations"
+      security:
+        - JWTAuth: []
+      description: "Pay donation"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/payDonation'
+            examples:
+              pay donation:
+                description: "Example pay donation"
+                value: {
+                  "invoice_id": "BERBAGI.DONOR.001.DONATE.001.2021-10-13 16:06:53",
+                  "total": 100000,
+                  "payment_method_id": 1
+                }
+      responses:
+        '200':
+          description: "response when success pay donation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payDonationResponse'
+              examples:
+                success:
+                  description: "Example of pay donation"
+                  value:  {
+                    "status": "success",
+                    "message": "payment success",
+                    "data": [
+                        {
+                          "donor_id": 2,
+                          "invoice_id": "BERBAGI.DONOR.001.DONATE.001.2021-10-13 16:06:53",
+                          "total": 100000,
+                          "payment_method_id": 1,
+                          "created_at": "2021-10-13 16:08:45"
+                        }
+                      ]
+                    }
+        '400':
+          description: "response when failed pay donation"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed:
+                  description: "Example failed pay donation <br />
+                                Error details will attached at the end of message"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to process payment; ..."
+                  }
+  
+## locations
+  /nearby/{resource}:
+    get:
+      tags:
+        - "Nearby Locations"
+      summary: "Get nearby recipients or requests list"
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/nearby_resource'
+        - $ref: '#/components/parameters/nearby_type'
+        - $ref: '#/components/parameters/nearby_range'
+      description: "Get nearby recipients or requests list <br /><br />
+                    `resource`: <br /><br />
+                    - `recipients` -> `type`:<br />
+                    --- `children` <br />
+                    --- `foundation` <br /> <br />
+                    - `requests` -> `type`:<br />
+                    --- `gift` <br />
+                    --- `donation` <br />
+                    --- `service`"
+      responses:
+        '200':
+          description: "response when success getting requests list"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/nearbyUsersResponse'
+                  # $ref: '#/components/schemas/nearbyRequestsResponse'
+              examples:
+                recipients:
+                  description: "Example of getting nearby resipients"
+                  value:  {
+                    "status": "success",
+                    "message": "success getting recipients nearby",
+                    "data": [
+                        {
+                          "user_id": 2,
+                          "name": jono,
+                          "role": "children",
+                          "Address": "Jl Pemuda",
+                          "City": "Tasikmalaya",
+                          "Province": "West Java",
+                          "Latitude": -7.2318,
+                          "Longitude": 110.3261,
+                          "Distance": 3.4
+                        }
+                      ]
+                    }
+
+                requests:
+                  description: "Example of getting nearby requests"
+                  value:  {
+                    "status": "success",
+                    "message": "success getting requests nearby",
+                    "data": [
+                        {
+                          "request_id": 2,
+                          "name": jono,
+                          "role": "children",
+                          "type": "gift",
+                          "Address": "Jl Pemuda",
+                          "City": "Tasikmalaya",
+                          "Province": "West Java",
+                          "Distance": 3.4
+                        }
+                      ]
+                    }
+                
+                no target nearby:
+                  description: "Example of getting nearby requests"
+                  value:  {
+                    "status": "success",
+                    "message": "no target nearby",
+                    }
+
+        '400':
+          description: "response when failed getting nearby target list"
+          content:
+            application/json:     
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                failed get recipients:
+                  description: "Example failed getting recipients list"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to get nearest recipients",
+                  }
+                failed get requests:
+                  description: "Example failed getting requests list"
+                  value: {
+                    "status": "failed",
+                    "message": "failed to get nearest requests",
+                  }
+                invalid resource:
+                  description: "Example wrong resource type"
+                  value: {
+                    "status": "failed",
+                    "message": "invalid resource type",
+                  }
+                invalid category:
+                  description: "Example wrong category type"
+                  value: {
+                    "status": "failed",
+                    "message": "invalid category",
+                  }
+                invalid combination:
+                  description: "Example failed matching resource and type"
+                  value: {
+                    "status": "failed",
+                    "message": "invalid resource and type combination",
+                  }
 
 #################
 components:
@@ -2096,37 +2639,6 @@ components:
           type: number
 
     
-    responseGetRequests:
-      type: object
-      properties: {
-          "Message": {
-            type: string
-          },
-          "Status": {
-            type: string
-          },
-          "Data": {
-            type: object,
-            properties:{
-                "id": {
-                  type: number
-                },
-                "user_id": {
-                  type: number
-                },
-                "address_id": {
-                  type: number
-                },
-                "type": {
-                  type: string
-                },
-                "resolved": {
-                  type: string
-                },
-              }              
-            }
-          }
-        
     requestGift:
       type: object
       properties: {
@@ -2144,29 +2656,29 @@ components:
     requestGiftResponse:
       type: object
       properties: {
-          "status": {
-            type: string
-          },
-          "message": {
-            type: string
-          },
-          "data": {
-            type: object,
-            properties: {
-              "request_id": {
-                type: number
-              },
-              "user_id": {
-                type: number
-              },
-              "package": {
-                type: string
-              },
-              "quantity": {
-                type: number
-              },
+        "status": {
+          type: string
+        },
+        "message": {
+          type: string
+        },
+        "data": {
+          type: object,
+          properties: {
+            "request_id": {
+              type: number
+            },
+            "user_id": {
+              type: number
+            },
+            "package": {
+              type: string
+            },
+            "quantity": {
+              type: number
             }
           }
+        }
       }
         
     requestDonation:
@@ -2302,6 +2814,260 @@ components:
         }
       }
 
+    successResponse:
+      type: object
+      properties: {
+        "message": {
+          type: string
+        },
+        "status": {
+          type: string
+        }
+      }
+
+    makeDonation:
+      type: object
+      properties: {
+        "recipient_id": {
+          type: number
+        },
+        "request_id": {
+          type: number
+        },
+        "amount": {
+          type: number
+        },
+      }
+   
+    checkoutDonation:
+      type: object
+      properties: {
+        "recipient_id": {
+          type: number
+        },
+        "request_id": {
+          type: number
+        },
+        "payment": {
+          type: number
+        },
+      }
+    
+    payDonation:
+      type: object
+      properties: {
+        "invoice_id": {
+          type: string
+        },
+        "total": {
+          type: number
+        },
+        "payment_method_id": {
+          type: number
+        },
+      }
+
+    payDonationResponse:
+      type: object
+      properties: {
+        "Status": {
+          type: string
+        },
+        "Message": {
+          type: string
+        },
+        "Data": {
+            type: array,
+            items: {
+              type: object,
+              properties:
+                {
+                  "donor_id": {
+                    type: number
+                  },
+                  "invoice_id": {
+                    type: string
+                  },
+                  "total": {
+                    type: number
+                  },
+                  "payment_method_id": {
+                    type: number
+                  },
+                  "created_at": {
+                    type: string
+                  },
+                }
+            }
+        }
+      }
+
+    responseMakeDonation:
+      type: object
+      properties: {
+          "Status": {
+            type: string
+          },
+          "Message": {
+            type: string
+          },
+          "Data": {
+            type: object,
+            properties: {
+              "donation_id": {
+                type: number
+              },
+              "donor_id": {
+                type: number
+              },
+              "recipient_id": {
+                type: number
+              },
+              "request_id": {
+                type: number
+              },
+              "amount": {
+                type: number
+              },
+            }
+          }
+      }
+
+    responseGetDonationList:
+      type: object
+      properties: {
+          "message": {
+            type: string
+          },
+          "status": {
+            type: string
+          },
+          "data": {
+            type: array,
+            items: {
+              type: object,
+              properties:
+                {
+                  "donation_id": {
+                    type: number
+                  },
+                  "donor_id": {
+                    type: number
+                  },
+                  "recipient_id": {
+                    type: number
+                  },
+                  "request_id": {
+                    type: number
+                  },
+                  "amount": {
+                    type: number
+                  },
+                  "payment_status": {
+                    type: string
+                  },
+                  "made_at": {
+                    type: string
+                  },
+                }
+            }
+          },
+        }
+
+    deleteDonation:
+      type: object
+      properties: {
+        "recipient_id": {
+          type: number
+        },
+        "request_id": {
+          type: number
+        },
+      }
+
+    nearbyUsersResponse:
+      type: object
+      properties: {
+        "status": {
+          type: string
+        },
+        "message": {
+          type: string
+        },
+        "data": {
+          type: object,
+          properties: {
+            "user_id": {
+              type: number
+            },
+            "name": {
+              type: string
+            },
+            "role": {
+              type: string
+            },
+            "address": {
+              type: string
+            },
+            "city": {
+              type: string
+            },
+            "province": {
+              type: string
+            },
+            "latitude": {
+              type: number
+            },
+            "longitude": {
+              type: number
+            },
+            "distance": {
+              type: number
+            },
+          }
+        }
+      }
+  
+    nearbyRequestsResponse:
+      type: object
+      properties: {
+        "status": {
+          type: string
+        },
+        "message": {
+          type: string
+        },
+        "data": {
+          type: object,
+          properties: {
+            "request_id": {
+              type: number
+            },
+            "name": {
+              type: string
+            },
+            "role": {
+              type: string
+            },
+            "type": {
+              type: string
+            },
+            "address": {
+              type: string
+            },
+            "city": {
+              type: string
+            },
+            "province": {
+              type: string
+            },
+            "distance": {
+              type: number
+            }
+          }
+        }
+      }
+  
   parameters:
     proficiencyId:
       name: "id"
@@ -2359,7 +3125,7 @@ components:
             "status" : "completed"  
           } 
 
-    resolved:
+    resolvedRequest:
       name: "resolved"
       in: "query"
       required: false
@@ -2398,7 +3164,7 @@ components:
               ]
             }
 
-    type:
+    requestType:
       name: "request type"
       in: path
       required: true
@@ -2490,6 +3256,204 @@ components:
                   "address_id": 1,
                   "type": "gift",
                   "resolved": "false"
+                }
+              ]
+            }
+
+    resolvedDonation:
+      name: "resolved"
+      in: "query"
+      required: false
+      description: resolved status specific donation
+      schema:
+        $ref: '#/components/schemas/responseGetDonationList'
+      examples:
+        yes:
+          description: "Example of resolved donation"
+          value:  {
+            "status": "success",
+            "message": "success getting donations list",
+            "data": [
+                {
+                  "donation_id": 2,
+                  "donor_id": 1,
+                  "recipient_id": 2,
+                  "request_id": 1,
+                  "amount": 100000,
+                  "payment_status": "true"
+                }
+              ]
+            }
+        no:
+          description: "Example of unresolved donation"
+          value:  {
+            "status": "success",
+            "message": "success getting donations list",
+            "data": [
+                {
+                  "donation_id": 3,
+                  "donor_id": 1,
+                  "recipient_id": 3,
+                  "request_id": 0,
+                  "amount": 200000,
+                  "payment_status": "false"
+                },
+              ]
+            }
+
+    quick_donation:
+      name: "quick"
+      in: "query"
+      required: false
+      description: donation will be processed to checkout immediately
+      schema:
+        $ref: '#/components/schemas/makeDonation'
+      examples:
+        yes:
+          description: "Example of quick donation"
+          value:  {
+            "status": "success",
+            "message": "success checkout donation, proceed to payment",
+            "data": [
+                {
+                  "recipient_id": 2,
+                  "request_id": 1,
+                  "amount": 100000
+                }
+              ]
+            }
+   
+    nearby_range:
+      name: "range"
+      in: "query"
+      required: true
+      description: range to get nearby recipients or requests
+      schema:
+        $ref: '#/components/schemas/nearbyUsersResponse'
+        # $ref: '#/components/schemas/nearbyRequestsResponse'
+      examples:
+        success:
+          description: "Example of getting nearby resipients"
+          value:  {
+            "status": "success",
+            "message": "success getting recipients nearby",
+            "data": [
+                {
+                  "user_id": 2,
+                  "name": jono,
+                  "role": "children",
+                  "Address": "Jl Pemuda",
+                  "City": "Tasikmalaya",
+                  "Province": "West Java",
+                  "Latitude": -7.2318,
+                  "Longitude": 110.3261,
+                  "Distance": 3.4
+                }
+              ]
+            }
+        failed too far:
+          description: "Example of quick donation"
+          value:  {
+            "status": "failed",
+            "message": "range too far",
+            }
+        failed invalid range:
+          description: "Example of quick donation"
+          value:  {
+            "status": "failed",
+            "message": "range value invalid",
+            }
+  
+    nearby_resource:
+      name: "resource"
+      in: "path"
+      required: true
+      description: range to get nearby recipients or requests
+      schema:
+        $ref: '#/components/schemas/nearbyUsersResponse'
+        # $ref: '#/components/schemas/nearbyRequestsResponse'
+      examples:
+        recipient:
+          description: "Example of getting nearby resipients"
+          value:  {
+            "status": "success",
+            "message": "success getting recipients nearby",
+            "data": [
+                {
+                  "user_id": 2,
+                  "name": jono,
+                  "role": "children",
+                  "Address": "Jl Pemuda",
+                  "City": "Tasikmalaya",
+                  "Province": "West Java",
+                  "Latitude": -7.2318,
+                  "Longitude": 110.3261,
+                  "Distance": 3.4
+                }
+              ]
+            }
+        request:
+          description: "Example of getting nearby requests"
+          value:  {
+            "status": "success",
+            "message": "success getting requests nearby",
+            "data": [
+                {
+                  "request_id": 2,
+                  "name": jono,
+                  "role": "children",
+                  "type": "gift",
+                  "Address": "Jl Pemuda",
+                  "City": "Tasikmalaya",
+                  "Province": "West Java",
+                  "Distance": 3.4
+                }
+              ]
+            }
+   
+    nearby_type:
+      name: "type"
+      in: "query"
+      required: false
+      description: range to get nearby recipients or requests
+      schema:
+        $ref: '#/components/schemas/nearbyUsersResponse'
+        # $ref: '#/components/schemas/nearbyRequestsResponse'
+      examples:
+        children:
+          description: "Example of getting nearby children"
+          value:  {
+            "status": "success",
+            "message": "success getting recipients nearby",
+            "data": [
+                {
+                  "user_id": 2,
+                  "name": jono,
+                  "role": "children",
+                  "Address": "Jl Pemuda",
+                  "City": "Tasikmalaya",
+                  "Province": "West Java",
+                  "Latitude": -7.2318,
+                  "Longitude": 110.3261,
+                  "Distance": 3.4
+                }
+              ]
+            }
+        gift:
+          description: "Example of getting nearby requests"
+          value:  {
+            "status": "success",
+            "message": "success getting requests nearby",
+            "data": [
+                {
+                  "request_id": 2,
+                  "name": jono,
+                  "role": "children",
+                  "type": "gift",
+                  "Address": "Jl Pemuda",
+                  "City": "Tasikmalaya",
+                  "Province": "West Java",
+                  "Distance": 3.4
                 }
               ]
             }
