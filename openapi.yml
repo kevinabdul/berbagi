@@ -1267,8 +1267,8 @@ paths:
                             properties: {
                               "product_package_id": {
                                 type: number
-                              }, "
-                              details":{
+                              }, 
+                              "details":{
                                 type: array,
                                 items: {
                                   type: object,
@@ -2004,7 +2004,7 @@ paths:
                 $ref: '#/components/schemas/requestDonationResponse'
               examples:
                 success:
-                  description: "Example success posting request"
+                  description: "Example success adding donation to cart"
                   value: {
                     "status": "success",
                     "message": "success add donation to cart",
@@ -2017,7 +2017,7 @@ paths:
                       }
                     }
         '400':
-          description: "response when failed deleting request"
+          description: "response when failed deleting donation"
           content:
             application/json:     
               schema:
@@ -2194,7 +2194,7 @@ paths:
                     "Message": "success delete donation from cart",
                   }
         '400':
-          description: "response when failed deleting request"
+          description: "response when failed deleting donation from cart"
           content:
             application/json:     
               schema:
@@ -2238,7 +2238,7 @@ paths:
                 }
       responses:
         '200':
-          description: "response when success posting request"
+          description: "response when success checkout donation"
           content:
             application/json:
               schema:
@@ -2258,7 +2258,7 @@ paths:
                       ]
                     }
         '400':
-          description: "response when failed checkout request"
+          description: "response when failed checkout donation"
           content:
             application/json:     
               schema:
@@ -2624,7 +2624,7 @@ components:
           type: string
         },
         "data": {
-          type: null
+          type: string
           }
         }
 
@@ -3165,7 +3165,7 @@ components:
             }
 
     requestType:
-      name: "request type"
+      name: "type"
       in: path
       required: true
       description: type specific request
@@ -3220,7 +3220,7 @@ components:
             }
 
     request_id:
-      name: "request id"
+      name: "request_id"
       in: query
       required: true
       description: delete specific request
@@ -3236,7 +3236,7 @@ components:
           }
 
     recipient_id:
-      name: "recipient id"
+      name: "recipient_id"
       in: path
       required: true
       description: type specific request
