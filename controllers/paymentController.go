@@ -20,7 +20,7 @@ func GetPendingPaymentsController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.Create("failed", err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, response.Create("success", "Pending payments are retrieved succesfully", pendingPayments))
+	return c.JSON(http.StatusOK, response.Create("success", "pending payments are retrieved succesfully", pendingPayments))
 }
 
 func AddPendingPaymentController(c echo.Context) error {
@@ -33,7 +33,7 @@ func AddPendingPaymentController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.Create("failed", err.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, response.Create("success", "Payment is succesfull", receiptAPI))
+	return c.JSON(http.StatusOK, response.Create("success", "payment is succesfull", receiptAPI))
 }
 
 
