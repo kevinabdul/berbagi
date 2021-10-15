@@ -32,8 +32,6 @@ Find happiness by sharing with others
 # High Level Architecture
 <img src="https://github.com/kevinabdul/berbagi/blob/bd62cea397eeed4a28546db6d01dc954f939d783/res/HLA-Berbagi.jpg">
 
-# Flowchart
-<img src="">
 
 # Entity Relations Diagram
 <img src="https://github.com/kevinabdul/berbagi/blob/bd62cea397eeed4a28546db6d01dc954f939d783/res/erd.drawio.png">
