@@ -40,7 +40,7 @@ type TransactionDonationDetail struct {
 	Purpose     string `json:"purpose"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	Transaction Transaction `gorm:"foreignKey:InvoiceID"`
+	// Transaction Transaction `gorm:"foreignKey:InvoiceID"`
 	Donation    Donation    `gorm:"foreignKey:DonationID"`
 	Foundation  Foundation  `gorm:"foreignKey:RecipientID"`
 }
