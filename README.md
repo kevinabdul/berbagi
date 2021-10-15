@@ -4,7 +4,7 @@
 
 # Berbagi
 
-sharing
+Find happiness by sharing with others
 
 [![Go.Dev reference](https://img.shields.io/badge/gorm-reference-blue?logo=go&logoColor=blue)](https://pkg.go.dev/gorm.io/gorm?tab=doc)
 [![Go.Dev reference](https://img.shields.io/badge/echo-reference-blue?logo=go&logoColor=blue)](https://github.com/labstack/echo)
@@ -12,23 +12,22 @@ sharing
 
 # Table of Content
 
-- [Introduction](#introduction)
+- [Description](#description)
 - [Feature Overview](#feature-overview)
 - [High Level Architecture](#high-level-architecture)
 - [Flowchart](#flowchart)
 - [Entity Relations Diagram](#entity-relations-diagram)
 - [How to use](#how-to-use)
-- [Endpoint](#endpoint)
-- [API usage examples](#api-usage-examples)
+- [Endpoints](#endpoints)
+- [OpenAPI Documentation](#openapi-documentation)
 - [Contribute](#contribute)
 - [Credits](#credits)
-- [Image source](#image-source)
 
 # Description
 --
 
 # Feature Overview
-<img src="">
+<img src="https://github.com/urnikrokhiyah/pictures/blob/e41900307780344cca1ce634154608779f6b9497/Untitled%20Diagram(3).drawio(2).png">
 
 # High Level Architecture
 <img src="https://github.com/kevinabdul/berbagi/blob/bd62cea397eeed4a28546db6d01dc954f939d783/res/HLA-Berbagi.jpg">
