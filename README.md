@@ -30,7 +30,7 @@ Find happiness by sharing with others
 <img src="https://github.com/urnikrokhiyah/pictures/blob/e41900307780344cca1ce634154608779f6b9497/Untitled%20Diagram(3).drawio(2).png">
 
 # High Level Architecture
-<img src="https://github.com/kevinabdul/berbagi/blob/bd62cea397eeed4a28546db6d01dc954f939d783/res/HLA-Berbagi.jpg">
+<img src="https://github.com/kevinabdul/berbagi/blob/bd62cea397eeed4a28546db6d01dc954f939d783/res/HLA-Berbagi.png">
 
 
 # Entity Relations Diagram
